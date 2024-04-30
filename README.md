@@ -2,7 +2,9 @@
 
 Este proyecto es un proyecto
 
-## Inicializar repositorio
+## Preparar repositorio
+
+### Preparando la clave SSH
 
 Debes poner esto en un cmd
 
@@ -15,6 +17,8 @@ Posteriormente abre un editor de texto para copiar el contenido de
 Esta llave debes meterla en tu perfil de [GitHub](https://github.com/settings/ssh/new), en tu perfil, settings, SSH keys and GPG keys y finalmente a new SSH Key.
 
 Como nombre pondrás el que quieras, algo que sa descriptivo, y en Key, pones el contenido del archivo anterior
+
+### Iniciar repositorio
 
 Para empezar a usar Git, necesitas poner los siguientes comandos
 
