@@ -17,7 +17,24 @@ INSERT INTO estat_cursa VALUES
     (NULL, 'Finalitzada'),
     (NULL, 'Cancelada');
     
--- Esports
-   --
-INSERT INTO esport VALUES
-    ()
+-- Esports + Categories
+   -- 2 esports i 2 categories
+INSERT INTO esport VALUES (NULL,'Ciclisme');
+SET @last_id = LAST_INSERT_ID();
+INSERT INTO categories VALUES (NULL,@last_id,'infantil');
+INSERT INTO categories VALUES (NULL,@last_id,'cadet');
+INSERT INTO categories VALUES (NULL,@last_id,'junior');
+
+
+INSERT INTO esport VALUES (NULL,'Running');
+SET @last_id = LAST_INSERT_ID();
+INSERT INTO categories VALUES (NULL,@last_id,'Casual')
+INSERT INTO categories VALUES (NULL,@last_id,'Profesional')
+
+
+
+
+-- Categories
+    --
+INSERT INTO categories VALUES
+    (NULL,)

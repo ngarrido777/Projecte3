@@ -16,6 +16,16 @@ Esta llave debes meterla en tu perfil de [GitHub](https://github.com/settings/ss
 
 Como nombre pondrás el que quieras, algo que sa descriptivo, y en Key, pones el contenido del archivo anterior
 
+Para empezar a usar Git, necesitas poner los siguientes comandos
+
+```git config --gloal user.email "tu@correo.aqui"```
+
+```git config --gloal user.name "Tu nomrbe"```
+
+Y para empezar con el repositorio solamente hay que poner el siguiente comando en la carpeta deseada
+
+```git clone git@github.com:ngarrido777/Projecte3.git```
+
 ## Preparación del entorno
 
 ### Instalar extensión de GitHub
