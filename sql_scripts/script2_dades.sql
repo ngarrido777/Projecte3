@@ -24,6 +24,7 @@ SET @last_id = LAST_INSERT_ID();
 INSERT INTO categories VALUES (NULL,@last_id,'infantil');
 INSERT INTO categories VALUES (NULL,@last_id,'cadet');
 INSERT INTO categories VALUES (NULL,@last_id,'junior');
+INSERT INTO categories VALUES (NULL,@last_id,'senior');
 
 INSERT INTO esport VALUES (NULL,'Running');
 SET @last_id = LAST_INSERT_ID();
