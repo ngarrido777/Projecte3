@@ -28,8 +28,8 @@ INSERT INTO categories VALUES (NULL,@last_id,'senior');
 
 INSERT INTO esport VALUES (NULL,'Running');
 SET @last_id = LAST_INSERT_ID();
-INSERT INTO categories VALUES (NULL,@last_id,'Casual')
-INSERT INTO categories VALUES (NULL,@last_id,'Profesional')
+INSERT INTO categories VALUES (NULL,@last_id,'Casual');
+INSERT INTO categories VALUES (NULL,@last_id,'Profesional');
 
 -- Beacons
     -- 4 beacons
