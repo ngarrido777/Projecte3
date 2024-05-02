@@ -30,3 +30,11 @@ INSERT INTO esport VALUES (NULL,'Running');
 SET @last_id = LAST_INSERT_ID();
 INSERT INTO categories VALUES (NULL,@last_id,'Casual')
 INSERT INTO categories VALUES (NULL,@last_id,'Profesional')
+
+-- Beacons
+    -- 4 beacons
+INSERT INTO beacons VALUES 
+    (NULL, 'bR1S7!Gc(BS!?%-uY/_K)Te!$m9j6b'),
+    (NULL, '+M1N;3cvkMZ:fThS$[WnvH&{J2G9:$'),
+    (NULL, 'y;AcyeqcMaCUB[K_+F:gCnJ&=:;v(4'),
+    (NULL, 'LWtWL{j&m[8}e5G1iMZAywJyif};%h');
