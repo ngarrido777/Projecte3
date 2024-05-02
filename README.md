@@ -38,5 +38,12 @@ Abre el directorio del repositorio clonado con el VSCode.
 
 ### Funcionamiento de la Extensión
 Aparece un nuevo icono en el menú de la izquierda, ahí se mustran los cambios y tienes que añadirlos.
-Una ves añadidos todos los cambios, clic en commit, aparecerá un fichero de texto donde debes poner el texto del commit.
+Una vez añadidos todos los cambios, clic en commit, aparecerá un fichero de texto donde debes poner el texto del commit.
 Arriba a la derecha hay un tic para guardar el commit. Posteriormente sale Sync Changes, que es basicamente un Push.
+
+### Iniciando laravel
+Es necesario tener el composer instalado. Una vez hayas clonado el directorio deberás poner ```composer install``` en un cmd, dentro de la carpeta app.
+Esto generará la carpeta ```./app/vendor``` la cual contiene todas las dependencias.
+Además, necesitas una base de datos en tu MySQL local, cuyo nombre debes poner en el archivo ```./app/.env``` en ```DB_DATABASE```, junto el resto de configuración de tu BD.
+
+Para poner en marcha el proyecto, hay que escribir ```php artisan serve``` en un cmd dentro de la carpeta ```./app```
