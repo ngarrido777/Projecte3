@@ -33,7 +33,7 @@ Y para empezar con el repositorio solamente hay que poner el siguiente comando e
 ## Preparación del entorno
 
 ### Instalar extensión de GitHub
-En el VisualStudio de los ordenadores de clase, instala la extensión ````GitHub Pull Requests```.
+En el VisualStudio de los ordenadores de clase, instala la extensión ```GitHub Pull Requests```.
 Abre el directorio del repositorio clonado con el VSCode.
 
 ### Funcionamiento de la Extensión
