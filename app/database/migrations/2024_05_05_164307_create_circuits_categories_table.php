@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('circuits_categories', function (Blueprint $table) {
             $table->id          ('ccc_id');
-            $table->foreignId   ('ccc_cir_id')->circuits('curses')->nullale();
-            $table->foreignId   ('ccc_cat_id')->categories('curses')->nullale();
+            $table->foreign     ('ccc_cir_id')->references('cur_id')->on('curses');
+            $table->integer     ('ccc_cat_id')->references('cat_id')->on('categories');
 
             $table->index(['ccc_cir_id','ccc_cat_id']);
         });

@@ -17,12 +17,17 @@ return new class extends Migration
             $table->date        ('cur_data_inici');
             $table->date        ('cur_data_fi');
             $table->string      ('cur_lloc', 20);
-            $table->foreignId   ('cur_esp_id')->constrained('esports');
-            $table->foreignId   ('cur_est_id')->constrained('estats_cursa');
+            $table->integer     ('cur_esp_id');
+            $table->integer     ('cur_est_id');
             $table->string      ('cur_desc', 1000)->nullable();
             $table->integer     ('cur_limit_inscr');
             $table->binary      ('cur_foto');
             $table->string      ('cur_web', 20)->nullable();
+            /* COMO MIERDAS SE HACEN LAS FORANEAS */
+            $table->index       ('cur_esp_id');
+            $table->foreign     ('cur_esp_id')->references('esp_id')->on('esports');
+            $table->index       ('cur_est_id');
+            $table->foreign     ('cur_est_id')->references('est_id')->on('estats_cursa');
         });
     }
 

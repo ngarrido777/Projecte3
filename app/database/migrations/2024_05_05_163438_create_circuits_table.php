@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('circuits', function (Blueprint $table) {
             $table->id          ('cir_id');
-            $table->int         ('cir_num')->nullable();
-            $table->foreignId   ('cir_cur_id')->constrained('curses');
+            $table->integer     ('cir_num')->nullable();
+            $table->foreign     ('cir_cur_id')->references('cur_id')->on('curses');
             $table->decimal     ('cir_distancia', 10, 2);
             $tale->string       ('cir_nom',200);
             $table->decimal     ('cir_preu', 19, 4);

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('checkpoints', function (Blueprint $table) {
             $table->id          ('chk_id');
-            $table->foreignId   ('chk_cir_id')->constrained('circuits');
+            $table->integer     ('chk_cir_id')->references('cir_id')->on('circuits');
             $table->decimal     ('chk_pk', 10, 2)->nullable();
         });
     }

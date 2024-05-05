@@ -12,15 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inscripcions', function (Blueprint $table) {
-            $table->id('ins_id');
-            $table->intforeignId('ins_par_id')->constraint('participants');
-            $table->date('ins_data');
-            $table->int('ins_dorsal');
-            $table->tinyInteger('ins_retirat');
-            $table->foreignId('ins_bea_id')->nullable()->constrained('beacons');
-            $table->foreignId('ins_ccc_id')->nullable()->constrained('circuits_categories');
-            
-            $table->foreignId   ('chk_cir_id')->constrained('circuits');
+            $table->id          ('ins_id');
+            $table->foreign     ('ins_par_id')->references('par_id')->on('participants');
+            $table->date        ('ins_data');
+            $table->integer     ('ins_dorsal');
+            $table->tinyInteger ('ins_retirat');
+            $table->foreign     ('ins_bea_id')->references('bea_id')->on('beacons');
+            $table->foreign     ('ins_ccc_id')->references('ccc_id')->on('circuits_categories');
         });
     }
 

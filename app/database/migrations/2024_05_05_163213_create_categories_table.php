@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id          ('cat_id');
-            $table->foreignId   ('cat_esp_id')->constrained('esports');
+            $table->foreign     ('cat_esp_id')->references('esp_id')->on('esports');
             $table->string      ('cat_nom',20);
         });
     }

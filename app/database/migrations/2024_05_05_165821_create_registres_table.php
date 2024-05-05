@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('registres', function (Blueprint $table) {
-            $table->id('reg_id');
-            $table->foreignId('reg_ins_id')->constraint('inscripcions');
-            $table->foreignId('reg_chk_id')->constraint('checkpoints');
-            $table->timestamp('reg_temps',0);
+            $table->id          ('reg_id');
+            $table->timestamp   ('reg_temps',0);
+            $table->foreign     ('reg_ins_id')->references('ins_id')->on('inscripcions');
+            $table->foreign     ('reg_chk_id')->references('chk_id')->on('checkpoints');
         });
     }
 
