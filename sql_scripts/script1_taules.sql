@@ -2,14 +2,14 @@ DROP TABLE if exists registres;
 DROP TABLE if exists inscripcions;
 DROP TABLE if exists participants;
 DROP TABLE if exists beacons;
-DROP TABLE if exists checkponts;
+DROP TABLE if exists checkpoints;
 DROP TABLE if exists circuits_categories;
 DROP TABLE if exists circuits;
 DROP TABLE if exists categories;
 DROP TABLE if exists curses;
 DROP TABLE if exists esports;
-DROP TABLE if exists estats_cursa;
 DROP TABLE if exists usuaris;
+DROP TABLE if exists estats_cursa;
 
 -- taula 'usuaris'
 CREATE TABLE usuaris (
@@ -21,7 +21,7 @@ CREATE TABLE usuaris (
 	PRIMARY KEY (usr_id),
 
 	CONSTRAINT SK_Usuaris UNIQUE (
-		usr_id
+		usr_login
 	)
 );
 
@@ -107,7 +107,7 @@ CREATE TABLE circuits_categories (
 );
 
 -- Taula 'checkponts'
-CREATE TABLE checkponts (
+CREATE TABLE checkpoints (
 	chk_id INT AUTO_INCREMENT,
 	chk_cir_id INT NOT NULL,
 	chk_pk DECIMAL(10,2),
@@ -165,7 +165,7 @@ CREATE TABLE registres (
 
 	PRIMARY KEY (reg_id),
 	CONSTRAINT FK_Registres_InsId FOREIGN KEY (reg_ins_id) REFERENCES registres (reg_id),
-	CONSTRAINT FK_Registres_ChkId FOREIGN KEY (reg_chk_id) REFERENCES checkponts (chk_id),
+	CONSTRAINT FK_Registres_ChkId FOREIGN KEY (reg_chk_id) REFERENCES checkpoints (chk_id),
 
 	CONSTRAINT SK_Beacon UNIQUE (
 		reg_ins_id,
