@@ -145,7 +145,7 @@ CREATE TABLE inscripcions (
 	ins_par_id INT NOT NULL,
 	ins_data DATE NOT NULL,
 	ins_dorsal INT NOT NULL,
-	ins_rtirat TINYINT NOT NULL,
+	ins_retirat TINYINT NOT NULL,
 	ins_bea_id INT,
 	ins_ccc_id INT,
 	
@@ -164,7 +164,7 @@ CREATE TABLE registres (
 	reg_temps TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (reg_id),
-	CONSTRAINT FK_Registres_InsId FOREIGN KEY (reg_ins_id) REFERENCES registres (reg_id),
+	CONSTRAINT FK_Registres_InsId FOREIGN KEY (reg_ins_id) REFERENCES inscripcions (ins_id),
 	CONSTRAINT FK_Registres_ChkId FOREIGN KEY (reg_chk_id) REFERENCES checkpoints (chk_id),
 
 	CONSTRAINT SK_Beacon UNIQUE (

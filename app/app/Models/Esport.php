@@ -14,6 +14,6 @@ class Esport extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'esp_nom',
+        'esp_nom'
     ];
 }

@@ -14,16 +14,23 @@ class Cursa extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'cur_nom', 'cur_data_inici', 'cur_data_fi', 'cur_lloc', 'cur_esp_id', 'cur_est_id', 'cur_desc', 'cur_limit_inscr', 'cur_foto', 'cur_web',
+        'cur_nom',
+        'cur_data_inici',
+        'cur_data_fi',
+        'cur_lloc',
+        'cur_esp_id',
+        'cur_est_id',
+        'cur_desc',
+        'cur_limit_inscr',
+        'cur_foto',
+        'cur_web'
     ];
 
-    public function esport()
-    {
+    public function esport() {
         return $this->belongsTo(Esport::class, 'cur_esp_id');
     }
 
-    public function estatCursa()
-    {
+    public function estat() {
         return $this->belongsTo(Estat_cursa::class, 'cur_est_id');
     }
 }

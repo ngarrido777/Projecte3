@@ -14,16 +14,15 @@ class Circuit_categoria extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'ccc_cat_id', 'ccc_cir_id',
+        'ccc_cat_id',
+        'ccc_cir_id'
     ];
 
-    public function circuit()
-    {
+    public function circuit() {
         return $this->belongsTo(Circuit::class, 'ccc_cir_id');
     }
 
-    public function categoria()
-    {
+    public function categoria() {
         return $this->belongsTo(Categoria::class, 'ccc_cat_id');
     }
 }

@@ -14,11 +14,11 @@ class Categoria extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'cat_esp_id', 'cat_nom',
+        'cat_esp_id',
+        'cat_nom'
     ];
 
-    public function esport()
-    {
+    public function esport() {
         return $this->belongsTo(Esport::class, 'cat_esp_id');
     }
 }

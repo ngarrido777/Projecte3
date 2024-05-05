@@ -14,6 +14,8 @@ class Usuari extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'usr_login', 'usr_password', 'usr_admin',
+        'usr_login',
+        'usr_password',
+        'usr_admin'
     ];
 }
