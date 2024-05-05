@@ -24,6 +24,6 @@ class Cursa extends Model
 
     public function estatCursa()
     {
-        return $this->belongsTo(EstatCursa::class, 'cur_est_id');
+        return $this->belongsTo(Estat_cursa::class, 'cur_est_id');
     }
 }
