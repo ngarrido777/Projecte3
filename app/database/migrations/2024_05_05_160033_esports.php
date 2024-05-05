@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('esports', function (Blueprint $table) {
             $table->increments('esp_id');
             $table->string('esp_nom', 20);
-            
-            $table->primary('esp_id');
         });
     }
 

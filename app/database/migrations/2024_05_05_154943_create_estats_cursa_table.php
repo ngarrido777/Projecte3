@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('estats_cursa', function (Blueprint $table) {
             $table->increments('est_id');
             $table->string('est_nom', 20);
-            
-            $table->primary('est_id');
         });
     }
 

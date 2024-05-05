@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('usr_login', 20);
             $table->string('usr_password', 20);
             $table->tinyInteger('usr_admin');
-
-            $table->primary('usr_id');
+            
             $table->unique('usr_login');
         });
     }
