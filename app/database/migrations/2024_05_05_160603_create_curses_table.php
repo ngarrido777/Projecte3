@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date        ('cur_data_inici');
             $table->date        ('cur_data_fi');
             $table->string      ('cur_lloc', 20);
-            $table->integer     ('cur_esp_id');
-            $table->integer     ('cur_est_id');
+            $table->unsignedBigInteger     ('cur_esp_id');
+            $table->unsignedBigInteger     ('cur_est_id');
             $table->string      ('cur_desc', 1000)->nullable();
             $table->integer     ('cur_limit_inscr');
             $table->binary      ('cur_foto');
