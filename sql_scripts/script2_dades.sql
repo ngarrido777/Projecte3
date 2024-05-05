@@ -9,7 +9,7 @@ INSERT INTO usuaris VALUES
     
 -- Estat Curses
     -- 6 estats
-INSERT INTO estat_cursa VALUES
+INSERT INTO estats_cursa VALUES
     (NULL, 'En preparació'),
     (NULL, 'Inscripció Oberta'),
     (NULL, 'Inscripció Tancada'),
@@ -19,14 +19,14 @@ INSERT INTO estat_cursa VALUES
     
 -- Esports + Categories
    -- 2 esports i 6 categories
-INSERT INTO esport VALUES (NULL,'Ciclisme');
+INSERT INTO esports VALUES (NULL,'Ciclisme');
 SET @last_id = LAST_INSERT_ID();
 INSERT INTO categories VALUES (NULL,@last_id,'infantil');
 INSERT INTO categories VALUES (NULL,@last_id,'cadet');
 INSERT INTO categories VALUES (NULL,@last_id,'junior');
 INSERT INTO categories VALUES (NULL,@last_id,'senior');
 
-INSERT INTO esport VALUES (NULL,'Running');
+INSERT INTO esports VALUES (NULL,'Running');
 SET @last_id = LAST_INSERT_ID();
 INSERT INTO categories VALUES (NULL,@last_id,'Casual');
 INSERT INTO categories VALUES (NULL,@last_id,'Profesional');
