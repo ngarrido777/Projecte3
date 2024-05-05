@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('esports', function (Blueprint $table) {
-            $table->increments('esp_id');
-            $table->string('esp_nom', 20);
+        Schema::create('beacons', function (Blueprint $table) {
+            $table->id      ('bea_id');
+            $table->string  ('bea_code',200);
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('esports');
+        Schema::dropIfExists('beacons');
     }
 };

@@ -44,14 +44,14 @@ CREATE TABLE esports (
 -- taula 'curses'
 CREATE TABLE curses (
 	cur_id INT AUTO_INCREMENT,
-	cur_nom VARCHAR(20),
+	cur_nom VARCHAR(20) NOT NULL,
 	cur_data_inici DATE NOT NULL,
 	cur_data_fi DATE NOT NULL,
 	cur_lloc VARCHAR(20) NOT NULL,
 	cur_esp_id INT NOT NULL,
 	cur_est_id INT NOT NULL,
-	cur_desc VARCHAR(20),
-	cur_limit_inscr VARCHAR(20) NOT NULL,
+	cur_desc VARCHAR(1000),
+	cur_limit_inscr INT NOT NULL,
 	cur_foto BLOB NOT NULL,
 	cur_web VARCHAR(20),
 	
