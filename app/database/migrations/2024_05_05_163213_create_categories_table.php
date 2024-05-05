@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id          ('cat_id');
-            $table->foreign     ('cat_esp_id')->references('esp_id')->on('esports');
+            $table->unsignedBigInteger     ('cat_esp_id');
             $table->string      ('cat_nom',20);
+            /* FK */
+            $table->foreign     ('cat_esp_id')->references('esp_id')->on('esports');
         });
     }
 

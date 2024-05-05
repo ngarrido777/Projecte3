@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('checkpoints', function (Blueprint $table) {
             $table->id          ('chk_id');
-            $table->integer     ('chk_cir_id')->references('cir_id')->on('circuits');
+            $table->unsignedBigInteger     ('chk_cir_id');
             $table->decimal     ('chk_pk', 10, 2)->nullable();
+            /* FK */
+            $table->foreign     ('chk_cir_id')->references('cir_id')->on('circuits');
         });
     }
 

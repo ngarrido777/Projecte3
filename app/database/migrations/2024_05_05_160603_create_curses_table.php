@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer     ('cur_limit_inscr');
             $table->binary      ('cur_foto');
             $table->string      ('cur_web', 20)->nullable();
-            /* COMO MIERDAS SE HACEN LAS FORANEAS */
+            /* FK y Index */
             $table->index       ('cur_esp_id');
             $table->foreign     ('cur_esp_id')->references('esp_id')->on('esports');
             $table->index       ('cur_est_id');

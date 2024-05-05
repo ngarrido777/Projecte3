@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('inscripcions', function (Blueprint $table) {
             $table->id          ('ins_id');
-            $table->foreign     ('ins_par_id')->references('par_id')->on('participants');
+            $table->unsignedBigInteger     ('ins_par_id');
             $table->date        ('ins_data');
             $table->integer     ('ins_dorsal');
             $table->tinyInteger ('ins_retirat');
+            $table->unsignedBigInteger     ('ins_bea_id');
+            $table->unsignedBigInteger     ('ins_ccc_id');
+            /* FK */
+            $table->foreign     ('ins_par_id')->references('par_id')->on('participants');
             $table->foreign     ('ins_bea_id')->references('bea_id')->on('beacons');
             $table->foreign     ('ins_ccc_id')->references('ccc_id')->on('circuits_categories');
         });

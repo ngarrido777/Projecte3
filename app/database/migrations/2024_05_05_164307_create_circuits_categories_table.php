@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('circuits_categories', function (Blueprint $table) {
             $table->id          ('ccc_id');
-            $table->foreign     ('ccc_cir_id')->references('cur_id')->on('curses');
-            $table->integer     ('ccc_cat_id')->references('cat_id')->on('categories');
-
+            $table->unsignedBigInteger     ('ccc_cir_id');
+            $table->unsignedBigInteger     ('ccc_cat_id');
+            /* FK y Index */
             $table->index(['ccc_cir_id','ccc_cat_id']);
+            $table->foreign     ('ccc_cir_id')->references('cur_id')->on('curses');
+            $table->foreign     ('ccc_cat_id')->references('cat_id')->on('categories');
         });
     }
 

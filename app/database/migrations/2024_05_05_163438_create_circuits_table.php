@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('circuits', function (Blueprint $table) {
             $table->id          ('cir_id');
             $table->integer     ('cir_num')->nullable();
-            $table->foreign     ('cir_cur_id')->references('cur_id')->on('curses');
+            $table->unsignedBigInteger     ('cir_cur_id');
             $table->decimal     ('cir_distancia', 10, 2);
-            $tale->string       ('cir_nom',200);
+            $table->string       ('cir_nom',200);
             $table->decimal     ('cir_preu', 19, 4);
             $table->date        ('cir_temps_estimat')->nullable;
-            
+            /* FK y Index */
             $table->index(['cir_cur_id','cir_num']);
+            $table->foreign     ('cir_cur_id')->references('cur_id')->on('curses');
         });
     }
 
