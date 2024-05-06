@@ -22,9 +22,9 @@ Como nombre pondrás el que quieras, algo que sa descriptivo, y en Key, pones el
 
 Para empezar a usar Git, necesitas poner los siguientes comandos
 
-```git config --gloal user.email "tu@correo.aqui"```
+```git config --global user.email "tu@correo.aqui"```
 
-```git config --gloal user.name "Tu nomrbe"```
+```git config --global user.name "Tu nomrbe"```
 
 Y para empezar con el repositorio solamente hay que poner el siguiente comando en la carpeta deseada
 
