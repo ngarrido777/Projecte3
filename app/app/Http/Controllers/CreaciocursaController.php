@@ -11,8 +11,13 @@ class CreaciocursaController extends Controller
     public function creaciocurses()
     {
         $esports = Esport::all();
-        $estat_cursa = Estat_cursa::all();
+        $esp_names = array();
+        foreach ($esports as $key => $e) {
+            $esp_names[$e->esp_id] = $e->esp_nom;
+        }
 
-    return view('creaciocurses', ['esports'=>$esports,'estats_cursa'=>$estat_cursa]);
+    return view('creaciocurses', [
+        'esports' => $esp_names,
+    ]);
     }
 }
