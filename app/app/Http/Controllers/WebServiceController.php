@@ -7,17 +7,42 @@ use App\Models\Cursa;
 
 class WebServiceController extends Controller
 {
-    public function getCurses(Request $request)
-    {
-        //Obtebir curses
-        $curses = Cursa::with('esport', 'estat')->get();
+    public function getCurses($id = null) {
+        $curses = array();
+
+        // Comprueba el parámetro y otiene todas o una
+        try {
+            if (is_null($id)) {
+                $curses = Cursa::with('esport', 'estat')->get();
+            } else {
+                $curses = Cursa::with('esport', 'estat')->where('cur_id','=',$id)->get();
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            switch ($ex->getCode()) {
+                case 1045:
+                    $code = '403';
+                    $msgerror = 'Accés denegat.';
+                    break;
+                default:
+                    $code = '500';
+                    $msg = 'Error desconegut.';
+                    break;
+            }
+            return response()->json([
+                "response" => [
+                    "code" => $code,
+                    "description" => $msg
+                ]
+            ]);
+        }
+
         //Declarar json de curses i error
         $cursesArray = [];
         $error = [];
         if(!empty($curses)){
             //Omplir el json amb les dades de la cursa
             foreach ($curses as $cursa) {
-                $cursesArray = [
+                $cursesArray[] = [
                     "id" => $cursa->cur_id,
                     "nom" => $cursa->cur_nom,
                     "dataInici" => $cursa->cur_data_inici,
@@ -33,15 +58,10 @@ class WebServiceController extends Controller
                     ],
                     "descripcio" => $cursa->cur_desc,
                     "limit" => $cursa->cur_limit_inscr,
-                    "foto" => "foto"/*$cursa->cur_foto*/,
+                    "foto" => "foto", // TODO: foto real
                     "web" => $cursa->cur_web
                 ];
             }
-            $error = [
-                "code" => "200",
-                "description" => "Ok"
-            ];
-        }else{
             $error = [
                 "code" => "200",
                 "description" => "Ok"

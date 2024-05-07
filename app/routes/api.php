@@ -19,5 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 //Rutas de todos los Web Services
-Route::get('getCurses', [WebServiceController::class, 'getCurses']);
+Route::get('getCurses/{id?}', [WebServiceController::class, 'getCurses']);
 Route::get('getCircuits', [WebServiceController::class, 'getCircuits']);
