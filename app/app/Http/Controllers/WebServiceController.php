@@ -9,8 +9,9 @@ class WebServiceController extends Controller
 {
     public function getCurses()
     {
+        //Obtebir curses
         $curses = Cursa::with('esport', 'estat')->get();
-
+        //Omplir el json amb les dades de la cursa
         foreach ($curses as $cursa) {
             $cursesArray[] = [
                 "id" => $cursa->cur_id,
@@ -32,7 +33,7 @@ class WebServiceController extends Controller
                 "web" => $cursa->cur_web
             ];
         }
-
+        //Enviar json amb els errors i les curses
         return response()->json([
             "curses" => $cursesArray,
             "response" => [

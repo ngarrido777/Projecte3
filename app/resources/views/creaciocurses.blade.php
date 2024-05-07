@@ -31,6 +31,18 @@
         {{ Form::label('l_esport', 'Esport:') }}
         {{ Form::select('c_esport', $esports, null, ['class' => 'form-element form-text']) }}
 
+        {{ Form::label('l_descripccio', 'Descripccio:') }}
+        {{ Form::text('c_descripccio', null, ['class' => 'form-element form-text']) }}
+
+        {{ Form::label('l_limit', 'Limit:') }}
+        {{ Form::text('c_limit', null, ['class' => 'form-element form-text']) }}
+
+        {{ Form::label('l_foto', 'Foto:') }}
+        {{ Form::file('c_foto', null, ['class' => 'form-element form-text']) }}
+        
+        {{ Form::label('l_web', 'Web:') }}
+        {{ Form::text('c_web', null, ['class' => 'form-element form-text']) }}
+
         {{ Form::submit('Crear', ['name' => 'c_crear']) }}
     {{ Form::close() }}
 </body>
