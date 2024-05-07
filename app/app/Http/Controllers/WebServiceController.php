@@ -4,43 +4,59 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cursa;
+use App\Models\Circuit;
+use App\Models\Checkpoint;
+use \Illuminate\Database\QueryException;
 
 class WebServiceController extends Controller
 {
-    public function getCurses($id = null) {
-        $curses = array();
 
-        // Comprueba el parámetro y otiene todas o una
+    private function sendJsonCurses($curses,$status) {
+        return response()->json([
+            "curses" => $curses,
+            "status" => $status,
+        ]);
+    }
+
+    private function sendJsonCircuits($circuits,$status) {
+        return response()->json([
+            "circuits" => $circuits,
+            "status" => $status,
+        ]);
+    }
+
+    private function sendJsonInscriure($status) {
+        return response()->json([
+            "status" => $status,
+        ]);
+    }
+
+    public function getCurses($id = null) {
+        $cursesArray = [];
+        $status = [];
+        
         try {
+            // Comprueba el parámetro y obtiene todas o una
             if (is_null($id)) {
-                $curses = Cursa::with('esport', 'estat')->get();
+                $curses = Cursa::with('esport', 'estat')->orderBy('cur_est_id')->get();
             } else {
-                $curses = Cursa::with('esport', 'estat')->where('cur_id','=',$id)->get();
+                $curses = Cursa::with('esport', 'estat')->where('cur_id','=',$id)->orderBy('cur_est_id')->get();
             }
-        } catch (\Illuminate\Database\QueryException $ex) {
-            switch ($ex->getCode()) {
-                case 1045:
-                    $code = '403';
-                    $msgerror = 'Accés denegat.';
-                    break;
-                default:
-                    $code = '500';
-                    $msg = 'Error desconegut.';
-                    break;
-            }
-            return response()->json([
-                "response" => [
-                    "code" => $code,
-                    "description" => $msg
-                ]
-            ]);
+        } catch (QueryException $ex) {
+            $status = [
+                "code" => "403",
+                "description" => "Algo ha salido mal al obtener los datos"
+            ];
+            return $this->sendJsonCurses([],$status);
         }
 
-        //Declarar json de curses i error
-        $cursesArray = [];
-        $error = [];
+        // TODO: Order by estado
+        // Participantes inscritos -> Count(*) select inscrits where cursa id....
+        // Participantes inscritos <= 
+
+        // Declarar json de curses i el status
         if(!empty($curses)){
-            //Omplir el json amb les dades de la cursa
+            // Omplir el json amb les dades de la cursa
             foreach ($curses as $cursa) {
                 $cursesArray[] = [
                     "id" => $cursa->cur_id,
@@ -58,34 +74,78 @@ class WebServiceController extends Controller
                     ],
                     "descripcio" => $cursa->cur_desc,
                     "limit" => $cursa->cur_limit_inscr,
+                    "inscrits" => 3,  // TODO: contar inscritos
                     "foto" => "foto", // TODO: foto real
                     "web" => $cursa->cur_web
                 ];
             }
-            $error = [
-                "code" => "200",
-                "description" => "Ok"
-            ];
         }
-        //Enviar json amb els errors i les curses
-        return response()->json([
-            "curses" => $cursesArray,
-            "response" => $error,
-        ]);
+        $status = [
+            "code" => "200",
+            "description" => "Ok"
+        ];
+        return $this->sendJsonCurses($cursesArray,$status);
     }
 
-    public function getCircuits(Request $request)
-    {
-        $cursaId = $request->json('cursaId');
+    public function getCircuits($id = null) {
+        $circuitsArray = [];
+        $status = [];
+        
+        try {
+            // Comprueba el parámetro y obtiene todas o una
+            if (is_null($id)) {
+                $circuits = Circuit::get();
+            } else {
+                $circuits = Circuit::where('cir_id','=',$id)->get();
+            }
+        } catch (QueryException $ex) {
+            $status = [
+                "code" => "403",
+                "description" => "Algo ha salido mal al obtener los datos"
+            ];
+            return $this->sendJsonCircuits([],$status);
+        }
+        
+        // Recorre los circuitos
+        foreach ($circuits as $circuit) {
+            $checkpoints = Checkpoint::where('chk_cir_id','=',$circuit->cir_id)->get();
 
-        $circuits;
+            // Recorre los checkpoints de un circuito
+            $checkpointsArray = [];
+            foreach ($checkpoints as $checkpoint) {
+                $checkpointsArray[] = [
+                    'id' => $checkpoint->chk_id,
+                    'pk' => $checkpoint->chk_pk,
+                ];
+            }
 
-        return response()->json([
-            "circuits" => $circuits,
-            "repsonse" => [
-                "code" => "200",
-                "description" => "Todo piola"
-            ]
-        ]);
+            $circuitsArray[] = [
+                "id" => $circuit->cir_id,
+                "cursaId" => $circuit->cir_cur_id,
+                "num" => $circuit->cir_num,
+                "distancia" => $circuit->cir_distancia,
+                "nom" => $circuit->cir_nom,
+                "preu" => $circuit->cir_preu,
+                "temps" => $circuit->cir_temps_estimat,
+                "checkpoints" => $checkpointsArray,
+            ];
+        }
+        $status = [
+            "code" => "200",
+            "description" => "Ok"
+        ];
+        return $this->sendJsonCircuits($circuitsArray,$status);
+    }
+
+    public function inscriure($json = null) {
+        if (is_null($json)) {
+            $status = [
+                "code" => "400",
+                "description" => "Es necesario un parametro con los datos a insertar."
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+        var_dump($json);
+
     }
 }
