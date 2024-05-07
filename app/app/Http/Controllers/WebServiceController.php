@@ -41,4 +41,19 @@ class WebServiceController extends Controller
             ]
         ]);
     }
+
+    public function getCircuits(Request $request)
+    {
+        $cursaId = $request->json('cursaId');
+
+        $circuits;
+
+        return response()->json([
+            "circuits" => $circuits,
+            "repsonse" => [
+                "code" => "200",
+                "description" => "Todo piola"
+            ]
+        ]);
+    }
 }
