@@ -19,39 +19,39 @@
     {{ Form::open(['url' => 'creaciocurses', 'method' => 'post']) }}
         @csrf
         {{ Form::label('l_nom', 'Nom:') }}
-        {{ Form::text('c_nom', null) }}
+        {{ Form::text('c_nom', $ultims_camps['l_nom']) }}
         {{ Form::label(null, $errors['e_nom'], ['class' => 'error']) }}
 
         {{ Form::label('l_data_inici', 'Data Inici:') }}
-        {{ Form::date('c_data_inici', null) }}
+        {{ Form::date('c_data_inici', $ultims_camps['l_data_inici']) }}
         {{ Form::label(null, $errors['e_data_inici'], ['class' => 'error']) }}
         
         {{ Form::label('l_data_fi', 'Data Fi:') }}
-        {{ Form::date('c_data_fi', null) }}
+        {{ Form::date('c_data_fi', $ultims_camps['l_data_fi']) }}
         {{ Form::label(null, $errors['e_data_fi'], ['class' => 'error']) }}
 
         {{ Form::label('l_lloc', 'Lloc:') }}
-        {{ Form::text('c_lloc', null) }}
+        {{ Form::text('c_lloc', $ultims_camps['l_lloc']) }}
         {{ Form::label(null, $errors['e_lloc'], ['class' => 'error']) }}
 
         {{ Form::label('l_esport', 'Esport:') }}
-        {{ Form::select('c_esport', $esports, null) }}
+        {{ Form::select('c_esport', $esports, $ultims_camps['l_esport']) }}
         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
 
         {{ Form::label('l_descripccio', 'Descripccio:') }}
-        {{ Form::text('c_descripccio', null) }}
+        {{ Form::text('c_descripccio', $ultims_camps['l_descripccio']) }}
         {{ Form::label(null, $errors['e_descripcio'], ['class' => 'error']) }}
 
         {{ Form::label('l_limit', 'Limit:') }}
-        {{ Form::text('c_limit', null) }}
+        {{ Form::text('c_limit', $ultims_camps['l_limit']) }}
         {{ Form::label(null, $errors['e_limit'], ['class' => 'error']) }}
 
         {{ Form::label('l_foto', 'Foto:') }}
-        {{ Form::file('c_foto', null) }}
+        {{ Form::file('c_foto', null, $ultims_camps['l_foto']) }}
         {{ Form::label(null, $errors['e_foto'], ['class' => 'error']) }}
         
         {{ Form::label('l_web', 'Web:') }}
-        {{ Form::text('c_web', null) }}
+        {{ Form::text('c_web', $ultims_camps['l_web']) }}
         {{ Form::label(null, $errors['e_web'], ['class' => 'error']) }}
 
         {{ Form::submit('Crear', ['name' => 'c_crear']) }}
