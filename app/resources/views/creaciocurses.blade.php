@@ -16,7 +16,7 @@
 </head>
 <body>
     <h1>Creacció de les Curses</h1>
-    {{ Form::open(['url' => 'creaciocurses', 'method' => 'post']) }}
+    {{ Form::open(['url' => 'creaciocurses', 'method' => 'post', 'files' => true]) }}
         @csrf
         {{ Form::label('l_nom', 'Nom:') }}
         {{ Form::text('c_nom', $ultims_camps['l_nom']) }}
@@ -39,7 +39,7 @@
         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
 
         {{ Form::label('l_descripccio', 'Descripccio:') }}
-        {{ Form::text('c_descripccio', $ultims_camps['l_descripccio']) }}
+        {{ Form::text('c_descripccio', $ultims_camps['l_descripcio']) }}
         {{ Form::label(null, $errors['e_descripcio'], ['class' => 'error']) }}
 
         {{ Form::label('l_limit', 'Limit:') }}
