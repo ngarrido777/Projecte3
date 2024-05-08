@@ -47,7 +47,7 @@
         {{ Form::label(null, $errors['e_limit'], ['class' => 'error']) }}
 
         {{ Form::label('l_foto', 'Foto:') }}
-        {{ Form::file('c_foto', null, $ultims_camps['l_foto']) }}
+        {{ Form::file('c_foto', ['accept' => '.png , .jpg']) }}
         {{ Form::label(null, $errors['e_foto'], ['class' => 'error']) }}
         
         {{ Form::label('l_web', 'Web:') }}

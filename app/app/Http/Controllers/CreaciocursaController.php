@@ -85,10 +85,10 @@ class CreaciocursaController extends Controller
                 $ok = false;
             }
             //Validar imatge
-            //return dd($request->file('c_foto'));
             if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
                 $file = $request->file('c_foto');
                 $foto = base64_encode(file_get_contents($file->getRealPath()));
+                $ultims_camps["l_foto"] = $foto;
             }else{
                 $errors['e_foto'] = 'Error en carregar la imatge';
                 $ok = false;
