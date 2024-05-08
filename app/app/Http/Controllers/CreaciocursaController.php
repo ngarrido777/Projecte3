@@ -85,10 +85,10 @@ class CreaciocursaController extends Controller
                 $ok = false;
             }
             //Validar imatge
-            //return dd($request->file('c_foto'));
             if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
                 $file = $request->file('c_foto');
                 $foto = base64_encode(file_get_contents($file->getRealPath()));
+                $ultims_camps["l_foto"] = $foto;
             }else{
                 $errors['e_foto'] = 'Error en carregar la imatge';
                 $ok = false;
@@ -124,11 +124,40 @@ class CreaciocursaController extends Controller
         foreach ($esports as $key => $e) {
             $esp_names[$e->esp_id] = $e->esp_nom;
         }
-        //return a la view amb la variable esports
+        //return a la view amb la variable esports, errors i ultims camps
         return view('creaciocurses', [
             'esports' => $esp_names,
             'errors' => $errors,
             'ultims_camps' => $ultims_camps
+        ]);
+    }
+
+    public function filtrecurses()
+    {
+        //Mostrar totes les curses per defecte
+        $curses = Cursa::all();
+        //Tractament del post
+        if(isset($_POST["f_cercar"]))
+        {
+
+        }
+        //Carregar els esports per la view
+        $esports = Esport::all();
+        $esp_names = array();
+        foreach ($esports as $key => $e) {
+            $esp_names[$e->esp_id] = $e->esp_nom;
+        }
+        //Carregar els estats per la view
+        $estats = Estat_cursa::all();
+        $est_names = array();
+        foreach ($estats as $key => $e) {
+            $est_names[$e->est_id] = $e->est_nom;
+        }
+
+        return view('filtrecurses', [
+            'esports' => $esp_names,
+            'estats' => $est_names,
+            'curses' => $curses,
         ]);
     }
 }
