@@ -139,7 +139,24 @@ class CreaciocursaController extends Controller
         //Tractament del post
         if(isset($_POST["f_cercar"]))
         {
+            //TO DO Validar el nom
 
+            //Aplicar filtre
+            $query = Cursa::query();
+            if ($_POST['f_nom']) {
+                $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%');
+            }
+            if ($_POST['f_data_inici']) {
+                $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
+            }
+            if ($_POST['f_esport']) {
+                $query->where('cur_esp_id', $_POST['f_esport']);
+            }
+            if ($_POST['f_estat']) {
+                $query->where('cur_est_id', $_POST['f_estat']);
+            }
+
+            $curses = $query->get();
         }
         //Carregar els esports per la view
         $esports = Esport::all();

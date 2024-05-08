@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filtre Curses</title>
-</head>$esp_names
+</head>
 <body>
     <h1>Totes les Curses</h1>
     <h2>Carca la cursa</h2>
-    {{ Form::open(['url' => 'filtrecurses', 'method' => 'post']) }}
+    {{ Form::open(['url' => '/', 'method' => 'post']) }}
         @csrf
         {{ Form::label('l_nom', 'Nom:') }}
         {{ Form::text('f_nom') }}
@@ -24,6 +24,7 @@
 
         {{ Form::submit('Cercar', ['name' => 'f_cercar']) }}
     {{ Form::close() }}
+
     <table>
         <tbody>
             <tr>
@@ -43,7 +44,7 @@
                     <td>{{ $cursa->cur_lloc }}</td>
                     <td>{{ $cursa->esport->esp_nom }}</td>
                     <td>{{ $cursa->estat->est_nom }}</td>
-                    <td>{{  }}</td>
+                    <td>{{ $cursa->cur_limit_inscr }}</td>
                 </tr>
             @endforeach
         </tbody>
