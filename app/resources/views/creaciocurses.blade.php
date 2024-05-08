@@ -12,7 +12,6 @@
             color: red;
         }
     </style>
-
 </head>
 <body>
     <h1>Creacció de les Curses</h1>

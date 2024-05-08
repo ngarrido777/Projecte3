@@ -14,8 +14,5 @@ use App\Http\Controllers\CreaciocursaController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::match(['post', 'get'], '/', [CreaciocursaController::class, 'filtrecurses']) -> name('filtrecurses');
 Route::match(['post', 'get'], '/creaciocurses', [CreaciocursaController::class, 'creaciocurses']) -> name('creaciocurses');
