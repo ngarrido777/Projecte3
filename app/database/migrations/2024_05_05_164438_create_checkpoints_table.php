@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('checkpoints', function (Blueprint $table) {
-            $table->id          ('chk_id');
-            $table->unsignedBigInteger     ('chk_cir_id');
-            $table->decimal     ('chk_pk', 10, 2)->nullable();
+            $table->id                  ('chk_id');
+            $table->unsignedBigInteger  ('chk_cir_id');
+            $table->decimal             ('chk_pk', 10, 2)->nullable();
             /* FK */
-            $table->foreign     ('chk_cir_id')->references('cir_id')->on('circuits');
+            $table->foreign('chk_cir_id')->references('cir_id')->on('circuits');
         });
     }
 
@@ -25,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('checkpoints');
+        Schema::dropIfExists('checkpoints', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('checkpoints_chk_cir_id_foreign');
+        });
     }
 };

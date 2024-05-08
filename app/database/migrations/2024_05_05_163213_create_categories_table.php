@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id          ('cat_id');
-            $table->unsignedBigInteger     ('cat_esp_id');
-            $table->string      ('cat_nom',20);
+            $table->id                  ('cat_id');
+            $table->unsignedBigInteger  ('cat_esp_id');
+            $table->string              ('cat_nom',20);
             /* FK */
-            $table->foreign     ('cat_esp_id')->references('esp_id')->on('esports');
+            $table->foreign('cat_esp_id')->references('esp_id')->on('esports');
         });
     }
 
@@ -25,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('categories', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('categories_cat_esp_id_foreign');
+        });
     }
 };

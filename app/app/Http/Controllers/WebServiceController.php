@@ -11,6 +11,18 @@ use \Illuminate\Database\QueryException;
 class WebServiceController extends Controller
 {
 
+    private function validateNif($nif) {
+        if (strlen($nif) != 9)
+            return false;
+        return true;
+    }
+
+    private function validateNom($nom) {
+        if (strlen($nom) > 20 or strlen($nom) < 2)
+            return false;
+        return true;
+    }
+
     private function sendJsonCurses($curses,$status) {
         return response()->json([
             "curses" => $curses,
@@ -145,7 +157,61 @@ class WebServiceController extends Controller
             ];
             return $this->sendJsonInscriure($status);
         }
-        var_dump($json);
+        $decode = json_decode($json,true);
+
+        // Si no trae participant
+        if (!array_key_exists('participant',$decode)) {
+            $status = [
+                "code" => "401",
+                "description" => "Debe haber un participante con información válida."
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+
+        // Si no trae cursaId o la cursa no existe
+        if (!array_key_exists('cursaId',$decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0) {
+            $status = [
+                "code" => "402",
+                "description" => "Debe haber una cursa existente"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+        $cursaId = $decode['cursaId'];
+        $par = $decode['participant'];
+
+        // Si no trae nif valid
+        if (!array_key_exists('nif',$par) || !$this->validateNif($par['nif'])) {
+            $status = [
+                "code" => "403",
+                "description" => "Debe haber una cursa existente"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+
+        // Si no trae nif valid
+        if (!array_key_exists('nom',$par) || !$this->validateNom($par['nom'])) {
+            $status = [
+                "code" => "403",
+                "description" => "El nombre debe ser mayor de 2 y menos de 20 caracteres"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+
+        // var_dump(strlen($decode['cano']));
+
+        // $data = [
+        //     'nif' => $json['participant']['nif']
+        // ];
+
+        // $cursaId = "";
+        // $participant = new Participant;
+        // $participant->nif  = $nif;
+        // $participant->nom = $nom;
+        // $participant->cognoms = $cognoms;
+        // $participant->data_naixement = $data_naixement;
+        // $participant->telefon = $telefon;
+        // $participant->email = $email;
+        // $participant->es_federat = $es_federat;
 
     }
 }

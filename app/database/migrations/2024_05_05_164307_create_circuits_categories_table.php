@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('circuits_categories', function (Blueprint $table) {
-            $table->id          ('ccc_id');
-            $table->unsignedBigInteger     ('ccc_cir_id');
-            $table->unsignedBigInteger     ('ccc_cat_id');
+            $table->id                  ('ccc_id');
+            $table->unsignedBigInteger  ('ccc_cir_id');
+            $table->unsignedBigInteger  ('ccc_cat_id');
             /* FK y Index */
             $table->index(['ccc_cir_id','ccc_cat_id']);
-            $table->foreign     ('ccc_cir_id')->references('cur_id')->on('curses');
-            $table->foreign     ('ccc_cat_id')->references('cat_id')->on('categories');
+            $table->foreign('ccc_cir_id')->references('cur_id')->on('curses');
+            $table->foreign('ccc_cat_id')->references('cat_id')->on('categories');
         });
     }
 
@@ -27,6 +27,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('circuits_categories');
+        Schema::dropIfExists('circuits_categories', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('circuits_categories_ccc_cir_id_foreign');
+            $table->dropConstrainedForeignId('circuits_categories_ccc_cat_id_foreign');
+        });
     }
 };
