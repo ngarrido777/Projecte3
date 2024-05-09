@@ -134,6 +134,13 @@ class CreaciocursaController extends Controller
 
     public function filtrecurses()
     {
+        //Array amb els ultims camps del filtre
+        $last = array(
+            'l_nom' => '',
+            'l_data_inici' => '',
+            'l_esport' => '',
+            'l_estat' => ''
+        );
         //Carregar els esports per la view
         $esports = Esport::all();
         $esp_names = array(
@@ -158,6 +165,7 @@ class CreaciocursaController extends Controller
         {
             //Validar el nom
             $nom = $_POST["f_nom"];
+            $last["l_nom"] = $nom;
             if(strlen($nom) > 50 || strlen($nom) < 0)
             {
                 $error = 'La mida del nom no es correcte';
@@ -166,18 +174,22 @@ class CreaciocursaController extends Controller
                     'esports' => $esp_names,
                     'estats' => $est_names,
                     'curses' => $curses,
-                    'error' => $error
+                    'error' => $error,
+                    'last' => $last
                 ]);
             }
             //Aplicar filtre
             $query = Cursa::query();
             $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%');
+            $last["l_data_inici"] = $_POST['f_data_inici'];
             if ($_POST['f_data_inici'] != '') {
                 $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
             }
+            $last["l_esport"] = $_POST['f_esport'];
             if ($_POST['f_esport'] != '-1') {
                 $query->where('cur_esp_id', $_POST['f_esport']);
             }
+            $last["l_estat"] = $_POST['f_estat'];
             if ($_POST['f_estat'] != '-1') {
                 $query->where('cur_est_id', $_POST['f_estat']);
             }
@@ -189,7 +201,8 @@ class CreaciocursaController extends Controller
             'esports' => $esp_names,
             'estats' => $est_names,
             'curses' => $curses,
-            'error' => $error
+            'error' => $error,
+            'last' => $last
         ]);
     }
 }
