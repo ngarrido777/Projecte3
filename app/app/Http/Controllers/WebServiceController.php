@@ -11,6 +11,11 @@ use \Illuminate\Database\QueryException;
 class WebServiceController extends Controller
 {
 
+    /***************
+     * 
+     * Returns
+     * 
+     ***************/
     private function sendJsonCurses($curses,$status) {
         return response()->json([
             "curses" => $curses,
@@ -37,6 +42,13 @@ class WebServiceController extends Controller
         ]);
     }
 
+    /***************
+     * 
+     * Requests
+     * 
+     ***************/
+
+     // Obtiene todas las cursas
     public function getCurses($id = null) {
         $cursesArray = [];
         $status = [];
@@ -90,6 +102,7 @@ class WebServiceController extends Controller
         return $this->sendJsonCurses($cursesArray,$status);
     }
 
+    // obtiene todos los circuitos de una cursa
     public function getCircuits($id = null) {
         $circuitsArray = [];
         $status = [];
@@ -140,6 +153,8 @@ class WebServiceController extends Controller
         return $this->sendJsonCircuits($circuitsArray,$status);
     }
 
+    // Obtiene los datos de un participante, id cursa, id circuit e id circuit_categoria
+    // Inserta Participant e incripcio
     public function inscriure($json = null) {
         $decode = json_decode($json,true);
         // Si no trae un array
@@ -191,6 +206,23 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
+        $participant = new Participant;
+        $participant->nif = $par['nif'];
+        $participant->nom = $par['nom'];
+        $participant->cognoms = $par['cognoms'];
+        $participant->data_naixement = $par['data_naixement'];
+        $participant->telefon = $par['telefon'];
+        $participant->email = $par['email'];
+        $participant->es_federat = $par['es_federat'];
+        $participant->save();
+
+        $inscripcio = new Inscripcio;
+        $inscripcio->ins_par_id = $participant->id; // No creo que funcione pero buwno
+        $inscripcio->ins_data = "";
+        $inscripcio->ins_dorsal = "";
+        $inscripcio->ins_retirat = "";
+        $inscripcio->ins_bea_id = "";
+        $inscripcio->ins_bea_id = "";
 // TODO: insertar participant y lo demas
 
         // var_dump(strlen($decode['cano']));
@@ -224,12 +256,23 @@ class WebServiceController extends Controller
         // Si no trae los datos validos
         if (!array_key_exists('beaconId',$decode) || !is_numeric($decode['beaconId']) ||
             !array_key_exists('checkpointId',$decode) || !is_numeric($decode['checkpointId']) ||
-            !array_key_exists('time',$decode) || !$this->validateTime($decode['time'])) {
+            !array_key_exists('time',$decode)) {
             $status = [
                 "code" => "401",
                 "description" => "Debe haber un id de un beacon, id del checkpoint y un tiempo validos."
             ];
             return $this->sendJsonInscriure($status);
+        }
+
+        try {
+            $checkpoint = Checkpoint::where('chk_id','=',$decode['checkpointId'])->get();
+            $beacon = Beacon::where('ins_bea_id','=',$decode['beaconId'])->get();
+        } catch (QueryException $ex) {
+            $status = [
+                "code" => "403",
+                "description" => "Algo ha salido mal al obtener los datos"
+            ];
+            return $this->sendJsonCircuits([],$status);
         }
 
         $status = [
