@@ -23,6 +23,12 @@ class WebServiceController extends Controller
         return true;
     }
 
+    private function validateTime($time) {
+        // TODO
+        return true;
+    }
+    
+
     private function sendJsonCurses($curses,$status) {
         return response()->json([
             "curses" => $curses,
@@ -38,6 +44,12 @@ class WebServiceController extends Controller
     }
 
     private function sendJsonInscriure($status) {
+        return response()->json([
+            "status" => $status,
+        ]);
+    }
+
+    private function sendJsonParticipantCheckpoint($status) {
         return response()->json([
             "status" => $status,
         ]);
@@ -66,31 +78,28 @@ class WebServiceController extends Controller
         // Participantes inscritos -> Count(*) select inscrits where cursa id....
         // Participantes inscritos <= 
 
-        // Declarar json de curses i el status
-        if(!empty($curses)){
-            // Omplir el json amb les dades de la cursa
-            foreach ($curses as $cursa) {
-                $cursesArray[] = [
-                    "id" => $cursa->cur_id,
-                    "nom" => $cursa->cur_nom,
-                    "dataInici" => $cursa->cur_data_inici,
-                    "dataFi" => $cursa->cur_data_fi,
-                    "lloc" => $cursa->cur_lloc,
-                    "esport" => [
-                        "id" => $cursa->esport->esp_id,
-                        "nom" => $cursa->esport->esp_nom
-                    ],
-                    "estat" => [
-                        "id" => $cursa->estat->est_id,
-                        "nom" => $cursa->estat->est_nom
-                    ],
-                    "descripcio" => $cursa->cur_desc,
-                    "limit" => $cursa->cur_limit_inscr,
-                    "inscrits" => 3,  // TODO: contar inscritos
-                    "foto" => "foto", // TODO: foto real
-                    "web" => $cursa->cur_web
-                ];
-            }
+        // Omplir el json amb les dades de la cursa
+        foreach ($curses as $cursa) {
+            $cursesArray[] = [
+                "id" => $cursa->cur_id,
+                "nom" => $cursa->cur_nom,
+                "dataInici" => $cursa->cur_data_inici,
+                "dataFi" => $cursa->cur_data_fi,
+                "lloc" => $cursa->cur_lloc,
+                "esport" => [
+                    "id" => $cursa->esport->esp_id,
+                    "nom" => $cursa->esport->esp_nom
+                ],
+                "estat" => [
+                    "id" => $cursa->estat->est_id,
+                    "nom" => $cursa->estat->est_nom
+                ],
+                "descripcio" => $cursa->cur_desc,
+                "limit" => $cursa->cur_limit_inscr,
+                "inscrits" => 3,  // TODO: contar inscritos
+                "foto" => "foto", // TODO: foto real
+                "web" => $cursa->cur_web
+            ];
         }
         $status = [
             "code" => "200",
@@ -158,7 +167,14 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
         $decode = json_decode($json,true);
-
+        // Si no trae un array
+        if (!is_array($decode)) {
+            $status = [
+                "code" => "401",
+                "description" => "Por favor envía un array válido"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
         // Si no trae participant
         if (!array_key_exists('participant',$decode)) {
             $status = [
@@ -188,8 +204,9 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
-        // Si no trae nif valid
-        if (!array_key_exists('nom',$par) || !$this->validateNom($par['nom'])) {
+        // Si no trae nom o nif valid
+        if (!array_key_exists('nom',$par) || !$this->validateNom($par['nom']) ||
+            !array_key_exists('nif',$par) || !$this->validateNif($par['nif'])) {
             $status = [
                 "code" => "403",
                 "description" => "El nombre debe ser mayor de 2 y menos de 20 caracteres"
@@ -213,5 +230,33 @@ class WebServiceController extends Controller
         // $participant->email = $email;
         // $participant->es_federat = $es_federat;
 
+    }
+    
+    public function participantCheckpoint($json = null) {
+        $decode = json_decode($json,true);
+        // Si no viene array
+        if (!is_array($decode)) {
+            $status = [
+                "code" => "400",
+                "description" => "Necesitamos un array."
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+        // Si no trae los datos validos
+        if (!array_key_exists('beaconId',$decode) || !is_numerid($decode['beaconId']) ||
+            !array_key_exists('checkpointId',$decode) || !is_numerid($decode['checkpointId']) ||
+            !array_key_exists('time',$decode) || !validateTime($decode['time'])) {
+            $status = [
+                "code" => "401",
+                "description" => "Debe haber un id de un beacon, id del checkpoint y un tiempo validos."
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+        
+        $status = [
+            "code" => "200",
+            "description" => "Todo ok"
+        ];
+        return $this->sendJsonInscriure($status);
     }
 }
