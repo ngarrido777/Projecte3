@@ -12,6 +12,7 @@
         @csrf
         {{ Form::label('l_nom', 'Nom:') }}
         {{ Form::text('f_nom') }}
+        {{ Form::label(null, $error) }}
 
         {{ Form::label('l_datainici', 'Data Inici:') }}
         {{ Form::date('f_data_inici') }}
@@ -24,7 +25,8 @@
 
         {{ Form::submit('Cercar', ['name' => 'f_cercar']) }}
     {{ Form::close() }}
-
+        
+    {{ $error }}
     <table>
         <tbody>
             <tr>
