@@ -11,24 +11,6 @@ use \Illuminate\Database\QueryException;
 class WebServiceController extends Controller
 {
 
-    private function validateNif($nif) {
-        if (strlen($nif) != 9)
-            return false;
-        return true;
-    }
-
-    private function validateNom($nom) {
-        if (strlen($nom) > 20 or strlen($nom) < 2)
-            return false;
-        return true;
-    }
-
-    private function validateTime($time) {
-        // TODO
-        return true;
-    }
-    
-
     private function sendJsonCurses($curses,$status) {
         return response()->json([
             "curses" => $curses,
@@ -159,13 +141,6 @@ class WebServiceController extends Controller
     }
 
     public function inscriure($json = null) {
-        if (is_null($json)) {
-            $status = [
-                "code" => "400",
-                "description" => "Es necesario un parametro con los datos a insertar."
-            ];
-            return $this->sendJsonInscriure($status);
-        }
         $decode = json_decode($json,true);
         // Si no trae un array
         if (!is_array($decode)) {
@@ -184,8 +159,11 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
+        // TODO: Validar circuit y cccId
         // Si no trae cursaId o la cursa no existe
-        if (!array_key_exists('cursaId',$decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0) {
+        if (!array_key_exists('cursaId',$decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
+            !array_key_exists('circuitId',$decode) ||
+            !array_key_exists('cccId',$decode)) {
             $status = [
                 "code" => "402",
                 "description" => "Debe haber una cursa existente"
@@ -195,24 +173,25 @@ class WebServiceController extends Controller
         $cursaId = $decode['cursaId'];
         $par = $decode['participant'];
 
-        // Si no trae nif valid
-        if (!array_key_exists('nif',$par) || !$this->validateNif($par['nif'])) {
+        var_dump(strtotime(null));
+        var_dump(strtotime('18-01-2002'));
+
+        // Si el participante esta mal
+        if (!array_key_exists('nif',            $par) || strlen($par['nif']) != 9 ||
+            !array_key_exists('nom',            $par) || strlen($par['nom']) > 50 || strlen($par['nom']) < 2 ||
+            !array_key_exists('cognoms',        $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
+            !array_key_exists('data_naixement', $par) || !strtotime($par['data_naixement']) ||
+            !array_key_exists('telefon',        $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
+            !array_key_exists('email',          $par) || strlen($par['email']) > 200 || strlen($par['email']) < 10 ||
+            !array_key_exists('es_federat',     $par) || ($par['es_federat'] != 1 && $par['es_federat'] != 0 )) {
             $status = [
                 "code" => "403",
-                "description" => "Debe haber una cursa existente"
+                "description" => "Algún dato del participante no es correcto"
             ];
             return $this->sendJsonInscriure($status);
         }
 
-        // Si no trae nom o nif valid
-        if (!array_key_exists('nom',$par) || !$this->validateNom($par['nom']) ||
-            !array_key_exists('nif',$par) || !$this->validateNif($par['nif'])) {
-            $status = [
-                "code" => "403",
-                "description" => "El nombre debe ser mayor de 2 y menos de 20 caracteres"
-            ];
-            return $this->sendJsonInscriure($status);
-        }
+// TODO: insertar participant y lo demas
 
         // var_dump(strlen($decode['cano']));
 
@@ -243,16 +222,16 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
         // Si no trae los datos validos
-        if (!array_key_exists('beaconId',$decode) || !is_numerid($decode['beaconId']) ||
-            !array_key_exists('checkpointId',$decode) || !is_numerid($decode['checkpointId']) ||
-            !array_key_exists('time',$decode) || !validateTime($decode['time'])) {
+        if (!array_key_exists('beaconId',$decode) || !is_numeric($decode['beaconId']) ||
+            !array_key_exists('checkpointId',$decode) || !is_numeric($decode['checkpointId']) ||
+            !array_key_exists('time',$decode) || !$this->validateTime($decode['time'])) {
             $status = [
                 "code" => "401",
                 "description" => "Debe haber un id de un beacon, id del checkpoint y un tiempo validos."
             ];
             return $this->sendJsonInscriure($status);
         }
-        
+
         $status = [
             "code" => "200",
             "description" => "Todo ok"
@@ -260,3 +239,21 @@ class WebServiceController extends Controller
         return $this->sendJsonInscriure($status);
     }
 }
+
+
+/**
+ * REGISTRE DE CHECK
+ * Time
+ * 
+ * INSCRIPCION
+ * ELLOS
+ * par
+ * curId
+ * CirId 
+ *
+ * 
+ * Nosottros
+ * Beacon -> ya existe de antes
+ * Dorsal inventado
+ * 
+ */

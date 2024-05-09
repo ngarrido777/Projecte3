@@ -8,16 +8,28 @@ use DB;
 
 class BeaconsSeeder extends Seeder
 {
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('beacons')->insert([
-            ['bea_code' => 'bR1S7!Gc(BS!?%-uY/_K)Te!$m9j6b'],
-            ['bea_code' => '+M1N;3cvkMZ:fThS$[WnvH&{J2G9:$'],
-            ['bea_code' => 'y;AcyeqcMaCUB[K_+F:gCnJ&=;:v(4'],
-            ['bea_code' => 'LWtWL{j&m[8}e5G1iMZAywJyif};%h'],
-        ]);
+        $beacons = [];
+        for ($i=0; $i < 20000; $i++) { 
+            $code = $this->generateRandomString(30);
+            $beacons[] = [
+                'bea_code' => $code   
+            ];
+        }
+        DB::table('beacons')->insert($beacons);
     }
 }
