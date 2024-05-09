@@ -4,40 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filtre Curses</title>
+    <style>
+        .error {
+            display: block;
+            margin-bottom: 20px;
+
+            color: red;
+        }
+
+        .table{
+
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Totes les Curses</h1>
-    <h2>Carca la cursa</h2>
+    <h1 class="p-3">Totes les Curses</h1>
+    <h2 class="p-3">Cerca la cursa</h2>
     {{ Form::open(['url' => '/', 'method' => 'post']) }}
         @csrf
-        {{ Form::label('l_nom', 'Nom:') }}
-        {{ Form::text('f_nom') }}
-        {{ Form::label(null, $error) }}
+        <div class="d-flex justify-content-around p-3">
+            <div>    
+                {{ Form::label('l_nom', 'Nom:') }}
+                {{ Form::text('f_nom', $last['l_nom']) }}
+            </div>
+            <div>
+                {{ Form::label('l_datainici', 'Data Inici:') }}
+                {{ Form::date('f_data_inici', $last['l_data_inici']) }}
+            </div>
+            <div>
+                {{ Form::label('l_esport', 'Esport:') }}
+                {{ Form::select('f_esport', $esports, $last['l_esport']) }}
+            </div>
+            <div>
+                {{ Form::label('l_estat', 'Estat:') }}
+                {{ Form::select('f_estat', $estats, $last['l_estat']) }}
+            </div>
 
-        {{ Form::label('l_datainici', 'Data Inici:') }}
-        {{ Form::date('f_data_inici') }}
-
-        {{ Form::label('l_esport', 'Esport:') }}
-        {{ Form::select('f_esport', $esports) }}
-
-        {{ Form::label('l_estat', 'Estat:') }}
-        {{ Form::select('f_estat', $estats) }}
-
-        {{ Form::submit('Cercar', ['name' => 'f_cercar']) }}
+            {{ Form::submit('Cercar', ['name' => 'f_cercar']) }}
+        </div>
     {{ Form::close() }}
         
-    {{ $error }}
-    <table>
-        <tbody>
+    <span class="error">{{ $error }}</span>
+
+    <table class="table table-hover table-striped">
+        <thead>
             <tr>
-                <th>Nom</th>
-                <th>Data Inici</th>
-                <th>Data Fi</th>
-                <th>Lloc</th>
-                <th>Esport</th>
-                <th>Estat</th>
-                <th>Limit</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Data Inici</th>
+                <th scope="col">Data Fi</th>
+                <th scope="col">Lloc</th>
+                <th scope="col">Esport</th>
+                <th scope="col">Estat</th>
+                <th scope="col">Limit</th>
             </tr>
+        </thead>
+        <tbody>
             @foreach($curses as $cursa)
                 <tr>
                     <td>{{ $cursa->cur_nom }}</td>
