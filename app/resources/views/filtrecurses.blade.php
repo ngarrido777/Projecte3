@@ -12,8 +12,8 @@
             color: red;
         }
 
-        .table{
-
+        .hidden{
+            display: none;
         }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -57,6 +57,7 @@
                 <th scope="col">Esport</th>
                 <th scope="col">Estat</th>
                 <th scope="col">Limit</th>
+                <th scope="col">Modificar</th>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +70,11 @@
                     <td>{{ $cursa->esport->esp_nom }}</td>
                     <td>{{ $cursa->estat->est_nom }}</td>
                     <td>{{ $cursa->cur_limit_inscr }}</td>
+                    {{ Form::open(['url' => '/updatecurses', 'method' => 'post']) }}
+                        @csrf
+                        <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
+                        <td>{{ Form::submit('Modificar', ['name' => 'f_update']) }}</td>
+                    {{ Form::close() }}
                 </tr>
             @endforeach
         </tbody>
