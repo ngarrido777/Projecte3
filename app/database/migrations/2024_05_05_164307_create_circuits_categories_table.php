@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger  ('ccc_cat_id');
             /* FK y Index */
             $table->index(['ccc_cir_id','ccc_cat_id']);
-            $table->foreign('ccc_cir_id')->references('cur_id')->on('curses');
+            $table->foreign('ccc_cir_id')->references('cir_id')->on('circuits');
             $table->foreign('ccc_cat_id')->references('cat_id')->on('categories');
         });
     }

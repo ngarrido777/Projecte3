@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cursa;
+use App\Models\Beacon;
 use App\Models\Circuit;
+use App\Models\Registre;
 use App\Models\Checkpoint;
+use App\Models\Inscripcio;
+use App\Models\Participant;
+use App\Models\Circuit_categoria;
 use \Illuminate\Database\QueryException;
 
 class WebServiceController extends Controller
@@ -165,40 +170,33 @@ class WebServiceController extends Controller
             ];
             return $this->sendJsonInscriure($status);
         }
-        // Si no trae participant
-        if (!array_key_exists('participant',$decode)) {
-            $status = [
-                "code" => "401",
-                "description" => "Debe haber un participante con información válida."
-            ];
-            return $this->sendJsonInscriure($status);
-        }
 
         // TODO: Validar circuit y cccId
         // Si no trae cursaId o la cursa no existe
-        if (!array_key_exists('cursaId',$decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
-            !array_key_exists('circuitId',$decode) ||
-            !array_key_exists('cccId',$decode)) {
+        if (!array_key_exists('participant',$decode) ||
+            !array_key_exists('cursaId',    $decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
+            !array_key_exists('circuitId',  $decode) || !is_numeric('circuitId') ||
+            !array_key_exists('cccId',      $decode) || !is_numeric('cccId')) {
             $status = [
                 "code" => "402",
-                "description" => "Debe haber una cursa existente"
+                "description" => "Los datos no son válidos"
             ];
             return $this->sendJsonInscriure($status);
         }
         $cursaId = $decode['cursaId'];
+        $circuitId = $decode['circuitId'];
+        $cccId = $decode['cccId'];
         $par = $decode['participant'];
 
-        var_dump(strtotime(null));
-        var_dump(strtotime('18-01-2002'));
 
         // Si el participante esta mal
         if (!array_key_exists('nif',            $par) || strlen($par['nif']) != 9 ||
             !array_key_exists('nom',            $par) || strlen($par['nom']) > 50 || strlen($par['nom']) < 2 ||
             !array_key_exists('cognoms',        $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
-            !array_key_exists('data_naixement', $par) || !strtotime($par['data_naixement']) ||
+            !array_key_exists('dataNaixement',  $par) || !strtotime($par['dataNaixement']) ||
             !array_key_exists('telefon',        $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
             !array_key_exists('email',          $par) || strlen($par['email']) > 200 || strlen($par['email']) < 10 ||
-            !array_key_exists('es_federat',     $par) || ($par['es_federat'] != 1 && $par['es_federat'] != 0 )) {
+            !array_key_exists('esFederat',      $par) || ($par['esFederat'] != 1 && $par['esFederat'] != 0 )) {
             $status = [
                 "code" => "403",
                 "description" => "Algún dato del participante no es correcto"
@@ -210,37 +208,43 @@ class WebServiceController extends Controller
         $participant->nif = $par['nif'];
         $participant->nom = $par['nom'];
         $participant->cognoms = $par['cognoms'];
-        $participant->data_naixement = $par['data_naixement'];
+        $participant->data_naixement = date("Y-m-d", strtotime($par['dataNaixement']));  
         $participant->telefon = $par['telefon'];
         $participant->email = $par['email'];
-        $participant->es_federat = $par['es_federat'];
-        $participant->save();
+        $participant->es_federat = $par['esFederat'];
+        try {
+            $participant->save();
+        } catch (QueryException $ex) {
+            $status = [
+                "code" => "400",
+                "description" => "No se pudo insertar el participante"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
 
         $inscripcio = new Inscripcio;
-        $inscripcio->ins_par_id = $participant->id; // No creo que funcione pero buwno
-        $inscripcio->ins_data = "";
-        $inscripcio->ins_dorsal = "";
-        $inscripcio->ins_retirat = "";
-        $inscripcio->ins_bea_id = "";
-        $inscripcio->ins_bea_id = "";
-// TODO: insertar participant y lo demas
+        $inscripcio->ins_par_id = $participant->par_id;
+        $inscripcio->ins_data = date('Y-m-d');
+        $inscripcio->ins_dorsal = 314 + $participant->par_id;
+        $inscripcio->ins_retirat = 0;
+        $inscripcio->ins_bea_id = $participant->par_id; // no reutilizables por ahora
+        $inscripcio->ins_ccc_id = $cccId;
+        try {
+            $inscripcio->save();
+        } catch (QueryException $ex) {
+            $participant->delete();
+            $status = [
+                "code" => "400",
+                "description" => "No se pudo insertar la inscripcion"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
 
-        // var_dump(strlen($decode['cano']));
-
-        // $data = [
-        //     'nif' => $json['participant']['nif']
-        // ];
-
-        // $cursaId = "";
-        // $participant = new Participant;
-        // $participant->nif  = $nif;
-        // $participant->nom = $nom;
-        // $participant->cognoms = $cognoms;
-        // $participant->data_naixement = $data_naixement;
-        // $participant->telefon = $telefon;
-        // $participant->email = $email;
-        // $participant->es_federat = $es_federat;
-
+        $status = [
+            "code" => "200",
+            "description" => "Todo ok"
+        ];
+        return $this->sendJsonInscriure($status);
     }
     
     public function participantCheckpoint($json = null) {
@@ -251,52 +255,86 @@ class WebServiceController extends Controller
                 "code" => "400",
                 "description" => "Necesitamos un array."
             ];
-            return $this->sendJsonInscriure($status);
+            return $this->sendJsonParticipantCheckpoint($status);
         }
         // Si no trae los datos validos
-        if (!array_key_exists('beaconId',$decode) || !is_numeric($decode['beaconId']) ||
-            !array_key_exists('checkpointId',$decode) || !is_numeric($decode['checkpointId']) ||
-            !array_key_exists('time',$decode)) {
+        if (!array_key_exists('parId',$decode) || !is_numeric($decode['parId']) ||
+            !array_key_exists('cccId',$decode) || !is_numeric($decode['cccId']) ||
+            !array_key_exists('beaId',$decode) || !is_numeric($decode['beaId']) ||
+            !array_key_exists('chkId',$decode) || !is_numeric($decode['chkId']) ||
+            !array_key_exists('temps',$decode)) { // Hay que validar el tiempo
             $status = [
                 "code" => "401",
                 "description" => "Debe haber un id de un beacon, id del checkpoint y un tiempo validos."
             ];
-            return $this->sendJsonInscriure($status);
+            return $this->sendJsonParticipantCheckpoint($status);
         }
 
         try {
-            $checkpoint = Checkpoint::where('chk_id','=',$decode['checkpointId'])->get();
-            $beacon = Beacon::where('ins_bea_id','=',$decode['beaconId'])->get();
+            $par =       Participant::where('par_id','=',$decode['parId'])->get();
+            $ccc = Circuit_categoria::where('ccc_id','=',$decode['cccId'])->get();
+            $bea =            Beacon::where('bea_id','=',$decode['beaId'])->get();
+            $chk =        Checkpoint::where('chk_id','=',$decode['chkId'])->get();
         } catch (QueryException $ex) {
             $status = [
                 "code" => "403",
-                "description" => "Algo ha salido mal al obtener los datos"
+                "description" => "Algo ha salido mal al conectar con la base de datos"
             ];
-            return $this->sendJsonCircuits([],$status);
+            return $this->sendJsonParticipantCheckpoint($status);
+        }
+
+        if (count($par) == 0 ||
+            count($ccc) == 0 ||
+            count($bea) == 0 ||
+            count($chk) == 0) {
+            $status = [
+                "code" => "403",
+                "description" => "Alguno de los datos pasados no existen"
+            ];
+            return $this->sendJsonParticipantCheckpoint($status);
+        }
+
+        try {
+            $ins = Inscripcio::where('ins_par_id',$par[0]->par_id)
+                             ->where('ins_bea_id',$bea[0]->bea_id)  
+                             ->where('ins_ccc_id',$ccc[0]->ccc_id)
+                             ->get();
+        } catch (QueryException $ex) {
+            $status = [
+                "code" => "403",
+                "description" => "No se ha podido recuperar la inscripción"
+            ];
+            return $this->sendJsonParticipantCheckpoint($status);
+        }
+
+        if (count($ins) != 1) {
+            $status = [
+                "code" => "403",
+                "description" => "No existe una inscripción así"
+            ];
+            return $this->sendJsonParticipantCheckpoint($status);
+        }
+
+        $registre = new Registre;
+        $registre->reg_temps = date('Y-m-d');
+        $registre->reg_ins_id = $ins->ins_id;
+        $registre->reg_chk_id = $checkpoint->chk_id;
+
+        try {
+            $registre->save();
+        } catch (QueryException $ex) {
+            $participant->delete();
+            $status = [
+                "code" => "400",
+                "description" => "No se pudo registrar el registro"
+            ];
+            return $this->sendJsonInscriure($status);
         }
 
         $status = [
             "code" => "200",
             "description" => "Todo ok"
         ];
-        return $this->sendJsonInscriure($status);
+        return $this->sendJsonParticipantCheckpoint($status);
     }
 }
-
-
-/**
- * REGISTRE DE CHECK
- * Time
- * 
- * INSCRIPCION
- * ELLOS
- * par
- * curId
- * CirId 
- *
- * 
- * Nosottros
- * Beacon -> ya existe de antes
- * Dorsal inventado
- * 
- */
