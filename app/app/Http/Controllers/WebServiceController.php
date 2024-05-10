@@ -317,8 +317,8 @@ class WebServiceController extends Controller
 
         $registre = new Registre;
         $registre->reg_temps = date('Y-m-d');
-        $registre->reg_ins_id = $ins->ins_id;
-        $registre->reg_chk_id = $checkpoint->chk_id;
+        $registre->reg_ins_id = $ins[0]->ins_id;
+        $registre->reg_chk_id = $chk[0]->chk_id;
 
         try {
             $registre->save();
