@@ -55,6 +55,12 @@ class CreaciocursaController extends Controller
             //Validar data fi
             $data_fi = $_POST["c_data_fi"];
             $ultims_camps["l_data_fi"] = $data_fi;
+            //Validar data inici < data fi
+            if (!($data_inici < $data_fi))
+            {
+                $errors['e_data_fi'] = 'La data de inici ha de ser anterior a la data de fi';
+                $ok = false;
+            }
             //Validar lloc
             $lloc = $_POST["c_lloc"];
             $ultims_camps["l_lloc"] = $lloc;
@@ -94,7 +100,7 @@ class CreaciocursaController extends Controller
                     if($size)
                     {
                         $foto = base64_encode(file_get_contents($file->getRealPath()));
-                        $ultims_camps["l_foto"] = $file;
+                        //$ultims_camps["l_foto"] = $file;
                     }else
                     {
                         $errors['e_foto'] = 'Error en el format de la imatge';
