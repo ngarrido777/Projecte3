@@ -39,7 +39,7 @@
         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
 
         {{ Form::label('l_descripccio', 'Descripccio:') }}
-        {{ Form::text('c_descripccio', $ultims_camps['l_descripcio']) }}
+        {{ Form::text('c_descripccio', $ultims_camps['l_descripccio']) }}
         {{ Form::label(null, $errors['e_descripcio'], ['class' => 'error']) }}
 
         {{ Form::label('l_limit', 'Limit:') }}

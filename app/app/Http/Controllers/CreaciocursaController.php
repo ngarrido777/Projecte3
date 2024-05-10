@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Esport;
 use App\Models\Estat_cursa;
 use App\Models\Cursa;
+use \Illuminate\Database\QueryException;
 
 class CreaciocursaController extends Controller
 {
@@ -30,7 +31,7 @@ class CreaciocursaController extends Controller
             'l_data_fi' => '',
             'l_lloc' => '',
             'l_esport' => '',
-            'l_descripcio' => '',
+            'l_descripccio' => '',
             'l_limit' => '',
             'l_foto' => '',
             'l_web' => ''
@@ -87,8 +88,22 @@ class CreaciocursaController extends Controller
             //Validar imatge
             if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
                 $file = $request->file('c_foto');
-                $foto = base64_encode(file_get_contents($file->getRealPath()));
-                $ultims_camps["l_foto"] = $foto;
+                $size = getimagesize($file);
+                //Validar mida de la imatge sense codificar a base64
+                if($file->getSize() <= 5000000){
+                    if($size)
+                    {
+                        $foto = base64_encode(file_get_contents($file->getRealPath()));
+                        $ultims_camps["l_foto"] = $file;
+                    }else
+                    {
+                        $errors['e_foto'] = 'Error en el format de la imatge';
+                        $ok = false;
+                    }
+                }else{
+                    $errors['e_foto'] = 'Error en la mida de la imatge maxim 5M';
+                    $ok = false;
+                }
             }else{
                 $errors['e_foto'] = 'Error en carregar la imatge';
                 $ok = false;
@@ -115,7 +130,11 @@ class CreaciocursaController extends Controller
                 $cursa->cur_limit_inscr = $limit;
                 $cursa->cur_foto = $foto; 
                 $cursa->cur_web = $web;
-                $cursa->save();
+                try{
+                    $cursa->save();
+                }catch(QueryException $es){
+                    return $es->getMessage();
+                }
             }
         }
         //Carregar els esports per la view
