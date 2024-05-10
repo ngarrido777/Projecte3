@@ -175,8 +175,8 @@ class WebServiceController extends Controller
         // Si no trae cursaId o la cursa no existe
         if (!array_key_exists('participant',$decode) ||
             !array_key_exists('cursaId',    $decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
-            !array_key_exists('circuitId',  $decode) || !is_numeric('circuitId') ||
-            !array_key_exists('cccId',      $decode) || !is_numeric('cccId')) {
+            !array_key_exists('circuitId',  $decode) || !is_numeric($decode['circuitId']) ||
+            !array_key_exists('cccId',      $decode) || !is_numeric($decode['cccId'])) {
             $status = [
                 "code" => "402",
                 "description" => "Los datos no son válidos"
