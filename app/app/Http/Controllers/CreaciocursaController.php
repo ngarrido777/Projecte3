@@ -230,4 +230,20 @@ class CreaciocursaController extends Controller
             'last' => $last
         ]);
     }
+
+    public function updatecurses()
+    {
+        //Post del boto de modificar
+        if(isset($_POST["f_update"])){
+            $id_cursa = $_POST["up_cur_id"];
+
+            $cursa = Cursa::where('cur_id', $id_cursa)->first();
+
+            return view('updatecurses', [
+                'cursa' => $cursa
+            ]);
+        }
+
+        return "No";
+    }
 }
