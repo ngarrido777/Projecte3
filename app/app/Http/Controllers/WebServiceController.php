@@ -25,7 +25,7 @@ class WebServiceController extends Controller
         return response()->json([
             "curses" => $curses,
             "status" => $status,
-        ]);
+        ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
     }
 
     private function sendJsonCircuits($circuits,$status) {
@@ -58,12 +58,20 @@ class WebServiceController extends Controller
         $cursesArray = [];
         $status = [];
         
+        if (!is_numeric($id) && !is_null($id)) {
+            $status = [
+                "code" => "4030",
+                "description" => "El parametro debe ser numérico o vacío"
+            ];
+            return $this->sendJsonCurses([],$status);
+        }
+
         try {
             // Comprueba el parámetro y obtiene todas o una
             if (is_null($id)) {
                 $curses = Cursa::with('esport', 'estat')->orderBy('cur_est_id')->get();
             } else {
-                $curses = Cursa::with('esport', 'estat')->where('cur_id','=',$id)->orderBy('cur_est_id')->get();
+                $curses = Cursa::with('esport', 'estat')->where('cur_id',$id)->get();
             }
         } catch (QueryException $ex) {
             $status = [
@@ -100,6 +108,7 @@ class WebServiceController extends Controller
                 "web" => $cursa->cur_web
             ];
         }
+        
         $status = [
             "code" => "200",
             "description" => "Ok"
@@ -140,6 +149,13 @@ class WebServiceController extends Controller
                 ];
             }
 
+            $categories = Circuit_Categoria::where('ccc_cir_id',$circuit->cir_id)->get();
+
+
+            $cats = [];
+            foreach ($categories as $key => $value) {
+                $cats[] = $value->categoria->cat_nom;
+            }
             $circuitsArray[] = [
                 "id" => $circuit->cir_id,
                 "cursaId" => $circuit->cir_cur_id,
@@ -149,6 +165,7 @@ class WebServiceController extends Controller
                 "preu" => $circuit->cir_preu,
                 "temps" => $circuit->cir_temps_estimat,
                 "checkpoints" => $checkpointsArray,
+                "categories" => $cats
             ];
         }
         $status = [
@@ -224,7 +241,7 @@ class WebServiceController extends Controller
 
         $inscripcio = new Inscripcio;
         $inscripcio->ins_par_id = $participant->par_id;
-        $inscripcio->ins_data = date('Y-m-d');
+        $inscripcio->ins_data = date('Y-m-d'); 
         $inscripcio->ins_dorsal = 314 + $participant->par_id;
         $inscripcio->ins_retirat = 0;
         $inscripcio->ins_bea_id = $participant->par_id; // no reutilizables por ahora
