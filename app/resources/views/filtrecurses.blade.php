@@ -15,6 +15,10 @@
         .hidden{
             display: none;
         }
+
+        img {
+            width: 70px;
+        }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -50,32 +54,40 @@
     <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <th scope="col">Nom</th>
-                <th scope="col">Data Inici</th>
-                <th scope="col">Data Fi</th>
-                <th scope="col">Lloc</th>
-                <th scope="col">Esport</th>
-                <th scope="col">Estat</th>
-                <th scope="col">Limit</th>
-                <th scope="col">Modificar</th>
+                <th scope="col" class="text-center">Image</th>
+                <th scope="col" class="text-center">Nom</th>
+                <th scope="col" class="text-center">Data Inici</th>
+                <th scope="col" class="text-center">Data Fi</th>
+                <th scope="col" class="text-center">Lloc</th>
+                <th scope="col" class="text-center">Esport</th>
+                <th scope="col" class="text-center">Estat</th>
+                <th scope="col" class="text-center">Limit</th>
+                <th scope="col" class="text-center">Modificar</th>
             </tr>
         </thead>
         <tbody>
             @foreach($curses as $cursa)
                 <tr>
-                    <td>{{ $cursa->cur_nom }}</td>
-                    <td>{{ $cursa->cur_data_inici }}</td>
-                    <td>{{ $cursa->cur_data_fi }}</td>
-                    <td>{{ $cursa->cur_lloc }}</td>
-                    <td>{{ $cursa->esport->esp_nom }}</td>
-                    <td>{{ $cursa->estat->est_nom }}</td>
-                    <td>{{ $cursa->cur_limit_inscr }}</td>
-                    {{ Form::open(['url' => '/updatecurses', 'method' => 'post']) }}
+                    <td class="text-center align-middle"><img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' /></td>
+                    <td class="text-center align-middle">{{ $cursa->cur_nom }}</td>
+                    <td class="text-center align-middle">{{ $cursa->cur_data_inici }}</td>
+                    <td class="text-center align-middle">{{ $cursa->cur_data_fi }}</td>
+                    <td class="text-center align-middle">{{ $cursa->cur_lloc }}</td>
+                    <td class="text-center align-middle">{{ $cursa->esport->esp_nom }}</td>
+                    <td class="text-center align-middle">{{ $cursa->estat->est_nom }}</td>
+                    <td class="text-center align-middle">{{ $cursa->cur_limit_inscr }}</td>
+                    {{ Form::open(['url' => '/updatecurses/' . $cursa->cur_id, 'method' => 'post']) }}
                         @csrf
                         <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                        <td>{{ Form::submit('Modificar', ['name' => 'f_update']) }}</td>
+                        <td class="text-center align-middle">{{ Form::submit('Modificar', ['name' => 'f_update']) }}</td>
                     {{ Form::close() }}
                 </tr>
+            @endforeach
+            @foreach($bea as $b)
+                <tr>
+                    <td class="text-center align-middle">{{ $b->bea_id }}</td>
+                    <td class="text-center align-middle">{{ $b->bea_code }}</td>
+                </tr>   
             @endforeach
         </tbody>
 
