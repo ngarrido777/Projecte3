@@ -8,6 +8,25 @@
 </head>
 <body>
     <h1 class="p-3">Actualitzar Cursa</h1>
+    <label>Nom:</label>
     <label>{{ $cursa->cur_nom }}</lavel>
+
+    <label>Data Inici:</label>
+    <label>{{ $cursa->cur_data_inici }}</lavel>
+
+    <label>Data Fi:</label>
+    <label>{{ $cursa->cur_data_fi }}</lavel>
+    
+    <label>Lloc:</label>
+    <label>{{ $cursa->cur_lloc }}</lavel>
+
+    <label>Esport:</label>
+    <label></label>
+
+    <label>Estat:</label>
+    <label></label>
+
+    <label>Imatge:</label>
+    <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' />
 </body>
 </html>
