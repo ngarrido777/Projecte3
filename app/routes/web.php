@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InscripcioController;
 use App\Http\Controllers\CreaciocursaController;
 
 /*
@@ -14,7 +15,9 @@ use App\Http\Controllers\CreaciocursaController;
 |
 */
 
-Route::match(['post', 'get'], '/', [CreaciocursaController::class, 'filtrecurses']) -> name('filtrecurses');
-Route::match(['post', 'get'], '/creaciocurses', [CreaciocursaController::class, 'creaciocurses']) -> name('creaciocurses');
-Route::match(['post', 'get'], '/updatecurses/{id}', [CreaciocursaController::class, 'updatecurses']) -> name('updatecurses');
+Route::match(['post', 'get'], '/',                  [CreaciocursaController::class, 'filtrecurses'])  -> name('filtrecurses');
+Route::match(['post', 'get'], '/filtrecurses',      [CreaciocursaController::class, 'filtrecurses'])  -> name('filtrecurses');
+Route::match(['post', 'get'], '/creaciocurses',     [CreaciocursaController::class, 'creaciocurses']) -> name('creaciocurses');
+Route::match(['post', 'get'], '/updatecurses/{id}', [CreaciocursaController::class, 'updatecurses'])  -> name('updatecurses');
+Route::match(['post', 'get'], '/inscriure/{id}',    [InscripcioController::class,   'inscriure'])     -> name('inscriure');
 // Route::post('/updatecurses', [CreaciocursaController::class, 'updatecurses']) -> name('updatecurses');

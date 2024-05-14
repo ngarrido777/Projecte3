@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('curses', function (Blueprint $table) {
             $table->id                  ('cur_id');
-            $table->string              ('cur_nom', 20);
+            $table->string              ('cur_nom', 50);
             $table->date                ('cur_data_inici');
             $table->date                ('cur_data_fi');
             $table->string              ('cur_lloc', 20);
@@ -23,10 +23,10 @@ return new class extends Migration
             $table->integer             ('cur_limit_inscr');
             $table->string              ('cur_web', 20)->nullable();
             /* FK y Index */
-            $table->index('cur_esp_id');
-            $table->foreign('cur_esp_id')->references('esp_id')->on('esports');
-            $table->index('cur_est_id');
-            $table->foreign('cur_est_id')->references('est_id')->on('estats_cursa');
+            $table->index   ('cur_esp_id');
+            $table->foreign ('cur_esp_id')->references('esp_id')->on('esports');
+            $table->index   ('cur_est_id');
+            $table->foreign ('cur_est_id')->references('est_id')->on('estats_cursa');
         });
         
         DB::statement("ALTER TABLE curses ADD cur_foto LONGBLOB");
