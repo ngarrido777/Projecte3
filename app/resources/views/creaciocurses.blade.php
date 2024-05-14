@@ -38,7 +38,7 @@
         {{ Form::select('c_esport', $esports, $ultims_camps['l_esport']) }}
         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
 
-        {{ Form::label('l_descripccio', 'Descripccio:') }}
+        {{ Form::label('l_descripccio', '*Descripccio:') }}
         {{ Form::text('c_descripccio', $ultims_camps['l_descripccio']) }}
         {{ Form::label(null, $errors['e_descripcio'], ['class' => 'error']) }}
 
@@ -50,7 +50,7 @@
         {{ Form::file('c_foto', ['accept' => '.png , .jpg']) }}
         {{ Form::label(null, $errors['e_foto'], ['class' => 'error']) }}
         
-        {{ Form::label('l_web', 'Web:') }}
+        {{ Form::label('l_web', '*Web:') }}
         {{ Form::text('c_web', $ultims_camps['l_web']) }}
         {{ Form::label(null, $errors['e_web'], ['class' => 'error']) }}
 

@@ -10,6 +10,94 @@ use \Illuminate\Database\QueryException;
 
 class CreaciocursaController extends Controller
 {
+    public function validar($ok, $errors, $ultims_camps, $request)
+    {
+        //Validar les dades de la cursa
+        //Validar nom
+        $nom = $_POST["c_nom"];
+        $ultims_camps["l_nom"] = $nom;
+        if(strlen($nom) > 50 || strlen($nom) <= 0)
+        {
+            $errors['e_nom'] = 'La mida del nom no es correcte';
+            $ok = false;
+        }
+        //Validar data inici
+        $data_inici = $_POST["c_data_inici"];
+        $ultims_camps["l_data_inici"] = $data_inici;
+        //Validar data fi
+        $data_fi = $_POST["c_data_fi"];
+        $ultims_camps["l_data_fi"] = $data_fi;
+        //Validar data inici < data fi
+        if (!($data_inici < $data_fi))
+        {
+            $errors['e_data_fi'] = 'La data de inici ha de ser anterior a la data de fi';
+            $ok = false;
+        }
+        //Validar lloc
+        $lloc = $_POST["c_lloc"];
+        $ultims_camps["l_lloc"] = $lloc;
+        if(strlen($lloc) > 20 || strlen($lloc) <= 0)
+        {
+            $errors['e_lloc'] = 'La mida del lloc no es correcte';
+            $ok = false;
+        }
+        //Validar esport
+        $id_esport = $_POST["c_esport"];
+        $ultims_camps["l_esport"] = $id_esport;
+        $esport = Esport::where('esp_id', $id_esport)->first();
+        //Crear l'estat de la cursa
+        $estat = Estat_cursa::where('est_id', 1)->first();
+        //Validar descripccio
+        $descripccio = $_POST["c_descripccio"];
+        $ultims_camps["l_descripccio"] = $descripccio;
+        if(strlen($descripccio) > 1000)
+        {
+            $errors['e_descripccio'] = 'La mida de la descripccio no es correcte';
+            $ok = false;
+        }
+        //Validar limit inscrits
+        $limit = $_POST["c_limit"];
+        $ultims_camps["l_limit"] = $limit;
+        if(!is_numeric($limit))
+        {
+            $errors['e_limit'] = 'El limit ha de ser numeric';
+            $ok = false;
+        }
+        //Validar imatge
+        if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
+            $file = $request->file('c_foto');
+            $size = getimagesize($file);
+            //Validar mida de la imatge sense codificar a base64
+            if($file->getSize() <= 5000000){
+                if($size)
+                {
+                    $foto = base64_encode(file_get_contents($file->getRealPath()));
+                    //$ultims_camps["l_foto"] = $file;
+                }else
+                {
+                    $errors['e_foto'] = 'Error en el format de la imatge';
+                    $ok = false;
+                }
+            }else{
+                $errors['e_foto'] = 'Error en la mida de la imatge maxim 5M';
+                $ok = false;
+            }
+        }else{
+            $errors['e_foto'] = 'Error en carregar la imatge';
+            $ok = false;
+        }
+        //Validar web
+        $web = $_POST["c_web"];
+        $ultims_camps["l_web"] = $web;
+        if(strlen($web) > 200)
+        {
+            $errors['e_web'] = 'La mida de la web no es correcte';
+            $ok = false;
+        }
+
+        return array($ok, $errors, $ultims_camps);
+    }
+
     public function creaciocurses(Request $request)
     {
         $ok = true;
@@ -40,88 +128,11 @@ class CreaciocursaController extends Controller
         //Tractament del post
         if(isset($_POST["c_crear"]))
         {
-            //Validar les dades de la cursa
-            //Validar nom
-            $nom = $_POST["c_nom"];
-            $ultims_camps["l_nom"] = $nom;
-            if(strlen($nom) > 50 || strlen($nom) <= 0)
-            {
-                $errors['e_nom'] = 'La mida del nom no es correcte';
-                $ok = false;
-            }
-            //Validar data inici
-            $data_inici = $_POST["c_data_inici"];
-            $ultims_camps["l_data_inici"] = $data_inici;
-            //Validar data fi
-            $data_fi = $_POST["c_data_fi"];
-            $ultims_camps["l_data_fi"] = $data_fi;
-            //Validar data inici < data fi
-            if (!($data_inici < $data_fi))
-            {
-                $errors['e_data_fi'] = 'La data de inici ha de ser anterior a la data de fi';
-                $ok = false;
-            }
-            //Validar lloc
-            $lloc = $_POST["c_lloc"];
-            $ultims_camps["l_lloc"] = $lloc;
-            if(strlen($lloc) > 20 || strlen($lloc) <= 0)
-            {
-                $errors['e_lloc'] = 'La mida del lloc no es correcte';
-                $ok = false;
-            }
-            //Validar esport
-            $id_esport = $_POST["c_esport"];
-            $ultims_camps["l_esport"] = $id_esport;
-            $esport = Esport::where('esp_id', $id_esport)->first();
-            //Crear l'estat de la cursa
-            $estat = Estat_cursa::where('est_id', 1)->first();
-            //Validar descripccio
-            $descripccio = $_POST["c_descripccio"];
-            $ultims_camps["l_descripccio"] = $descripccio;
-            if(strlen($descripccio) > 1000)
-            {
-                $errors['e_descripccio'] = 'La mida de la descripccio no es correcte';
-                $ok = false;
-            }
-            //Validar limit inscrits
-            $limit = $_POST["c_limit"];
-            $ultims_camps["l_limit"] = $limit;
-            if(!is_numeric($limit))
-            {
-                $errors['e_limit'] = 'El limit ha de ser numeric';
-                $ok = false;
-            }
-            //Validar imatge
-            if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
-                $file = $request->file('c_foto');
-                $size = getimagesize($file);
-                //Validar mida de la imatge sense codificar a base64
-                if($file->getSize() <= 5000000){
-                    if($size)
-                    {
-                        $foto = base64_encode(file_get_contents($file->getRealPath()));
-                        //$ultims_camps["l_foto"] = $file;
-                    }else
-                    {
-                        $errors['e_foto'] = 'Error en el format de la imatge';
-                        $ok = false;
-                    }
-                }else{
-                    $errors['e_foto'] = 'Error en la mida de la imatge maxim 5M';
-                    $ok = false;
-                }
-            }else{
-                $errors['e_foto'] = 'Error en carregar la imatge';
-                $ok = false;
-            }
-            //Validar web
-            $web = $_POST["c_web"];
-            $ultims_camps["l_web"] = $web;
-            if(strlen($web) > 200)
-            {
-                $errors['e_web'] = 'La mida de la web no es correcte';
-                $ok = false;
-            }
+            //Cridar funccio validar
+            $array = $this->validar($ok, $errors, $ultims_camps, $request);
+            $ok = $array[0];
+            $errors = $array[1];
+            $ultims_camps = $array[2];
 
             if($ok)
             {
@@ -243,9 +254,42 @@ class CreaciocursaController extends Controller
 
     public function updatecurses($id)
     {
+        $ok = true;
+        //Array de errors
+        $errors = array(
+            'e_nom' => '',
+            'e_data_inici' => '',
+            'e_data_fi' => '',
+            'e_lloc' => '',
+            'e_esport' => '',
+            'e_estat' => '',
+            'e_descripcio' => '',
+            'e_limit' => '',
+            'e_foto' => '',
+            'e_web' => ''
+        );
+        //Agafar la cursa per l'id
         $cursa = Cursa::where('cur_id', $id)->first();
+        //Carregar els esports per la view
+        $esports = Esport::all();
+        $esp_names = array();
+        foreach ($esports as $key => $e) {
+            $esp_names[$e->esp_id] = $e->esp_nom;
+        }
+        //Carregar els estats per la view
+        $estats = Estat_cursa::all();
+        $est_names = array();
+        foreach ($estats as $key => $e) {
+            $est_names[$e->est_id] = $e->est_nom;
+        }
+
+        
+        
         return view('updatecurses', [
-            'cursa' => $cursa
+            'cursa' => $cursa,
+            'esports' => $esp_names,
+            'estats' => $est_names,
+            'errors' => $errors
         ]);
     }
 }
