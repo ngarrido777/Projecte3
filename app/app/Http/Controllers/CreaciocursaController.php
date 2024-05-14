@@ -64,6 +64,7 @@ class CreaciocursaController extends Controller
             $ok = false;
         }
         //Validar imatge
+        $foto = null;
         if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
             $file = $request->file('c_foto');
             $size = getimagesize($file);
@@ -94,8 +95,8 @@ class CreaciocursaController extends Controller
             $errors['e_web'] = 'La mida de la web no es correcte';
             $ok = false;
         }
-
-        return array($ok, $errors, $ultims_camps);
+        $dades = array($nom, $data_inici, $data_fi, $lloc, $esport, $estat, $descripccio, $limit, $foto, $web);
+        return array($ok, $errors, $ultims_camps, $dades);
     }
 
     public function creaciocurses(Request $request)
@@ -133,20 +134,21 @@ class CreaciocursaController extends Controller
             $ok = $array[0];
             $errors = $array[1];
             $ultims_camps = $array[2];
+            $dades = $array[3];
 
             if($ok)
             {
                 $cursa = new Cursa();
-                $cursa->cur_nom = $nom;
-                $cursa->cur_data_inici = $data_inici;
-                $cursa->cur_data_fi = $data_fi;
-                $cursa->cur_lloc = $lloc;
-                $cursa->cur_esp_id = $esport->esp_id;
-                $cursa->cur_est_id = $estat->est_id;
-                $cursa->cur_desc = $descripccio;
-                $cursa->cur_limit_inscr = $limit;
-                $cursa->cur_foto = $foto; 
-                $cursa->cur_web = $web;
+                $cursa->cur_nom = $dades[0];
+                $cursa->cur_data_inici = $dades[1];
+                $cursa->cur_data_fi = $dades[2];
+                $cursa->cur_lloc = $dades[3];
+                $cursa->cur_esp_id = $dades[4]->esp_id;
+                $cursa->cur_est_id = $dades[5]->est_id;
+                $cursa->cur_desc = $dades[6];
+                $cursa->cur_limit_inscr = $dades[7];
+                $cursa->cur_foto = $dades[8]; 
+                $cursa->cur_web = $dades[9];
                 try{
                     $cursa->save();
                 }catch(QueryException $es){
@@ -252,7 +254,7 @@ class CreaciocursaController extends Controller
         ]);
     }
 
-    public function updatecurses($id)
+    public function updatecurses(Request $request, $id)
     {
         $ok = true;
         //Array de errors
@@ -267,6 +269,18 @@ class CreaciocursaController extends Controller
             'e_limit' => '',
             'e_foto' => '',
             'e_web' => ''
+        );
+        //Array ultims camps
+        $ultims_camps = array(
+            'l_nom' => '',
+            'l_data_inici' => '',
+            'l_data_fi' => '',
+            'l_lloc' => '',
+            'l_esport' => '',
+            'l_descripccio' => '',
+            'l_limit' => '',
+            'l_foto' => '',
+            'l_web' => ''
         );
         //Agafar la cursa per l'id
         $cursa = Cursa::where('cur_id', $id)->first();
@@ -283,7 +297,35 @@ class CreaciocursaController extends Controller
             $est_names[$e->est_id] = $e->est_nom;
         }
 
-        
+        if (isset($_POST["c_update"])) {
+            //Cridar funccio validar
+            $array = $this->validar($ok, $errors, $ultims_camps, $request);
+            $ok = $array[0];
+            $errors = $array[1];
+            $ultims_camps = $array[2];
+            $dades = $array[3];
+
+            if($ok)
+            {
+                $cursa->cur_nom = $dades[0];
+                $cursa->cur_data_inici = $dades[1];
+                $cursa->cur_data_fi = $dades[2];
+                $cursa->cur_lloc = $dades[3];
+                $cursa->cur_esp_id = $dades[4]->esp_id;
+                $cursa->cur_est_id = $dades[5]->est_id;
+                $cursa->cur_desc = $dades[6];
+                $cursa->cur_limit_inscr = $dades[7];
+                $cursa->cur_foto = $dades[8]; 
+                $cursa->cur_web = $dades[9];
+                try{
+                    $cursa->save();
+                }catch(QueryException $es){
+                    return $es->getMessage();
+                }
+                
+                return redirect()->route('filtrecurses');
+            }
+        }
         
         return view('updatecurses', [
             'cursa' => $cursa,
