@@ -10,7 +10,12 @@
             crossorigin="anonymous">
     </head>
     <body>
-        <p class="h2">Inscripció a {{ $cursa->cur_nom }}</p>
+        <div>
+            <p class="h2">Inscripció a {{ $cursa->cur_nom }}</p>
+            <div>
+                <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' />
+            </div>
+        </div>
         {{ Form::open(['method' => 'post']) }}
             @csrf
             <div>
