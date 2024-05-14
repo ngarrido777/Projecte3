@@ -12,6 +12,7 @@ class CreaciocursaController extends Controller
 {
     public function creaciocurses(Request $request)
     {
+        $ok = true;
         //Array de errors
         $errors = array(
             'e_nom' => '',
@@ -39,7 +40,6 @@ class CreaciocursaController extends Controller
         //Tractament del post
         if(isset($_POST["c_crear"]))
         {
-            $ok = true;
             //Validar les dades de la cursa
             //Validar nom
             $nom = $_POST["c_nom"];
@@ -78,7 +78,7 @@ class CreaciocursaController extends Controller
             //Validar descripccio
             $descripccio = $_POST["c_descripccio"];
             $ultims_camps["l_descripccio"] = $descripccio;
-            if(strlen($descripccio) > 1000 || strlen($descripccio) <= 0)
+            if(strlen($descripccio) > 1000)
             {
                 $errors['e_descripccio'] = 'La mida de la descripccio no es correcte';
                 $ok = false;
@@ -117,7 +117,7 @@ class CreaciocursaController extends Controller
             //Validar web
             $web = $_POST["c_web"];
             $ultims_camps["l_web"] = $web;
-            if(strlen($web) > 200 || strlen($web) <= 0)
+            if(strlen($web) > 200)
             {
                 $errors['e_web'] = 'La mida de la web no es correcte';
                 $ok = false;
@@ -141,6 +141,15 @@ class CreaciocursaController extends Controller
                 }catch(QueryException $es){
                     return $es->getMessage();
                 }
+
+                $ultims_camps["l_nom"] = '';
+                $ultims_camps["l_data_inici"] = '';
+                $ultims_camps["l_data_fi"] = '';
+                $ultims_camps["l_lloc"] = '';
+                $ultims_camps["l_esport"] = '';
+                $ultims_camps["l_descripccio"] = '';
+                $ultims_camps["l_limit"] = '';
+                $ultims_camps["l_web"] = '';
             }
         }
         //Carregar els esports per la view
@@ -153,7 +162,8 @@ class CreaciocursaController extends Controller
         return view('creaciocurses', [
             'esports' => $esp_names,
             'errors' => $errors,
-            'ultims_camps' => $ultims_camps
+            'ultims_camps' => $ultims_camps,
+            'ok' => $ok
         ]);
     }
 
@@ -233,9 +243,6 @@ class CreaciocursaController extends Controller
 
     public function updatecurses($id)
     {
-        //Post del boto de modificar
-
-
         $cursa = Cursa::where('cur_id', $id)->first();
         return view('updatecurses', [
             'cursa' => $cursa

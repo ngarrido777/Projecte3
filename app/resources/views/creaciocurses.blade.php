@@ -55,6 +55,11 @@
         {{ Form::label(null, $errors['e_web'], ['class' => 'error']) }}
 
         {{ Form::submit('Crear', ['name' => 'c_crear']) }}
+
+        @if($ok)
+           {{ Form::label('l_creada', 'Cursa creada correctament !') }}
+        @endif
+
     {{ Form::close() }}
 </body>
 </html>

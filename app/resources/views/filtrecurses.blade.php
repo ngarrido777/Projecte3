@@ -83,12 +83,6 @@
                     {{ Form::close() }}
                 </tr>
             @endforeach
-            @foreach($bea as $b)
-                <tr>
-                    <td class="text-center align-middle">{{ $b->bea_id }}</td>
-                    <td class="text-center align-middle">{{ $b->bea_code }}</td>
-                </tr>   
-            @endforeach
         </tbody>
 
     </table>
