@@ -284,7 +284,7 @@ class CreaciocursaController extends Controller
         );
         //Agafar la cursa per l'id
         $cursa = Cursa::where('cur_id', $id)->first();
-        if(count($cursa) == 0){
+        if($cursa == null){
             return redirect()->route('filtrecurses');
         }
         //Carregar els esports per la view
