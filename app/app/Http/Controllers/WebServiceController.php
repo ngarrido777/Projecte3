@@ -126,7 +126,7 @@ class WebServiceController extends Controller
             if (is_null($id)) {
                 $circuits = Circuit::get();
             } else {
-                $circuits = Circuit::where('cir_id','=',$id)->get();
+                $circuits = Circuit::where('cir_cur_id','=',$id)->get();
             }
         } catch (QueryException $ex) {
             $status = [
@@ -333,7 +333,8 @@ class WebServiceController extends Controller
         }
 
         $registre = new Registre;
-        $registre->reg_temps = date('Y-m-d');
+        $registre->reg_temps =
+            (strtotime($decode['temps']) ? date("Y-m-d", strtotime($decode['temps'])) : date("Y-m-d"));
         $registre->reg_ins_id = $ins[0]->ins_id;
         $registre->reg_chk_id = $chk[0]->chk_id;
 
