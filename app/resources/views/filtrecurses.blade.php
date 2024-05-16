@@ -23,7 +23,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-    <h1 class="p-3">Totes les Curses</h1>
+    <div>
+        <h1 class="p-3">Totes les Curses</h1>
+        @if ($usu == null)
+            {{ Form::open(['url' => '/login', 'method' => 'post']) }}
+                @csrf
+                <td>{{ Form::submit('Login', ['name' => 'f_login']) }}</td>
+            {{ Form::close() }}
+        @else 
+            {{ Form::open(['url' => '/logeout', 'method' => 'post']) }}
+                @csrf
+                <td>{{ Form::submit('Logeout', ['name' => 'f_logeout']) }}</td>
+            {{ Form::close() }}
+        @endif
+    </div>
     <h2 class="p-3">Cerca la cursa</h2>
     {{ Form::open(['url' => '/', 'method' => 'post']) }}
         @csrf
@@ -62,11 +75,12 @@
                 <th scope="col" class="text-center">Esport</th>
                 <th scope="col" class="text-center">Estat</th>
                 <th scope="col" class="text-center">Limit</th>
-                @if ($es_admin)
-                    <th scope="col" class="text-center">Modificar</th>
-                @else 
+                @if (is_null($usu) || !$usu->usr_admin)
                     <th scope="col" class="text-center">Veure</th>
+                @else
+                    <th scope="col" class="text-center">Modificar</th>
                 @endif
+                
             </tr>
         </thead>
         <tbody>
