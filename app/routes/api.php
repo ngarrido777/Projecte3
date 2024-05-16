@@ -21,5 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Rutas de todos los Web Services
 Route::get('getCurses/{id?}',   [WebServiceController::class, 'getCurses']);
 Route::get('getCircuits/{id?}', [WebServiceController::class, 'getCircuits']);
-Route::get('inscriure/{json?}',  [WebServiceController::class, 'inscriure']);
+Route::get('inscriure/{json?}', [WebServiceController::class, 'inscriure']);
 Route::get('participantCheckpoint/{json?}',  [WebServiceController::class, 'participantCheckpoint']);
+Route::post('getCircuitsCursaCategoria',     [WebServiceController::class, 'getCircuitsCursaCategoria']);

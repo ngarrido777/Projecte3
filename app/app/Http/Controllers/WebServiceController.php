@@ -47,6 +47,14 @@ class WebServiceController extends Controller
         ]);
     }
 
+
+
+    public function getCircuitsCursaCategoria(Request $post) {
+        $circuits = Circuit_Categoria::select('ccc_cir_id')->where('ccc_cat_id',$post['cat'])->get();
+        $cirs = Circuit::whereIn('cir_id',$circuits)->where('cir_cur_id',$post['cur_id'])->get();
+        return $cirs;
+    }
+
     /***************
      * 
      * Requests
