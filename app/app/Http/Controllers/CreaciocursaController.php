@@ -223,7 +223,8 @@ class CreaciocursaController extends Controller
                     'estats' => $est_names,
                     'curses' => $curses,
                     'error' => $error,
-                    'last' => $last
+                    'last' => $last,
+                    'es_admin' => false
                 ]);
             }
             //Aplicar filtre
@@ -251,6 +252,7 @@ class CreaciocursaController extends Controller
             'curses' => $curses,
             'error' => $error,
             'last' => $last,
+            'es_admin' => false
         ]);
     }
 
