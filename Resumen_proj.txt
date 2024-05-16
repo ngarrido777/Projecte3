@@ -67,7 +67,29 @@ Un cop creada esta en estat "En preparacio", l'interficie ha de permetre passar 
 		-Seleccio del circuit(dins de la categoria seleccionada)
 	-Tots els camps obligatoris
 	-Un cop validat passar al pagament
-	-
+	-Enviar mail de confirmacio de la inscripcció, indicar numero inscrit
+
+--Gestió de curses actives--
+	Inici de cursa:
+		-Inicia la cursa, per tant, el temps.
+		-Posar cursa en estat en curs.
+		-Nomes per curses en inscripció tancada.
+	Recepció de corredors(corren o abandonen):
+		-Ha d'estar en curs.
+		-Cercar per nom/cognom/NIF/telèfon.
+		-Llistat de persones que coincideixen.
+		-Seleccio del corredor, mostrar fitxa:
+			-Dades personals inscripció.
+			-Dorsal
+			-Numero de xip (beacon)
+		-Si el corredor participa li donem dorsal i beacon i confirmem.
+		-Si abandona ho indiquem.
+
+--Visualitzar resultats--
+	-Veure funcionalitat de "Live results (públic)"
+
+--Final de cursa--
+	-Es tanca la cursa actual
 
 *--Corredor--*
 
@@ -86,4 +108,20 @@ Un cop creada esta en estat "En preparacio", l'interficie ha de permetre passar 
 			-Descripció
 			-Website
 	
-		
+*--Anònim--*
+	Configuració checkpoint:
+		-Triar cursa
+		-Triar circuit (dins de la cursa)
+		-Triar num checkpoint
+		-Sincronitzar temps (temp tablet ha de coincidir amb temp server)
+	Lectura temps:
+		-Obtenir via ws informacio checkpoints
+		-Indicador de que esta en mode lectura de temps, mostrar dades corredors detectats(temps, dorsal i nom)
+		-Llista corredors pendents d'arribar
+		-Es pot sortir del mode lectura resultats i accedir al de configuració(prèvia confirmació)
+	Detecció automàtica de final:
+		-Al temps verifica si la cursa ha acavat.
+		-Si acava tornar al mode configuració checkpoint.
+
+*--Administrador/Anònim--*
+//Esta todo menos Live results (públic) i Tancament de cursa i resultats
