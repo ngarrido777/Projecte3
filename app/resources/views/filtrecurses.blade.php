@@ -62,7 +62,11 @@
                 <th scope="col" class="text-center">Esport</th>
                 <th scope="col" class="text-center">Estat</th>
                 <th scope="col" class="text-center">Limit</th>
-                <th scope="col" class="text-center">Modificar</th>
+                @if ($es_admin)
+                    <th scope="col" class="text-center">Modificar</th>
+                @else 
+                    <th scope="col" class="text-center">Veure</th>
+                @endif
             </tr>
         </thead>
         <tbody>
