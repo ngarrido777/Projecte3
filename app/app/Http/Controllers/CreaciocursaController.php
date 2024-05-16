@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Esport;
 use App\Models\Estat_cursa;
 use App\Models\Cursa;
+use App\Models\Usuari;
+use Session;
 use \Illuminate\Database\QueryException;
 
 class CreaciocursaController extends Controller
@@ -182,6 +184,7 @@ class CreaciocursaController extends Controller
 
     public function filtrecurses()
     {
+        $usu = Session::get('usu');
         //Array amb els ultims camps del filtre
         $last = array(
             'l_nom' => '',
@@ -224,7 +227,7 @@ class CreaciocursaController extends Controller
                     'curses' => $curses,
                     'error' => $error,
                     'last' => $last,
-                    'es_admin' => false
+                    'usu' => $usu
                 ]);
             }
             //Aplicar filtre
@@ -252,7 +255,7 @@ class CreaciocursaController extends Controller
             'curses' => $curses,
             'error' => $error,
             'last' => $last,
-            'es_admin' => false
+            'usu' => $usu
         ]);
     }
 
@@ -337,5 +340,25 @@ class CreaciocursaController extends Controller
             'estats' => $est_names,
             'errors' => $errors
         ]);
+    }
+
+    public function login()
+    {
+        if(isset($_POST["e_login"])){
+            $usu = Usuari::where('usr_login','like',$_POST['c_login'])->where('usr_password', 'like', $_POST['c_password'])->first();
+            if($usu != null){
+                Session::put('usu', $usu);
+                return redirect()->route('filtrecurses');
+            }
+        }
+
+        return view('login');
+    }
+
+    public function logeout(){
+        session()->forget('usu');
+        session()->flush();
+
+        return redirect()->route('filtrecurses');
     }
 }
