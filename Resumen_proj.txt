@@ -1,0 +1,89 @@
+*--Administrador--*
+
+--Consulta Curses--
+Pot veure totes les curses actives, filtre per(filtre ordenat per data inici):
+	-Curses Tancades i Cancelades
+	-Data inici
+	-Nom/Lloc
+Mostrar per cada cursa:
+	-Nom
+	-Tipus de cursa
+	-Data inici
+	-Lloc
+	-Numero de circuits
+	-Distancia (vàries)
+	-Numero d'inscrits i limit participants
+	-Estat de la cursa
+
+--Crear Curses Noves--
+* obligatori, ? opcional
+	-Nom*
+	-Data inici* i Data fi*
+	-Lloc*
+	-Foto*
+	-Descripcio? (widget de text per negreta, cursiva, etc.)
+	-Website?
+	-Limit inscripcions*
+	-Tipus de carrera* (ddl)
+	-Categoria* (ddl) que depen del tipus de carrera
+	(La gestio dels tipus de carrera i categories no es fan per l'aplicacció es fa pels arxius de configuració)
+	-Gestió de circuits(una cursa te minim un circuit):
+		-Distància*
+		-Nom*
+		-Preu*
+		-Temps estimat?
+		-Seleccio de categories que es poden inscriure al circuit(minim una)
+		-Número de Checkpoints*
+Un cop creada esta en estat "En preparacio", l'interficie ha de permetre passar directament a "Inscripció Oberta"
+
+--Accions sobre les curses--
+	Eliminar cursa en preparació:
+		-Curses en estat de preparació s'han de poder borrar(prèvia confirmació).
+	Obrir inscripció:
+		-Curses en estat de preparació s'han de poder passar a Inscripció Oberta(prèvia confirmació).
+	Cancel·lar cursa:
+		-Curses en estat inscripcio oberta, tancada i en curs poden passar a cancelada(prèvia confirmació).
+	Tancar inscripcions:
+		-Curses en estat inscripció oberta poden passar a inscripció tancada(prèvia confirmació).
+		-Quan tanquem inscripcions es genera internament una llista de participants, assignant dorsals i els beacons.
+	Iniciar cursa:
+		-Curses en estat inscripcio tancadapoden passar a en curs(prèvia confirmació).
+		-Un cop en curs, ja es poden recepcionar els corredors i registrar els temps de passada pels checkpoints.
+
+--Modificacio de Curses--	
+	-Modificar tota la informacio igual que en crear curses noves.
+	-Nomes es poden editar curses en preparació.
+
+--Inscripció a la cursa--
+	-Al seleccionar una cursa mostrar fitxa amb informació detallada, botó per inscriure's
+	-Mostrar formulari inscripció:
+		-Nom i cognoms
+		-DNI
+		-Data naixement
+		-Telèfon
+		-Email
+		-Federar?, si, numero federat
+		-Seleccio de categoria
+		-Seleccio del circuit(dins de la categoria seleccionada)
+	-Tots els camps obligatoris
+	-Un cop validat passar al pagament
+	-
+
+*--Corredor--*
+
+--Inscripcions--
+	Consulta de curses on em puc inscriure:
+		-No requereix login
+		-Mostrar totes les curses en estat inscripcioó oberta
+		-Filtres segons l'esport, la data inici i el nom o lloc de la cursa.
+		-Format graella de targetes.
+		-Curses ordenades per data descendent.
+		-Camps de la cursa:
+			-Nom
+			-Data
+			-Lloc
+			-Foto
+			-Descripció
+			-Website
+	
+		
