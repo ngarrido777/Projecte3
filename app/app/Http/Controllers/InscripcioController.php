@@ -3,9 +3,9 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use App\Models\Esport;
-use App\Models\Estat_cursa;
 use App\Models\Cursa;
+use App\Models\Categoria;
+use App\Models\Circuit_Categoria;
 use \Illuminate\Database\QueryException;
 
     // Errores
@@ -14,9 +14,13 @@ use \Illuminate\Database\QueryException;
     const MSG_ERR = 'msg_err';
 class InscripcioController extends Controller
 {
-    private function inscriureView($cursa,$code = null,$mensaje = null) {
+    private function inscriureView($cursa,$cats,$cirs,$code = null,$mensaje = null) {
         return view('inscriure', [
-            'cursa' => $cursa,
+            'data' => [
+                'cursa' => $cursa,
+                'cats' => $cats,
+                'cirs' => $cirs
+            ],
             'message' => ((!is_null($code) && !is_null($code)) ? [
                 'type' => $code,
                 'text' => $mensaje
@@ -36,7 +40,10 @@ class InscripcioController extends Controller
             $text = "Felicidades!! Te has inscrito a la cursa " . $c[0]->cur_nom;
             return $this->inscriureView($c[0], MSG_INF, $text);
         }
-
-        return $this->inscriureView($c[0]);
+        $categories = Categoria::where('cat_esp_id',$c[0]->cur_esp_id)->get();
+        // SELECCIONAR BIEN LAS CURSAS
+        $cirs = Circuits::whereIn('cur_id',[1,2,3])->get();
+        $circuits = Circuit_Categoria::where('ccc_cat_id',5)->get();
+        return $this->inscriureView($c[0], $categories, $circuits);
     }
 }
