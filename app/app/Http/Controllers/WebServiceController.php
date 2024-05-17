@@ -162,7 +162,10 @@ class WebServiceController extends Controller
 
             $cats = [];
             foreach ($categories as $key => $value) {
-                $cats[] = $value->categoria->cat_nom;
+                $cats[] = [
+                    'id' => $value->categoria->cat_id,
+                    'nom' => $value->categoria->cat_nom
+                ];
             }
             $circuitsArray[] = [
                 "id" => $circuit->cir_id,
@@ -196,12 +199,12 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
-        // TODO: Validar circuit y cccId
+        // TODO: Validar circuit y catId
         // Si no trae cursaId o la cursa no existe
-        if (!array_key_exists('participant',$decode) ||
-            !array_key_exists('cursaId',    $decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
-            !array_key_exists('circuitId',  $decode) || !is_numeric($decode['circuitId']) ||
-            !array_key_exists('cccId',      $decode) || !is_numeric($decode['cccId'])) {
+        if (!array_key_exists('participant', $decode) ||
+            !array_key_exists('cursaId',     $decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
+            !array_key_exists('circuitId',   $decode) || !is_numeric($decode['circuitId']) ||
+            !array_key_exists('catId',       $decode) || !is_numeric($decode['catId'])) {
             $status = [
                 "code" => "402",
                 "description" => "Los datos no son válidos"
@@ -210,7 +213,7 @@ class WebServiceController extends Controller
         }
         $cursaId = $decode['cursaId'];
         $circuitId = $decode['circuitId'];
-        $cccId = $decode['cccId'];
+        $catId = $decode['catId'];
         $par = $decode['participant'];
 
 
@@ -247,6 +250,7 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
+        $cccId = Cursa_Categoria::select('ccc_id')->where('ccc_cat_id',)->where('ccc_cir_id',)->get();
         $inscripcio = new Inscripcio;
         $inscripcio->ins_par_id = $participant->par_id;
         $inscripcio->ins_data = date('Y-m-d'); 
@@ -284,7 +288,8 @@ class WebServiceController extends Controller
         }
         // Si no trae los datos validos
         if (!array_key_exists('parId',$decode) || !is_numeric($decode['parId']) ||
-            !array_key_exists('cccId',$decode) || !is_numeric($decode['cccId']) ||
+            !array_key_exists('cirId',$decode) || !is_numeric($decode['cirId']) ||
+            !array_key_exists('catId',$decode) || !is_numeric($decode['catId']) ||
             !array_key_exists('beaId',$decode) || !is_numeric($decode['beaId']) ||
             !array_key_exists('chkId',$decode) || !is_numeric($decode['chkId']) ||
             !array_key_exists('temps',$decode)) { // Hay que validar el tiempo
@@ -297,7 +302,7 @@ class WebServiceController extends Controller
 
         try {
             $par =       Participant::where('par_id','=',$decode['parId'])->get();
-            $ccc = Circuit_categoria::where('ccc_id','=',$decode['cccId'])->get();
+            $ccc = Circuit_categoria::where('cat_id','=',$decode['catId'])->where('cir_id','=',$decode['cirId'])->get();
             $bea =            Beacon::where('bea_id','=',$decode['beaId'])->get();
             $chk =        Checkpoint::where('chk_id','=',$decode['chkId'])->get();
         } catch (QueryException $ex) {

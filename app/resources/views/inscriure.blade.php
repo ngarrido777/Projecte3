@@ -86,6 +86,7 @@
                 <p class="{{ $message['type'] }}">{{ $message['text'] }}</p>
             @endif
             
+            
             <div>
                 <!-- <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" /> -->
             </div>

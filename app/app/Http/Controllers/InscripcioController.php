@@ -40,9 +40,7 @@ class InscripcioController extends Controller
             $text = "Felicidades!! Te has inscrito a la cursa " . $c[0]->cur_nom;
             return $this->inscriureView($c[0], $categories, MSG_INF, $text);
         }
-
-        // EL 5 DEL WHERE DEBE CAMBIAR SEGÚN EL VALOR DEL PRIMER SELECT
-
+        
         return $this->inscriureView($c[0], $categories);
     }
 }
