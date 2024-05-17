@@ -19,6 +19,7 @@ Route::match(['post', 'get'], '/',                  [CreaciocursaController::cla
 Route::match(['post', 'get'], '/filtrecurses',      [CreaciocursaController::class, 'filtrecurses'])  -> name('filtrecurses');
 Route::match(['post', 'get'], '/creaciocurses',     [CreaciocursaController::class, 'creaciocurses']) -> name('creaciocurses');
 Route::match(['post', 'get'], '/updatecurses/{id}', [CreaciocursaController::class, 'updatecurses'])  -> name('updatecurses');
+Route::match(['post', 'get'], '/veurecurses/{id}',  [CreaciocursaController::class,  'veurecurses'])  -> name('veurecurses');
 Route::match(['post', 'get'], '/inscriure/{id}',    [InscripcioController::class,   'inscriure'])     -> name('inscriure');
 Route::match(['post', 'get'], '/login',             [CreaciocursaController::class, 'login'])         -> name('login');
 Route::match(['post', 'get'], '/logeout',           [CreaciocursaController::class, 'logeout'])       -> name('logeout');

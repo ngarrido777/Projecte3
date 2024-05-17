@@ -342,6 +342,19 @@ class CreaciocursaController extends Controller
         ]);
     }
 
+    public function veurecurses($id)
+    {
+        //Agafar la cursa per l'id
+        $cursa = Cursa::where('cur_id', $id)->first();
+        if($cursa == null){
+            return redirect()->route('filtrecurses');
+        }
+
+        return view('veurecurses', [
+            'cursa' => $cursa
+        ]);
+    }
+
     public function login()
     {
         if(isset($_POST["e_login"])){
