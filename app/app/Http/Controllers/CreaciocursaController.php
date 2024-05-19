@@ -184,6 +184,7 @@ class CreaciocursaController extends Controller
 
     public function filtrecurses()
     {
+        $ok = true;
         $usu = Session::get('usu');
         //Array amb els ultims camps del filtre
         $last = array(
@@ -220,15 +221,7 @@ class CreaciocursaController extends Controller
             if(strlen($nom) > 50 || strlen($nom) < 0)
             {
                 $error = 'La mida del nom no es correcte';
-
-                return view('filtrecurses', [
-                    'esports' => $esp_names,
-                    'estats' => $est_names,
-                    'curses' => $curses,
-                    'error' => $error,
-                    'last' => $last,
-                    'usu' => $usu
-                ]);
+                $ok = false;
             }
             //Aplicar filtre
             $query = Cursa::query();
@@ -245,8 +238,9 @@ class CreaciocursaController extends Controller
             if ($_POST['f_estat'] != '-1') {
                 $query->where('cur_est_id', $_POST['f_estat']);
             }
-
-            $curses = $query->get();
+            if($ok){
+                $curses = $query->get();
+            }
         }
         //Return a la view
         return view('filtrecurses', [
@@ -377,6 +371,7 @@ class CreaciocursaController extends Controller
 
     public function filtrecursescorredors()
     {
+        $ok = true;
         //Agafar la session
         $usu = Session::get('usu');
         //Mostrar curses obertes per defecte
@@ -414,15 +409,7 @@ class CreaciocursaController extends Controller
             if(strlen($nom) > 50 || strlen($nom) < 0)
             {
                 $error = 'La mida del nom no es correcte';
-
-                return view('filtrecursescorredors', [
-                    'esports' => $esp_names,
-                    'estats' => $est_names,
-                    'curses' => $curses,
-                    'usu'   => $usu,
-                    'last'  => $last,
-                    'error' => $error
-                ]);
+                $ok = false;
             }
             //Aplicar filtre
             $query = Cursa::query();
@@ -439,8 +426,9 @@ class CreaciocursaController extends Controller
             if ($_POST['f_estat'] != '-1') {
                 $query->where('cur_est_id', $_POST['f_estat']);
             }
-
-            $curses = $query->get();
+            if($ok){
+                $curses = $query->get();
+            }
         }
 
         return view('filtrecursescorredors', [
