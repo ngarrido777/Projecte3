@@ -415,7 +415,7 @@ class CreaciocursaController extends Controller
             {
                 $error = 'La mida del nom no es correcte';
 
-                return view('filtrecurses', [
+                return view('filtrecursescorredors', [
                     'esports' => $esp_names,
                     'estats' => $est_names,
                     'curses' => $curses,
