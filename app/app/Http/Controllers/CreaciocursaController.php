@@ -374,4 +374,45 @@ class CreaciocursaController extends Controller
 
         return redirect()->route('filtrecurses');
     }
+
+    public function filtrecursescorredors()
+    {
+        //Agafar la session
+        $usu = Session::get('usu');
+        //Mostrar curses obertes per defecte
+        $curses = Cursa::where('cur_est_id', 2)->get();
+        //Array amb els ultims camps del filtre
+        $last = array(
+            'l_nom' => '',
+            'l_data_inici' => '',
+            'l_esport' => '',
+            'l_estat' => ''
+        );
+        //Carregar els esports per la view
+        $esports = Esport::all();
+        $esp_names = array(
+            '-1' => '',
+        );
+        foreach ($esports as $key => $e) {
+            $esp_names[$e->esp_id] = $e->esp_nom;
+        }
+        //Carregar els estats per la view
+        $estats = Estat_cursa::all();
+        $est_names = array(
+            '-1' => '',
+        );
+        foreach ($estats as $key => $e) {
+            $est_names[$e->est_id] = $e->est_nom;
+        }
+        $error = '';
+
+        return view('filtrecursescorredors', [
+            'esports' => $esp_names,
+            'estats' => $est_names,
+            'curses' => $curses,
+            'usu'   => $usu,
+            'last'  => $last,
+            'error' => $error
+        ]);
+    }
 }
