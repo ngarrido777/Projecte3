@@ -12,6 +12,9 @@
             document.addEventListener("DOMContentLoaded", (event) => {
                 const checkbox = document.getElementById('ckb_federat')
                 let f_block = document.getElementById('num_federat_block')
+                if (checkbox.checked) {
+                    f_block.classList.remove('hidden');
+                }
 
                 checkbox.addEventListener('change', (event) => {
                     if (event.currentTarget.checked) {
@@ -62,82 +65,100 @@
             }
 
             .msg_inf {
-                color: lime;
+                color: green;
             }
 
             .msg_adv {
-                color: yellow;
+                color: goldenrod;
             }
 
             .msg_err {
-                color: red;
+                color: darkred;
             }
 
             .hidden {
                 display: none;
             }
+
+            img {
+                width: 500px;
+                height: 500px;
+            }
+
+            .content {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .header {
+                margin: 10px 10px 30px;
+            }
         </style>
     </head>
     <body>
-        <div>
+        <div class="header">
             <p class="h2">Inscripció a {{ $data['cursa']->cur_nom }}</p>
 
             @if (!is_null($message))
                 <p class="{{ $message['type'] }}">{{ $message['text'] }}</p>
             @endif
-            
-            
-            <div>
-                <!-- <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" /> -->
-            </div>
         </div>
         {{ Form::open(['method' => 'post']) }}
             @csrf
-            <div>
-                <div>    
-                    {{ Form::label('l_nom', 'Nom') }}
-                    {{ Form::text('f_nom') }}
-                </div>
-                <div>    
-                    {{ Form::label('l_cognom', 'Cognoms') }}
-                    {{ Form::text('f_cognom') }}
-                </div>
-                <div>    
-                    {{ Form::label('l_dni', 'DNI') }}
-                    {{ Form::text('f_dni') }}
+            <div class="content">
+                <div>
+                    <div>
+                        {{ Form::label('l_nom', 'Nom') }}
+                        {{ Form::text('f_nom', $fields['nom']) }}
+                    </div>
+                    <div>
+                        {{ Form::label('l_cognoms', 'Cognoms') }}
+                        {{ Form::text('f_cognoms', $fields['cognoms']) }}
+                    </div>
+                    <div>
+                        {{ Form::label('l_nif', 'DNI') }}
+                        {{ Form::text('f_nif', $fields['nif']) }}
+                    </div>
+                    <div>
+                        {{ Form::label('l_telefon', 'Teléfon') }}
+                        {{ Form::text('f_telefon', $fields['telefon']) }}
+                    </div>
+                    <div>
+                        {{ Form::label('l_email', 'Correu electrònic') }}
+                        {{ Form::text('f_email', $fields['email']) }}
+                    </div>
+                    <div>
+                        {{ Form::label('l_naix', 'Data de naixement') }}
+                        {{ Form::date('f_naix', $fields['naix']) }}
+                    </div>
+                    <div>
+                        {{ Form::label('l_federat', 'Ets federat?') }}
+                        {{ Form::checkbox('f_federat', null, $fields['federat'], array('id'=>'ckb_federat')) }}
+                        <span id="num_federat_block" class="hidden">
+                            {{ Form::label('l_num_federat', 'Num federat') }}
+                            {{ Form::text('f_num_federat', $fields['codiFederat']) }}
+                        </span>
+                    </div>
+                    <div>
+                        {{ Form::label('l_categoria', 'Categorias') }}
+                        <select id="f_categoria" name="f_categoria">
+                            <option selected disabled value="-1">Escoge tu categoría</option>
+                            @foreach ($data['cats'] as $cat)
+                                <option value="{{ $cat->cat_id }}">{{ $cat->cat_nom }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        {{ Form::label('l_circuit', 'Circuits') }}
+                        <select disabled id="f_circuit" name="f_circuit">
+                            <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
+                        </select>
+                    </div>
+                    {{ Form::submit('Inscribirm!', ['name' => 'f_ins']) }}
                 </div>
                 <div>
-                    {{ Form::label('l_telefon', 'Teléfon') }}
-                    {{ Form::text('f_telefon') }}
+                    <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" />
                 </div>
-                <div>
-                    {{ Form::label('l_email', 'Teléfon') }}
-                    {{ Form::text('f_email') }}
-                </div>
-                <div>
-                    {{ Form::label('l_federat', 'Ets federat?') }}
-                    {{ Form::checkbox('f_federat', null, false, array('id'=>'ckb_federat')) }}
-                    <span id="num_federat_block" class="hidden">
-                        {{ Form::label('l_num_federat', 'Num federat') }}
-                        {{ Form::text('f_num_federat') }}
-                    </span>
-                </div>
-                <div>
-                    {{ Form::label('l_categorias', 'Categorias (desplegable)') }}
-                    <select id="f_categoria" name="f_categoria">
-                        <option selected disabled value="-1">Escoge tu categoría</option>
-                        @foreach ($data['cats'] as $cat)
-                            <option value="{{ $cat->cat_id }}">{{ $cat->cat_nom }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    {{ Form::label('l_circuits', 'Circuits (desplegable segun el anterior)') }}
-                    <select disabled id="f_circuit" name="f_circuit">
-                        <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
-                    </select>
-                </div>
-                {{ Form::submit('Crear', ['name' => 'c_crear']) }}
             </div>
         {{ Form::close() }}
     </body>

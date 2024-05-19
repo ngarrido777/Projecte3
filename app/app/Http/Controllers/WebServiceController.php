@@ -202,9 +202,9 @@ class WebServiceController extends Controller
         // TODO: Validar circuit y catId
         // Si no trae cursaId o la cursa no existe
         if (!array_key_exists('participant', $decode) ||
-            !array_key_exists('cursaId',     $decode) || Cursa::where('cur_id','=',$decode['cursaId'])->get()->count() == 0 ||
-            !array_key_exists('circuitId',   $decode) || !is_numeric($decode['circuitId']) ||
-            !array_key_exists('catId',       $decode) || !is_numeric($decode['catId'])) {
+            !array_key_exists('cursaId',     $decode) || Cursa::where('cur_id',$decode['cursaId'])->get()->count() == 0 ||
+            !array_key_exists('circuitId',   $decode) || Circuit::where('cir_id',$decode['circuitId'])->get()->count() == 0 ||
+            !array_key_exists('catId',       $decode) || Categoria::where('cat_id',$decode['catId'])->get()->count() == 0) {
             $status = [
                 "code" => "402",
                 "description" => "Los datos no son válidos"
@@ -218,13 +218,13 @@ class WebServiceController extends Controller
 
 
         // Si el participante esta mal
-        if (!array_key_exists('nif',            $par) || strlen($par['nif']) != 9 ||
-            !array_key_exists('nom',            $par) || strlen($par['nom']) > 50 || strlen($par['nom']) < 2 ||
-            !array_key_exists('cognoms',        $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
-            !array_key_exists('dataNaixement',  $par) || !strtotime($par['dataNaixement']) ||
-            !array_key_exists('telefon',        $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
-            !array_key_exists('email',          $par) || strlen($par['email']) > 200 || strlen($par['email']) < 10 ||
-            !array_key_exists('esFederat',      $par) || ($par['esFederat'] != 1 && $par['esFederat'] != 0 )) {
+        if (!array_key_exists('nif',           $par) || strlen($par['nif']) != 9 ||
+            !array_key_exists('nom',           $par) || strlen($par['nom']) > 50 || strlen($par['nom']) < 2 ||
+            !array_key_exists('email',         $par) || strlen($par['email']) > 200 || strlen($par['email']) < 10 ||
+            !array_key_exists('telefon',       $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
+            !array_key_exists('cognoms',       $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
+            !array_key_exists('codiFederat',   $par) || (strlen($par['codiFederat']) != 5 && strlen($par['codiFederat']) != 0) ||
+            !array_key_exists('dataNaixement', $par) || !strtotime($par['dataNaixement']) || $par['dataNaixement'] >= date('Y-m-d')) {
             $status = [
                 "code" => "403",
                 "description" => "Algún dato del participante no es correcto"
@@ -250,7 +250,12 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
-        $cccId = Cursa_Categoria::select('ccc_id')->where('ccc_cat_id',)->where('ccc_cir_id',)->get();
+        $cccId = Circuit_Categoria::select('ccc_id')
+            ->where('ccc_cat_id',$decode['catId'])
+            ->where('ccc_cir_id',$decode['circuitId'])
+            ->get()
+        ;
+
         $inscripcio = new Inscripcio;
         $inscripcio->ins_par_id = $participant->par_id;
         $inscripcio->ins_data = date('Y-m-d'); 
