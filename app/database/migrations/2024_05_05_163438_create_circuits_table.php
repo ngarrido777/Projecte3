@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal             ('cir_distancia', 10, 2);
             $table->string              ('cir_nom',200);
             $table->decimal             ('cir_preu', 19, 4);
-            $table->date                ('cir_temps_estimat')->nullable;
+            $table->integer             ('cir_temps_estimat')->nullable();
             /* FK y Index */
             $table->index(['cir_cur_id','cir_num']);
             $table->foreign('cir_cur_id')->references('cur_id')->on('curses');

@@ -13,20 +13,19 @@ class EsportsCategoriesSeeder extends Seeder
      */
     public function run(): void
     {
-        $esportId = DB::table('esports')->insertGetId(['esp_nom' => 'Ciclisme']);
-
-        DB::table('categories')->insert([
-            ['cat_esp_id' => $esportId, 'cat_nom' => 'infantil'],
-            ['cat_esp_id' => $esportId, 'cat_nom' => 'cadet'],
-            ['cat_esp_id' => $esportId, 'cat_nom' => 'junior'],
-            ['cat_esp_id' => $esportId, 'cat_nom' => 'senior'],
+        DB::table('esports')->insert([
+            ['esp_id' => 1,'esp_nom' => 'Ciclisme'],
+            ['esp_id' => 2,'esp_nom' => 'Running']
         ]);
 
-        $esportId = DB::table('esports')->insertGetId(['esp_nom' => 'Running']);
-
         DB::table('categories')->insert([
-            ['cat_esp_id' => $esportId, 'cat_nom' => 'Casual'],
-            ['cat_esp_id' => $esportId, 'cat_nom' => 'Profesional'],
+            ['cat_id' => 1,'cat_esp_id' => 1, 'cat_nom' => 'infantil'],
+            ['cat_id' => 2,'cat_esp_id' => 1, 'cat_nom' => 'cadet'],
+            ['cat_id' => 3,'cat_esp_id' => 1, 'cat_nom' => 'junior'],
+            ['cat_id' => 4,'cat_esp_id' => 1, 'cat_nom' => 'senior'],
+
+            ['cat_id' => 5,'cat_esp_id' => 2, 'cat_nom' => 'Casual'],
+            ['cat_id' => 6,'cat_esp_id' => 2, 'cat_nom' => 'Profesional']
         ]);
     }
 }

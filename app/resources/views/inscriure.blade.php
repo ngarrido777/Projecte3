@@ -137,6 +137,7 @@
                         <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
                     </select>
                 </div>
+                {{ Form::submit('Crear', ['name' => 'c_crear']) }}
             </div>
         {{ Form::close() }}
     </body>

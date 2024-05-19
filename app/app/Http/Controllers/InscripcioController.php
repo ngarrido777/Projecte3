@@ -32,7 +32,6 @@ class InscripcioController extends Controller
     {
         if (!is_numeric($id) || count($c = Cursa::where('cur_id',$id)->get()) == 0)
             return redirect('/');
-
         $categories = Categoria::where('cat_esp_id',$c[0]->cur_esp_id)->get();
 
         if (isset($_POST['insSubmit'])) {
