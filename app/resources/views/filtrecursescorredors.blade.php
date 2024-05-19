@@ -30,45 +30,52 @@
 </head>
 <body>
 <div>
-    <h1 class="p-3">Totes les Curses</h1>
-        @if ($usu == null)
-            {{ Form::open(['url' => '/login', 'method' => 'post']) }}
-                @csrf
-                <td>{{ Form::submit('Login', ['name' => 'f_login']) }}</td>
-            {{ Form::close() }}
-        @else 
-            {{ Form::open(['url' => '/logeout', 'method' => 'post']) }}
-                @csrf
-                <td>{{ Form::submit('Logeout', ['name' => 'f_logeout']) }}</td>
-            {{ Form::close() }}
-        @endif
-    </div>
-    <h2 class="p-3">Cerca la cursa</h2>
-    {{ Form::open(['url' => '/filtrecursescorredors', 'method' => 'post']) }}
-        @csrf
-        <div class="d-flex justify-content-around p-3">
-            <div>    
-                {{ Form::label('l_nom', 'Nom:') }}
-                {{ Form::text('f_nom', $last['l_nom']) }}
-            </div>
-            <div>
-                {{ Form::label('l_datainici', 'Data Inici:') }}
-                {{ Form::date('f_data_inici', $last['l_data_inici']) }}
-            </div>
-            <div>
-                {{ Form::label('l_esport', 'Esport:') }}
-                {{ Form::select('f_esport', $esports, $last['l_esport']) }}
-            </div>
-            <div>
-                {{ Form::label('l_estat', 'Estat:') }}
-                {{ Form::select('f_estat', $estats, $last['l_estat']) }}
-            </div>
+    <div class="container mt-4">
+        <h1 class="p-3 text-center">Totes les Curses</h1>
 
-            {{ Form::submit('Cercar', ['name' => 'f_cercar']) }}
+        <div class="d-flex justify-content-end mb-4">
+            @if ($usu == null)
+                {{ Form::open(['url' => '/login', 'method' => 'post', 'class' => 'form-inline']) }}
+                    @csrf
+                    {{ Form::submit('Login', ['name' => 'f_login', 'class' => 'btn btn-primary']) }}
+                {{ Form::close() }}
+            @else 
+                {{ Form::open(['url' => '/logeout', 'method' => 'post', 'class' => 'form-inline']) }}
+                    @csrf
+                    {{ Form::submit('Logeout', ['name' => 'f_logeout', 'class' => 'btn btn-danger']) }}
+                {{ Form::close() }}
+            @endif
         </div>
-    {{ Form::close() }}
+
+        <h2 class="p-3">Cerca la cursa</h2>
+
+        {{ Form::open(['url' => '/filtrecursescorredors', 'method' => 'post']) }}
+            @csrf
+            <div class="form-row p-3">
+                <div class="form-group col-md-3">
+                    {{ Form::label('l_nom', 'Nom:') }}
+                    {{ Form::text('f_nom', $last['l_nom'], ['class' => 'form-control']) }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ Form::label('l_datainici', 'Data Inici:') }}
+                    {{ Form::date('f_data_inici', $last['l_data_inici'], ['class' => 'form-control']) }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ Form::label('l_esport', 'Esport:') }}
+                    {{ Form::select('f_esport', $esports, $last['l_esport'], ['class' => 'form-control']) }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ Form::label('l_estat', 'Estat:') }}
+                    {{ Form::select('f_estat', $estats, $last['l_estat'], ['class' => 'form-control']) }}
+                </div>
+            </div>
+            <div class="d-flex justify-content-end p-3">
+                {{ Form::submit('Cercar', ['name' => 'f_cercar', 'class' => 'btn btn-success']) }}
+            </div>
+        {{ Form::close() }}
         
-    <span class="error">{{ $error }}</span>
+        <span class="error">{{ $error }}</span>
+    </div>
 
     <div class="container">
         <div class="row">
@@ -79,10 +86,10 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">{{ $cursa->cur_nom }}</h5>
-                    <p class="card-text"><strong>Data inici:</strong>{{ $cursa->cur_data_inici }}</p>
-                    <p class="card-text"><strong>Lloc:</strong>{{ $cursa->cur_lloc }}</p>
-                    <p class="card-text"><strong>Descripcció:</strong>{{ $cursa->cur_desc }}</p>
-                    <p class="card-text"><strong>Web:</strong>{{ $cursa->cur_web }}</p>
+                    <p class="card-text"><strong>Data inici: </strong>{{ $cursa->cur_data_inici }}</p>
+                    <p class="card-text"><strong>Lloc: </strong>{{ $cursa->cur_lloc }}</p>
+                    <p class="card-text"><strong>Descripcció: </strong>{{ $cursa->cur_desc }}</p>
+                    <p class="card-text"><strong>Web: </strong>{{ $cursa->cur_web }}</p>
                     {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
                         @csrf
                         <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>

@@ -405,6 +405,43 @@ class CreaciocursaController extends Controller
             $est_names[$e->est_id] = $e->est_nom;
         }
         $error = '';
+        //Post
+        if(isset($_POST["f_cercar"]))
+        {
+            //Validar el nom
+            $nom = $_POST["f_nom"];
+            $last["l_nom"] = $nom;
+            if(strlen($nom) > 50 || strlen($nom) < 0)
+            {
+                $error = 'La mida del nom no es correcte';
+
+                return view('filtrecurses', [
+                    'esports' => $esp_names,
+                    'estats' => $est_names,
+                    'curses' => $curses,
+                    'usu'   => $usu,
+                    'last'  => $last,
+                    'error' => $error
+                ]);
+            }
+            //Aplicar filtre
+            $query = Cursa::query();
+            $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%');
+            $last["l_data_inici"] = $_POST['f_data_inici'];
+            if ($_POST['f_data_inici'] != '') {
+                $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
+            }
+            $last["l_esport"] = $_POST['f_esport'];
+            if ($_POST['f_esport'] != '-1') {
+                $query->where('cur_esp_id', $_POST['f_esport']);
+            }
+            $last["l_estat"] = $_POST['f_estat'];
+            if ($_POST['f_estat'] != '-1') {
+                $query->where('cur_est_id', $_POST['f_estat']);
+            }
+
+            $curses = $query->get();
+        }
 
         return view('filtrecursescorredors', [
             'esports' => $esp_names,
