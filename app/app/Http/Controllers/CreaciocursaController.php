@@ -207,7 +207,7 @@ class CreaciocursaController extends Controller
             $est_names[$e->est_id] = $e->est_nom;
         }
         //Mostrar totes les curses per defecte
-        $curses = Cursa::all();
+        $curses = Cursa::orderBy('cur_data_inici','ASC')->get();
         //Tractament del post
         $error = '';
         if(isset($_POST["f_cercar"]))
@@ -232,9 +232,10 @@ class CreaciocursaController extends Controller
                 $query->where('cur_est_id', $_POST['f_estat']);
             }
             if($ok){
-                $curses = $query->get();
+                $curses = $query->orderBy('cur_data_inici','ASC')->get();
             }
         }
+
         //Return a la view
         return view('filtrecurses', [
             'estats' => $est_names,
@@ -372,7 +373,7 @@ class CreaciocursaController extends Controller
         //Agafar la session
         $usu = Session::get('usu');
         //Mostrar curses obertes per defecte
-        $curses = Cursa::where('cur_est_id', 2)->get();
+        $curses = Cursa::where('cur_est_id', 2)->orderBy('cur_data_inici','DESC')->get();
         //Array amb els ultims camps del filtre
         $last = array(
             'l_nom' => '',
@@ -424,7 +425,7 @@ class CreaciocursaController extends Controller
                 $query->where('cur_est_id', $_POST['f_estat']);
             }
             if($ok){
-                $curses = $query->get();
+                $curses = $query->orderBy('cur_data_inici','DESC')->get();
             }
         }
 

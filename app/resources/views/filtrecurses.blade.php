@@ -67,9 +67,6 @@
                 <th scope="col" class="text-center">Tipus</th>
                 <th scope="col" class="text-center">Data Inici</th>
                 <th scope="col" class="text-center">Lloc</th>
-                <th scope="col" class="text-center">Circuits</th>
-                <th scope="col" class="text-center">Distàncies</th>
-                <th scope="col" class="text-center">Inscrits</th>
                 <th scope="col" class="text-center">Limit</th>
                 <th scope="col" class="text-center">Estat</th>
                 <th scope="col" class="text-center">Veure</th>
@@ -83,9 +80,6 @@
                     <td class="text-center align-middle">{{ $cursa->esport->esp_nom }}</td>
                     <td class="text-center align-middle">{{ $cursa->cur_data_inici }}</td>
                     <td class="text-center align-middle">{{ $cursa->cur_lloc }}</td>
-                    <td class="text-center align-middle"></td>
-                    <td class="text-center align-middle"></td>
-                    <td class="text-center align-middle"></td>
                     <td class="text-center align-middle">{{ $cursa->cur_limit_inscr }}</td>
                     <td class="text-center align-middle">{{ $cursa->estat->est_nom }}</td>
                     {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
