@@ -186,21 +186,18 @@ class CreaciocursaController extends Controller
     {
         $ok = true;
         $usu = Session::get('usu');
+        if($usu == null){
+            return redirect()->route('filtrecursescorredors');
+        }
+        if(!$usu->usr_admin){
+            return redirect()->route('filtrecursescorredors');
+        }
         //Array amb els ultims camps del filtre
         $last = array(
-            'l_nom' => '',
+            'l_nom_lloc' => '',
             'l_data_inici' => '',
-            'l_esport' => '',
             'l_estat' => ''
         );
-        //Carregar els esports per la view
-        $esports = Esport::all();
-        $esp_names = array(
-            '-1' => '',
-        );
-        foreach ($esports as $key => $e) {
-            $esp_names[$e->esp_id] = $e->esp_nom;
-        }
         //Carregar els estats per la view
         $estats = Estat_cursa::all();
         $est_names = array(
@@ -216,8 +213,8 @@ class CreaciocursaController extends Controller
         if(isset($_POST["f_cercar"]))
         {
             //Validar el nom
-            $nom = $_POST["f_nom"];
-            $last["l_nom"] = $nom;
+            $nom = $_POST["f_nom_lloc"];
+            $last["l_nom_lloc"] = $nom;
             if(strlen($nom) > 50 || strlen($nom) < 0)
             {
                 $error = 'La mida del nom no es correcte';
@@ -225,14 +222,10 @@ class CreaciocursaController extends Controller
             }
             //Aplicar filtre
             $query = Cursa::query();
-            $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%');
+            $query->where('cur_nom', 'like', '%'.$_POST['f_nom_lloc'].'%')->orWhere('cur_lloc', 'like', '%'.$_POST['f_nom_lloc'].'%');
             $last["l_data_inici"] = $_POST['f_data_inici'];
             if ($_POST['f_data_inici'] != '') {
                 $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
-            }
-            $last["l_esport"] = $_POST['f_esport'];
-            if ($_POST['f_esport'] != '-1') {
-                $query->where('cur_esp_id', $_POST['f_esport']);
             }
             $last["l_estat"] = $_POST['f_estat'];
             if ($_POST['f_estat'] != '-1') {
@@ -244,7 +237,6 @@ class CreaciocursaController extends Controller
         }
         //Return a la view
         return view('filtrecurses', [
-            'esports' => $esp_names,
             'estats' => $est_names,
             'curses' => $curses,
             'error' => $error,
@@ -355,18 +347,23 @@ class CreaciocursaController extends Controller
             $usu = Usuari::where('usr_login','like',$_POST['c_login'])->where('usr_password', 'like', $_POST['c_password'])->first();
             if($usu != null){
                 Session::put('usu', $usu);
-                return redirect()->route('filtrecurses');
+                
+                if($usu->usr_admin){
+                    return redirect()->route('filtrecurses');
+                }
+                return redirect()->route('filtrecursescorredors');
             }
         }
 
         return view('login');
     }
 
-    public function logeout(){
+    public function logeout()
+    {
         session()->forget('usu');
         session()->flush();
 
-        return redirect()->route('filtrecurses');
+        return redirect()->route('filtrecursescorredors');
     }
 
     public function filtrecursescorredors()
