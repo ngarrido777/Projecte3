@@ -53,6 +53,7 @@
                             option.value = element['cir_id'];
                             ddl_cirs.appendChild(option);
                         });
+                        ddl_cirs.value = -1;
                     }
                 });
             });
