@@ -27,39 +27,70 @@
 
         .card-img-top {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
+        }
+
+        .cursa-data,
+        .img-wrapper {
+            margin: 0 10px;
         }
 
         .img-wrapper {
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid black;
+            margin-bottom: 15px;
         }
-        
+
         .cursa-card {
             margin: 10px 0;
-            padding: 10px;
+            padding-top: 10px;
             border: 1px solid black;
             border-radius: 10px;
             background: linear-gradient(160deg, #eee, #aaa);
+            overflow: hidden;
+        }
+        .cursa-card,
+        .cursa-card:hover {
+            transition: all 0.5s ease;
         }
 
+        .cursa-card:hover {
+            transform: translateY(-10px);
+        }
+
+
         .f_desc {
+            padding: 0 10px;
+            margin: 0;
             height: 100px;
             overflow: hidden;
+            left: 0;
             position: relative;
-        }
+        }   
 
         .f_desc::after {
             position: absolute;
             content: "";
             width: 100%;
-            height: 50px;
-            background: linear-gradient(transparent, white);
+            height: 70px;
+            background: linear-gradient(transparent, #111);
             bottom: 0;
             left: 0;
+            pointer-events: none;
         }   
+
+        .cursa-veure {
+            margin: 0;
+        }
+
+        .button-veure {
+            margin: 0;
+            padding: 20px 0;  
+            background-color: #111;
+            border-top: 1px solid #111;
+        }
 
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -121,16 +152,18 @@
                     <div class="img-wrapper">
                         <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' class="card-img-top" />                  
                     </div>
-                    <div class="card-body">
+                    <div class="cursa-data">
                         <h5 class="card-title">{{ $cursa->cur_nom }}</h5>
                         <p class="card-text"><strong>Data inici: </strong>{{ $cursa->cur_data_inici }}</p>
                         <p class="card-text"><strong>Lloc: </strong>{{ $cursa->cur_lloc }}</p>
                         <p class="card-text"><strong><a href="{{ $cursa->cur_web }}">Lloc web de {{ $cursa->cur_nom }}</a></strong></p>
-                        <p class="card-text f_desc"><strong>Descripcció: </strong>{{ $cursa->cur_desc }}</p>
+                    </div>
+                    <div class="cursa-veure">
+                        <p class="card-text f_desc"><strong>Descripció: </strong>{{ $cursa->cur_desc }}</p>
                         {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
                             @csrf
                             <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>
-                            <p class="text-center align-middle">{{ Form::submit('Veure', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
+                            <p class="text-center align-middle button-veure">{{ Form::submit('Veure més', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
                         {{ Form::close() }}
                     </div>
                 </div>
