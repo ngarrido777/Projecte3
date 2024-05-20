@@ -12,7 +12,7 @@
             color: red;
         }
 
-        .hidden{
+        .hidden {
             display: none;
         }
 
@@ -20,11 +20,47 @@
             width: 70px;
         }
 
+        .card-title {
+            text-transform: uppercase;
+            text-shadow: 1px 0 3px white, 0 1px 3px white, -1px 0 3px white, 0 -1px 3px white;
+        }
+
         .card-img-top {
             width: 100%;
             height: 250px;
             object-fit: cover;
         }
+
+        .img-wrapper {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid black;
+        }
+        
+        .cursa-card {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 10px;
+            background: linear-gradient(160deg, #eee, #aaa);
+        }
+
+        .f_desc {
+            height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .f_desc::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(transparent, white);
+            bottom: 0;
+            left: 0;
+        }   
+
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -80,21 +116,23 @@
     <div class="container">
         <div class="row">
             @foreach($curses as $cursa)
-            <div class="col-md-4">
-                <div class="card">
-                    <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' class="card-img-top" />                  
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ $cursa->cur_nom }}</h5>
-                    <p class="card-text"><strong>Data inici: </strong>{{ $cursa->cur_data_inici }}</p>
-                    <p class="card-text"><strong>Lloc: </strong>{{ $cursa->cur_lloc }}</p>
-                    <p class="card-text"><strong>Descripcció: </strong>{{ $cursa->cur_desc }}</p>
-                    <p class="card-text"><strong>Web: </strong>{{ $cursa->cur_web }}</p>
-                    {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
-                        @csrf
-                        <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>
-                        <p class="text-center align-middle">{{ Form::submit('Veure', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
-                    {{ Form::close() }}
+            <div class="col-md-4 cursa-wrapper">
+                <div class="cursa-card">
+                    <div class="img-wrapper">
+                        <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' class="card-img-top" />                  
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $cursa->cur_nom }}</h5>
+                        <p class="card-text"><strong>Data inici: </strong>{{ $cursa->cur_data_inici }}</p>
+                        <p class="card-text"><strong>Lloc: </strong>{{ $cursa->cur_lloc }}</p>
+                        <p class="card-text"><strong><a href="{{ $cursa->cur_web }}">Lloc web de {{ $cursa->cur_nom }}</a></strong></p>
+                        <p class="card-text f_desc"><strong>Descripcció: </strong>{{ $cursa->cur_desc }}</p>
+                        {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
+                            @csrf
+                            <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>
+                            <p class="text-center align-middle">{{ Form::submit('Veure', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
+                        {{ Form::close() }}
+                    </div>
                 </div>
             </div>
             @endforeach
