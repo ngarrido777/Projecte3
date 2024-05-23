@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id      ('par_id');
-            $table->string  ('nif',9);
-            $table->string  ('nom',50);
-            $table->string  ('cognoms',50);
-            $table->date    ('data_naixement');
-            $table->string  ('telefon',20);
-            $table->string  ('email',200);
-            $table->boolean ('es_federat');
+            $table->string  ('par_nif',9);
+            $table->string  ('par_nom',50);
+            $table->string  ('par_cognoms',50);
+            $table->date    ('par_data_naixement');
+            $table->string  ('par_telefon',20);
+            $table->string  ('par_email',200);
+            $table->boolean ('par_es_federat');
+            $table->integer ('par_num_federat')->nullable();
         });
     }
 

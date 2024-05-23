@@ -7,6 +7,7 @@ use App\Models\Cursa;
 use App\Models\Beacon;
 use App\Models\Circuit;
 use App\Models\Registre;
+use App\Models\Categoria;
 use App\Models\Checkpoint;
 use App\Models\Inscripcio;
 use App\Models\Participant;
@@ -218,12 +219,12 @@ class WebServiceController extends Controller
 
 
         // Si el participante esta mal
-        if (!array_key_exists('nif',           $par) || strlen($par['nif']) != 9 ||
-            !array_key_exists('nom',           $par) || strlen($par['nom']) > 50 || strlen($par['nom']) < 2 ||
-            !array_key_exists('email',         $par) || strlen($par['email']) > 200 || strlen($par['email']) < 10 ||
-            !array_key_exists('telefon',       $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
-            !array_key_exists('cognoms',       $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
-            !array_key_exists('codiFederat',   $par) || (strlen($par['codiFederat']) != 5 && strlen($par['codiFederat']) != 0) ||
+        if (!array_key_exists('nif', $par) || strlen($par['nif']) != 9 ||
+            !array_key_exists('nom', $par) || strlen($par['nom']) > 50 || strlen($par['nom']) < 2 ||
+            !array_key_exists('email', $par) || strlen($par['email']) > 200 || strlen($par['email']) < 10 ||
+            !array_key_exists('telefon', $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
+            !array_key_exists('cognoms', $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
+            (array_key_exists('codiFederat', $par) && ($par['codiFederat'] < 10000 || $par['codiFederat'] > 99999)) ||
             !array_key_exists('dataNaixement', $par) || !strtotime($par['dataNaixement']) || $par['dataNaixement'] >= date('Y-m-d')) {
             $status = [
                 "code" => "403",
@@ -233,13 +234,15 @@ class WebServiceController extends Controller
         }
 
         $participant = new Participant;
-        $participant->nif = $par['nif'];
-        $participant->nom = $par['nom'];
-        $participant->cognoms = $par['cognoms'];
-        $participant->data_naixement = date("Y-m-d", strtotime($par['dataNaixement']));  
-        $participant->telefon = $par['telefon'];
-        $participant->email = $par['email'];
-        $participant->es_federat = $par['esFederat'];
+        $participant->par_nif = $par['nif'];
+        $participant->par_nom = $par['nom'];
+        $participant->par_cognoms = $par['cognoms'];
+        $participant->par_data_naixement = date("Y-m-d", strtotime($par['dataNaixement']));  
+        $participant->par_telefon = $par['telefon'];
+        $participant->par_email = $par['email'];
+        $participant->par_es_federat = array_key_exists('codiFederat', $par);
+        $participant->par_num_federat = $par['codiFederat'] ?? null;
+
         try {
             $participant->save();
         } catch (QueryException $ex) {
@@ -261,8 +264,8 @@ class WebServiceController extends Controller
         $inscripcio->ins_data = date('Y-m-d'); 
         $inscripcio->ins_dorsal = 314 + $participant->par_id;
         $inscripcio->ins_retirat = 0;
-        $inscripcio->ins_bea_id = $participant->par_id; // no reutilizables por ahora
-        $inscripcio->ins_ccc_id = $cccId;
+        $inscripcio->ins_bea_id = $participant->par_id;
+        $inscripcio->ins_ccc_id = $cccId[0]->ccc_id;
         try {
             $inscripcio->save();
         } catch (QueryException $ex) {
@@ -271,6 +274,7 @@ class WebServiceController extends Controller
                 "code" => "400",
                 "description" => "No se pudo insertar la inscripcion"
             ];
+            dd($ex->getMessage());
             return $this->sendJsonInscriure($status);
         }
 

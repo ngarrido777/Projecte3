@@ -57,7 +57,7 @@
         }
 
         .cursa-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px) rotate(1deg);
         }
 
 
@@ -89,7 +89,6 @@
             margin: 0;
             padding: 20px 0;  
             background-color: #111;
-            border-top: 1px solid #111;
         }
 
     </style>

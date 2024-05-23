@@ -20,6 +20,7 @@ class Participant extends Model
         'par_data_naixement',
         'par_telefon',
         'par_email',
-        'par_es_federat'
+        'par_es_federat',
+        'par_num_federat',
     ];
 }
