@@ -11,10 +11,11 @@ use App\Models\Participant;
 use App\Models\Circuit_Categoria;
 use \Illuminate\Database\QueryException;
 
-    // Errores
-    const MSG_INF = 'msg_inf';
-    const MSG_ADV = 'msg_adv';
-    const MSG_ERR = 'msg_err';
+// Errores
+const MSG_INF = 'msg_inf';
+const MSG_ADV = 'msg_adv';
+const MSG_ERR = 'msg_err';
+
 class InscripcioController extends Controller
 {
     private function inscriureView($cursa,$cats,$code = null,$mensaje = null,$fields = null) {
@@ -91,9 +92,7 @@ class InscripcioController extends Controller
             $inscripcio = new Inscripcio;
             $inscripcio->ins_par_id = $participant->par_id;
             $inscripcio->ins_data = date('Y-m-d'); 
-            $inscripcio->ins_dorsal = 314 + $participant->par_id;
             $inscripcio->ins_retirat = 0;
-            $inscripcio->ins_bea_id = $participant->par_id; // no reutilizables por ahora
             $inscripcio->ins_ccc_id = $cccId[0]->ccc_id;
 
             try {
@@ -112,3 +111,4 @@ class InscripcioController extends Controller
         return $this->inscriureView($c[0], $categories, null, null, $fields);
     }
 }
+

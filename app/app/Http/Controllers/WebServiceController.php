@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Cursa;
 use App\Models\Beacon;
 use App\Models\Circuit;
@@ -203,7 +204,6 @@ class WebServiceController extends Controller
         // TODO: Validar circuit y catId
         // Si no trae cursaId o la cursa no existe
         if (!array_key_exists('participant', $decode) ||
-            !array_key_exists('cursaId',     $decode) || Cursa::where('cur_id',$decode['cursaId'])->get()->count() == 0 ||
             !array_key_exists('circuitId',   $decode) || Circuit::where('cir_id',$decode['circuitId'])->get()->count() == 0 ||
             !array_key_exists('catId',       $decode) || Categoria::where('cat_id',$decode['catId'])->get()->count() == 0) {
             $status = [
@@ -212,7 +212,6 @@ class WebServiceController extends Controller
             ];
             return $this->sendJsonInscriure($status);
         }
-        $cursaId = $decode['cursaId'];
         $circuitId = $decode['circuitId'];
         $catId = $decode['catId'];
         $par = $decode['participant'];
@@ -225,7 +224,8 @@ class WebServiceController extends Controller
             !array_key_exists('telefon', $par) || !is_numeric($par['telefon']) || strlen($par['telefon']) != 9 ||
             !array_key_exists('cognoms', $par) || strlen($par['cognoms']) > 50 || strlen($par['cognoms']) < 2 ||
             (array_key_exists('codiFederat', $par) && ($par['codiFederat'] < 10000 || $par['codiFederat'] > 99999)) ||
-            !array_key_exists('dataNaixement', $par) || !strtotime($par['dataNaixement']) || $par['dataNaixement'] >= date('Y-m-d')) {
+            !array_key_exists('dataNaixement', $par) || !strtotime($par['dataNaixement']) ||
+            date("Y-m-d", strtotime($par['dataNaixement'])) >= date('Y-m-d')) {
             $status = [
                 "code" => "403",
                 "description" => "Algún dato del participante no es correcto"
@@ -262,9 +262,7 @@ class WebServiceController extends Controller
         $inscripcio = new Inscripcio;
         $inscripcio->ins_par_id = $participant->par_id;
         $inscripcio->ins_data = date('Y-m-d'); 
-        $inscripcio->ins_dorsal = 314 + $participant->par_id;
         $inscripcio->ins_retirat = 0;
-        $inscripcio->ins_bea_id = $participant->par_id;
         $inscripcio->ins_ccc_id = $cccId[0]->ccc_id;
         try {
             $inscripcio->save();

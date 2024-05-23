@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id                  ('ins_id');
             $table->unsignedBigInteger  ('ins_par_id');
             $table->date                ('ins_data');
-            $table->integer             ('ins_dorsal');
+            $table->integer             ('ins_dorsal')->nullable();
             $table->boolean             ('ins_retirat');
-            $table->unsignedBigInteger  ('ins_bea_id');
+            $table->unsignedBigInteger  ('ins_bea_id')->nullable();
             $table->unsignedBigInteger  ('ins_ccc_id');
             /* FK */
             $table->foreign('ins_par_id')->references('par_id')->on('participants');
