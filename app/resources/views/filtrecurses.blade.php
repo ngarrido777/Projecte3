@@ -21,22 +21,26 @@
         }
 
         .img_eliminar{
-            width: 10px;
-            height: 10px;
+            width: 25px;
+            height: 25px;
         }
     </style>
     <script>
-        /*document.addEventListener('DOMContentLoaded', f_main);
+        document.addEventListener('DOMContentLoaded', f_main);
 
         function f_main()
         {
-            document.getElementsByName("f_oberta").addEventListener('click', f_coberta);
-            
-            function f_coberta ()
-            {
-                alert("ok");
-            }
-        }*/
+            let confirmar_b = document.querySelectorAll('.confirmar');
+
+            confirmar_b.forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    let conf = confirm('Segur que vols realitzar aquesta acció ?');
+                    if (!conf) {
+                        event.preventDefault();
+                    }
+                });
+            });
+        }
     </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -82,7 +86,7 @@
         <table class="table table-hover table-striped">
             <thead>
                 <tr>
-                    <th scope="col" class="text-center"><img src="{{ asset('../img/eliminar.png') }}"></th>
+                    <th scope="col" class="text-center"><img src="{{ asset('img/eliminar.png') }}" class="img_eliminar"></th>
                     <th scope="col" class="text-center">Nom</th>
                     <th scope="col" class="text-center">Tipus</th>
                     <th scope="col" class="text-center">Data Inici</th>
@@ -120,7 +124,7 @@
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Obrir', ['name' => 'f_oberta']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Obrir', ['name' => 'f_oberta', 'class' => 'confirmar']) }}</td>
                             {{ Form::close() }}
                         @else
                             <td class="text-center align-middle"></td>
@@ -130,12 +134,12 @@
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Cancelar', ['name' => 'f_tancada']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Tancada', ['name' => 'f_tancada', 'class' => 'confirmar']) }}</td>
                             {{ Form::close() }}
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Cancelar', ['name' => 'f_cancelada']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Cancelar', ['name' => 'f_cancelada', 'class' => 'confirmar']) }}</td>
                             {{ Form::close() }}
                         @else
                             <td class="text-center align-middle"></td>
