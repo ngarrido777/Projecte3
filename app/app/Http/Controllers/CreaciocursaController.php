@@ -7,8 +7,12 @@ use App\Models\Esport;
 use App\Models\Estat_cursa;
 use App\Models\Cursa;
 use App\Models\Usuari;
+use App\Models\Inscripcio;
+use App\Models\Circuit_categoria;
 use Session;
 use \Illuminate\Database\QueryException;
+use \Illuminate\Support\Facades\DB;
+
 
 class CreaciocursaController extends Controller
 {
@@ -182,7 +186,7 @@ class CreaciocursaController extends Controller
         ]);
     }
 
-    public function filtrecurses()
+    public function filtrecurses(Request $request)
     {
         $ok = true;
         $usu = Session::get('usu');
@@ -191,6 +195,24 @@ class CreaciocursaController extends Controller
         }
         if(!$usu->usr_admin){
             return redirect()->route('filtrecursescorredors');
+        }
+        //Obrir inscripció
+        if(isset($_POST["f_oberta"])){
+            $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
+            $cursa->cur_est_id = 2;
+            $cursa->save();
+        }
+        //Cancel·lar cursa
+        if(isset($_POST["f_cancelada"])){
+            $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
+            $cursa->cur_est_id = 6;
+            $cursa->save();
+        }
+        //Inscripció Tancada
+        if(isset($_POST["f_tancada"])){
+            $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
+            $cursa->cur_est_id = 3;
+            $cursa->save();
         }
         //Array amb els ultims camps del filtre
         $last = array(
@@ -235,7 +257,32 @@ class CreaciocursaController extends Controller
                 $curses = $query->orderBy('cur_data_inici','ASC')->get();
             }
         }
+        //Eliminar Curses seleccionades
+        if(isset($_POST["f_elimina"])){
+            $ids_curses = $_POST['e_ck'];
+            foreach ($curses_id as $cur_id) {
+                $incripcions = Inscripcio::join('circuits_categories', 'inscripcions.ins_ccc_id', '=', 'circuits_categories.ccc_id')
+                ->join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
+                ->where('circuits.cir_cur_id',$cur_id)->get();
+            
+                $circiuts_categories = Circuit_categoria::join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
+                    ->where('circuits.cir_cur_id',$cur_id)->get();
+            
+                $circuits = Circuit::where('cir_cur_id',$cur_id)->get();
 
+                foreach ($incripcions as $ins) {
+                    dd($ins->delete());
+                }
+
+                foreach ($circiuts_categories as $ccc) {
+                    dd($ccc->delete());
+                }
+
+                foreach ($circuits as $cir) {
+                    dd($cir->delete());
+                }
+            }
+        }
         //Return a la view
         return view('filtrecurses', [
             'estats' => $est_names,
