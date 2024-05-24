@@ -66,6 +66,12 @@
                 {{ Form::label('l_web', 'Web:') }}
                 <p class='salt'>{{$cursa->cur_web}}</p>
             </div>
+            <div>
+                {{ Form::open( ['url' => 'filtrecursescorredors/','method' => 'post']) }}
+                    @csrf
+                    {{ Form::submit('Tornar', ['name' => 'f_tornar']) }}
+                {{ Form::close() }}
+            </div>
         </div>
         <div>
             <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' />
