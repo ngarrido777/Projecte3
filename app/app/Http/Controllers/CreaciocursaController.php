@@ -259,6 +259,12 @@ class CreaciocursaController extends Controller
             $cursa->cur_est_id = ESTAT_TANCADA;
             $cursa->save();
         }
+        //En Curs
+        if(isset($_POST["f_iniciar"])){
+            $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
+            $cursa->cur_est_id = 4;
+            $cursa->save();
+        }
         //Array amb els ultims camps del filtre
         $last = array(
             'l_nom_lloc' => '',
