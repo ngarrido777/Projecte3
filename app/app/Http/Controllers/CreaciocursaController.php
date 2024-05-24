@@ -9,10 +9,18 @@ use App\Models\Cursa;
 use App\Models\Usuari;
 use App\Models\Inscripcio;
 use App\Models\Circuit_categoria;
+use App\Models\Circuit;
 use Session;
 use \Illuminate\Database\QueryException;
 use \Illuminate\Support\Facades\DB;
 
+// Estats
+const ESTAT_PREPARACIO = 1;
+const ESTAT_OBERTA = 2;
+const ESTAT_TANCADA = 3;
+const ESTAT_CURS = 4;
+const ESTAT_FINALITZADA = 5;
+const ESTAT_CANCELADA = 6;
 
 class CreaciocursaController extends Controller
 {
@@ -190,28 +198,65 @@ class CreaciocursaController extends Controller
     {
         $ok = true;
         $usu = Session::get('usu');
+        
         if($usu == null){
             return redirect()->route('filtrecursescorredors');
         }
+
         if(!$usu->usr_admin){
             return redirect()->route('filtrecursescorredors');
         }
+        
+        //Eliminar Curses seleccionades
+        if(isset($_POST["f_elimina"])){
+            $curses_id = $_POST['e_ck'];
+            foreach ($curses_id as $cur_id) {
+                $cur = Cursa::where('cur_id',$cur_id)->first();
+                if (is_null($cur) || $cur->cur_est_id != ESTAT_PREPARACIO) {
+                    break;
+                }
+                $incripcions = Inscripcio::join('circuits_categories', 'inscripcions.ins_ccc_id', '=', 'circuits_categories.ccc_id')
+                ->join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
+                ->where('circuits.cir_cur_id',$cur_id)->get();
+            
+                $circiuts_categories = Circuit_categoria::join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
+                    ->where('circuits.cir_cur_id',$cur_id)->get();
+            
+                $circuits = Circuit::where('cir_cur_id',$cur_id)->get();
+
+                foreach ($incripcions as $ins) {
+                    $ins->delete();
+                }
+
+                foreach ($circiuts_categories as $ccc) {
+                    $ccc->delete();
+                }
+
+                foreach ($circuits as $cir) {
+                    $cir->delete();
+                }
+
+                if (!is_null($cur))
+                    $cur->delete();
+            }
+        }
+
         //Obrir inscripció
         if(isset($_POST["f_oberta"])){
             $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
-            $cursa->cur_est_id = 2;
+            $cursa->cur_est_id = ESTAT_OBERTA;
             $cursa->save();
         }
         //Cancel·lar cursa
         if(isset($_POST["f_cancelada"])){
             $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
-            $cursa->cur_est_id = 6;
+            $cursa->cur_est_id = ESTAT_CANCELADA;
             $cursa->save();
         }
         //Inscripció Tancada
         if(isset($_POST["f_tancada"])){
             $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
-            $cursa->cur_est_id = 3;
+            $cursa->cur_est_id = ESTAT_TANCADA;
             $cursa->save();
         }
         //Array amb els ultims camps del filtre
@@ -255,32 +300,6 @@ class CreaciocursaController extends Controller
             }
             if($ok){
                 $curses = $query->orderBy('cur_data_inici','ASC')->get();
-            }
-        }
-        //Eliminar Curses seleccionades
-        if(isset($_POST["f_elimina"])){
-            $ids_curses = $_POST['e_ck'];
-            foreach ($curses_id as $cur_id) {
-                $incripcions = Inscripcio::join('circuits_categories', 'inscripcions.ins_ccc_id', '=', 'circuits_categories.ccc_id')
-                ->join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
-                ->where('circuits.cir_cur_id',$cur_id)->get();
-            
-                $circiuts_categories = Circuit_categoria::join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
-                    ->where('circuits.cir_cur_id',$cur_id)->get();
-            
-                $circuits = Circuit::where('cir_cur_id',$cur_id)->get();
-
-                foreach ($incripcions as $ins) {
-                    dd($ins->delete());
-                }
-
-                foreach ($circiuts_categories as $ccc) {
-                    dd($ccc->delete());
-                }
-
-                foreach ($circuits as $cir) {
-                    dd($cir->delete());
-                }
             }
         }
         //Return a la view
@@ -420,7 +439,7 @@ class CreaciocursaController extends Controller
         //Agafar la session
         $usu = Session::get('usu');
         //Mostrar curses obertes per defecte
-        $curses = Cursa::where('cur_est_id', 2)->orderBy('cur_data_inici','DESC')->get();
+        $curses = Cursa::where('cur_est_id', ESTAT_OBERTA)->orderBy('cur_data_inici','DESC')->get();
         //Array amb els ultims camps del filtre
         $last = array(
             'l_nom' => '',

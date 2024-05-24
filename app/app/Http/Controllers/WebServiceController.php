@@ -256,14 +256,22 @@ class WebServiceController extends Controller
         $cccId = Circuit_Categoria::select('ccc_id')
             ->where('ccc_cat_id',$decode['catId'])
             ->where('ccc_cir_id',$decode['circuitId'])
-            ->get()
+            ->first()
         ;
+
+        if (is_null($cccId)) {
+            $status = [
+                "code" => "401",
+                "description" => "Este circuito no acepta esta categoria"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
 
         $inscripcio = new Inscripcio;
         $inscripcio->ins_par_id = $participant->par_id;
         $inscripcio->ins_data = date('Y-m-d'); 
         $inscripcio->ins_retirat = 0;
-        $inscripcio->ins_ccc_id = $cccId[0]->ccc_id;
+        $inscripcio->ins_ccc_id = $cccId->ccc_id;
         try {
             $inscripcio->save();
         } catch (QueryException $ex) {
