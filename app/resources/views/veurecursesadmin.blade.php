@@ -52,11 +52,13 @@
             </div>
             <div>
                 {{ Form::label('l_cir', 'Número circuits:') }}
-                <p class='salt'></p>
+                <p class='salt'>{{$n_cir}}</p>
             </div>
             <div>
                 {{ Form::label('l_dist', 'Distancies:') }}
-                <p class='salt'></p>
+                @foreach($dist as $d)
+                    <p class='salt'>{{$d->cir_distancia}}m</p>
+                @endforeach
             </div>
             <div>
                 {{ Form::label('l_n_ins', 'Número inscrits:') }}
@@ -69,6 +71,12 @@
             <div>
                 {{ Form::label('l_estat', 'Estat:') }}
                 <p class='salt'>{{$cursa->estat->est_nom}}</p>
+            </div>
+            <div>
+                {{ Form::open( ['url' => 'filtrecurses/','method' => 'post']) }}
+                    @csrf
+                    {{ Form::submit('Tornar', ['name' => 'f_tornar']) }}
+                {{ Form::close() }}
             </div>
         </div>
         <div>

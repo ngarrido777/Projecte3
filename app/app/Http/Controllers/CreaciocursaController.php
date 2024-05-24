@@ -548,14 +548,15 @@ class CreaciocursaController extends Controller
                         ->where('cir_cur_id', $cursa->cur_id);
                 }));
         }))->count();
-/*
-        $n_cir = Circuit::where;
 
-        $dist = ;
-        */
+        $dist = Circuit::where('cir_cur_id', $cursa->cur_id)->get();
+        $n_cir = count($dist); 
+
         return view('veurecursesadmin', [
             'cursa' => $cursa,
-            'nins' => $n_ins
+            'nins' => $n_ins,
+            'n_cir' => $n_cir,
+            'dist' => $dist
         ]);
     }
 }
