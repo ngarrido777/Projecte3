@@ -198,15 +198,12 @@ class CreaciocursaController extends Controller
     {
         $ok = true;
         $usu = Session::get('usu');
-
         if($usu == null){
-            return redirect()->route('filtrecursescorredors');
+            return redirect()->route('login');
         }
-
         if(!$usu->usr_admin){
-            return redirect()->route('filtrecursescorredors');
-        }
-        
+            return redirect()->route('login');
+        }       
         //Eliminar Curses seleccionades
         if(isset($_POST["f_elimina"])){
             $curses_id = $_POST['e_ck'];
@@ -524,6 +521,41 @@ class CreaciocursaController extends Controller
             'usu'   => $usu,
             'last'  => $last,
             'error' => $error
+        ]);
+    }
+
+    public function veurecursesadmin($id)
+    {
+        $usu = Session::get('usu');
+        if($usu == null){
+            return redirect()->route('login');
+        }
+        if(!$usu->usr_admin){
+            return redirect()->route('login');
+        }
+        //Agafar la cursa per l'id
+        $cursa = Cursa::where('cur_id', $id)->first();
+        if($cursa == null){
+            return redirect()->route('filtrecurses');
+        }
+
+        $n_ins = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($cursa) {
+            $query->from('circuits_categories')
+                ->select('ccc_id')
+                ->whereIn('ccc_cir_id',(function ($query) use ($cursa) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $cursa->cur_id);
+                }));
+        }))->count();
+/*
+        $n_cir = Circuit::where;
+
+        $dist = ;
+        */
+        return view('veurecursesadmin', [
+            'cursa' => $cursa,
+            'nins' => $n_ins
         ]);
     }
 }

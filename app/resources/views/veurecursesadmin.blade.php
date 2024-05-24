@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veure cursa</title>
+    <title>Veure cursa admin</title>
     <style>
         img{
             width: 500px;
@@ -35,6 +35,10 @@
                 <p class='salt'>{{$cursa->cur_nom}}</p>
             </div>
             <div>
+                {{ Form::label('l_datainici', 'Tipus:') }}
+                <p class='salt'>{{$cursa->esport->esp_nom}}</p>
+            </div>
+            <div>
                 {{ Form::label('l_datainici', 'Data Inici:') }}
                 <p class='salt'>{{$cursa->cur_data_inici}}</p>
             </div>
@@ -47,24 +51,24 @@
                 <p class='salt'>{{$cursa->cur_lloc}}</p>
             </div>
             <div>
-                {{ Form::label('l_esport', 'Esport:') }}
-                <p class='salt'>{{$cursa->esport->esp_nom}}</p>
+                {{ Form::label('l_cir', 'Número circuits:') }}
+                <p class='salt'></p>
             </div>
             <div>
-                {{ Form::label('l_estat', 'Estat:') }}
-                <p class='salt'>{{$cursa->estat->est_nom}}</p>
+                {{ Form::label('l_dist', 'Distancies:') }}
+                <p class='salt'></p>
             </div>
             <div>
-                {{ Form::label('l_descripcio', 'Descripció:') }}
-                <p class='salt'>{{$cursa->cur_desc}}</p>
+                {{ Form::label('l_n_ins', 'Número inscrits:') }}
+                <p class='salt'>{{$nins}}</p>
             </div>
             <div>
                 {{ Form::label('l_limit', 'Limit:') }}
                 <p class='salt'>{{$cursa->cur_limit_inscr}}</p>
             </div>
             <div>
-                {{ Form::label('l_web', 'Web:') }}
-                <p class='salt'>{{$cursa->cur_web}}</p>
+                {{ Form::label('l_estat', 'Estat:') }}
+                <p class='salt'>{{$cursa->estat->est_nom}}</p>
             </div>
         </div>
         <div>
