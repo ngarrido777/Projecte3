@@ -198,7 +198,7 @@ class CreaciocursaController extends Controller
     {
         $ok = true;
         $usu = Session::get('usu');
-        
+
         if($usu == null){
             return redirect()->route('filtrecursescorredors');
         }
@@ -258,6 +258,22 @@ class CreaciocursaController extends Controller
             $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
             $cursa->cur_est_id = ESTAT_TANCADA;
             $cursa->save();
+
+            $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) {
+                $query->from('circuits_categories')
+                    ->select('ccc_id')
+                    ->whereIn('ccc_cir_id',(function ($query) {
+                        $query->from('circuits')
+                            ->select('cir_id')
+                            ->where('cir_cur_id','=',4);
+                    }));
+            }))->get();
+
+            dd($ins_cur);
+
+            foreach ($ins_cur as $value) {
+                
+            }
         }
         //En Curs
         if(isset($_POST["f_iniciar"])){
