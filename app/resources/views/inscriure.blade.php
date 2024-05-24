@@ -99,7 +99,7 @@
     <body>
         <div class="header">
             <p class="h2">Inscripció a {{ $data['cursa']->cur_nom }}</p>
-
+            <p> Inscrits: {{ $fields['inscrits'] }} / {{ $data['cursa']->cur_limit_inscr }} </p>
             @if (!is_null($message))
                 <p class="{{ $message['type'] }}">{{ $message['text'] }}</p>
             @endif
@@ -155,7 +155,11 @@
                             <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
                         </select>
                     </div>
-                    {{ Form::submit('Inscribirm!', ['name' => 'f_ins']) }}
+                    @if ($fields['inscrits'] >= $data['cursa']->cur_limit_inscr)
+                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins','disabled' => 'true']) }}
+                    @else
+                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins']) }}
+                    @endif
                 </div>
                 <div>
                     <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" />
