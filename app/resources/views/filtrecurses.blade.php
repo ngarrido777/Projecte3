@@ -97,13 +97,18 @@
                     <th scope="col" class="text-center">Modificar</th>
                     <th scope="col" class="text-center">Obrir inscripció</th>
                     <th scope="col" class="text-center">Tancar inscripcions</th>
+                    <th scope="col" class="text-center">En curs</th>
                     <th scope="col" class="text-center">Cancelar</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($curses as $cursa)
                     <tr>
-                        <td class="text-center align-middle"><input type="checkbox" name="e_ck[]" value="{{ $cursa->cur_id  }}"></td>
+                        @if ($cursa->cur_est_id == 1)
+                            <td class="text-center align-middle"><input type="checkbox" name="e_ck[]" value="{{ $cursa->cur_id  }}"></td>
+                        @else
+                            <td class="text-center align-middle"></td>
+                        @endif
                         <td class="text-center align-middle">{{ $cursa->cur_nom }}</td>
                         <td class="text-center align-middle">{{ $cursa->esport->esp_nom }}</td>
                         <td class="text-center align-middle">{{ $cursa->cur_data_inici }}</td>
@@ -130,12 +135,25 @@
                             <td class="text-center align-middle"></td>
                             <td class="text-center align-middle"></td>
                         @endif
-                        @if ($cursa->cur_est_id == 2 || $cursa->cur_est_id == 3 || $cursa->cur_est_id == 4)
+                        @if ($cursa->cur_est_id == 2)
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Tancada', ['name' => 'f_tancada', 'class' => 'confirmar']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Tancar', ['name' => 'f_tancada', 'class' => 'confirmar']) }}</td>
                             {{ Form::close() }}
+                        @else
+                            <td class="text-center align-middle"></td>
+                        @endif
+                        @if ($cursa->cur_est_id == 3)
+                            {{ Form::open( ['method' => 'post'] ) }}
+                                @csrf
+                                <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Iniciar', ['name' => 'f_iniciar', 'class' => 'confirmar']) }}</td>
+                            {{ Form::close() }}
+                        @else
+                            <td class="text-center align-middle"></td>
+                        @endif
+                        @if ($cursa->cur_est_id == 2 || $cursa->cur_est_id == 3 || $cursa->cur_est_id == 4)
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
