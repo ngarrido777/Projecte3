@@ -15,6 +15,13 @@ use App\Models\Participant;
 use App\Models\Circuit_categoria;
 use \Illuminate\Database\QueryException;
 
+// Estats
+const ESTAT_PREPARACIO = 1;
+const ESTAT_OBERTA = 2;
+const ESTAT_TANCADA = 3;
+const ESTAT_CURS = 4;
+const ESTAT_FINALITZADA = 5;
+const ESTAT_CANCELADA = 6;
 class WebServiceController extends Controller
 {
 
@@ -34,19 +41,26 @@ class WebServiceController extends Controller
         return response()->json([
             "circuits" => $circuits,
             "status" => $status,
-        ]);
+        ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
+    }
+
+    private function sendJsonResultats($resultats,$status) {
+        return response()->json([
+            "resultats" => $resultats,
+            "status" => $status,
+        ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
     }
 
     private function sendJsonInscriure($status) {
         return response()->json([
             "status" => $status,
-        ]);
+        ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
     }
 
     private function sendJsonParticipantCheckpoint($status) {
         return response()->json([
             "status" => $status,
-        ]);
+        ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
     }
 
 
@@ -404,9 +418,53 @@ class WebServiceController extends Controller
         return $this->sendJsonParticipantCheckpoint($status);
     }
 
-    public function getResultats($json = null) {
+    public function getResultats($id = null) {
 
-        // TODO
+        if (!is_numeric($id)) {
+            $status = [
+                "code" => "666",
+                "description" => "Debes pasar un id de cursa"
+            ];
+            return $this->sendJsonResultats([],$status);
+        }
+
+        if (count($cursa = Cursa::where('cur_id',$id)->get()) <= 0) {
+            $status = [
+                "code" => "555",
+                "description" => "La cursa no existe"
+            ];
+            return $this->sendJsonResultats([],$status);
+        }
+
+        if ($cursa[0]->cur_est_id != ESTAT_CURS || $cursa[0]->cur_est_id != ESTAT_CURS) {
+            $status = [
+                "code" => "555",
+                "description" => "La cursa no está en curs ni ha acabat"
+            ];
+            return $this->sendJsonResultats([],$status);
+        }
+
+        $registres = Registre::whereIn('reg_chk_id', (function ($query) use ($cursa) {
+            $query->from('checkpoints')
+                ->select('chk_id')
+                ->whereIn('chk_cir_id', (function ($query) use ($cursa) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $cursa[0]->cur_id);
+                }));
+        }))->get();
+
+        foreach ($registres as $key => $registre) {
+            echo $registre->inscripcio->circuit_categoria->circuit->cir_nom . " - " . $registre->inscripcio->circuit_categoria->categoria->cat_nom . "\n";
+            echo $registre->inscripcio->participant->par_nom . " - " . $registre->checkpoint->chk_pk . "\n";
+            echo "\n";
+        }
+
+        $status = [
+            "code" => "222",
+            "description" => "bine"
+        ];
+        return $this->sendJsonResultats([],$status);
 
     }
 }
