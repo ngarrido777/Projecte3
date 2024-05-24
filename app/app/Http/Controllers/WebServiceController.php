@@ -212,6 +212,40 @@ class WebServiceController extends Controller
             ];
             return $this->sendJsonInscriure($status);
         }
+
+        $ccc = Circuit_Categoria::where('ccc_cat_id',$decode['catId'])
+            ->where('ccc_cir_id',$decode['circuitId'])
+            ->first()
+        ;
+
+        if (is_null($ccc)) {
+            $status = [
+                "code" => "401",
+                "description" => "Este circuito no acepta esta categoria"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+
+        $cursa = $ccc->circuit->cursa;
+
+        $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($cursa) {
+            $query->from('circuits_categories')
+                ->select('ccc_id')
+                ->whereIn('ccc_cir_id', (function ($query) use ($cursa) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $cursa->cur_id);
+                }));
+        }))->get();
+
+        if (count($ins_cur) >= $cursa->cur_limit_inscr) {
+            $status = [
+                "code" => "400",
+                "description" => "Ya se ha alcanado el limite de inscripciones"
+            ];
+            return $this->sendJsonInscriure($status);
+        }
+
         $circuitId = $decode['circuitId'];
         $catId = $decode['catId'];
         $par = $decode['participant'];
@@ -253,25 +287,11 @@ class WebServiceController extends Controller
             return $this->sendJsonInscriure($status);
         }
 
-        $cccId = Circuit_Categoria::select('ccc_id')
-            ->where('ccc_cat_id',$decode['catId'])
-            ->where('ccc_cir_id',$decode['circuitId'])
-            ->first()
-        ;
-
-        if (is_null($cccId)) {
-            $status = [
-                "code" => "401",
-                "description" => "Este circuito no acepta esta categoria"
-            ];
-            return $this->sendJsonInscriure($status);
-        }
-
         $inscripcio = new Inscripcio;
         $inscripcio->ins_par_id = $participant->par_id;
         $inscripcio->ins_data = date('Y-m-d'); 
         $inscripcio->ins_retirat = 0;
-        $inscripcio->ins_ccc_id = $cccId->ccc_id;
+        $inscripcio->ins_ccc_id = $ccc->ccc_id;
         try {
             $inscripcio->save();
         } catch (QueryException $ex) {
@@ -382,5 +402,11 @@ class WebServiceController extends Controller
             "description" => "Todo ok"
         ];
         return $this->sendJsonParticipantCheckpoint($status);
+    }
+
+    public function getResultats($json = null) {
+
+        // TODO
+
     }
 }

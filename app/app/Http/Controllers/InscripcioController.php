@@ -37,6 +37,16 @@ class InscripcioController extends Controller
         if (!is_numeric($id) || count($c = Cursa::where('cur_id',$id)->get()) == 0)
             return redirect('/');
 
+        $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($id) {
+            $query->from('circuits_categories')
+                ->select('ccc_id')
+                ->whereIn('ccc_cir_id', (function ($query) use ($id) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $id);
+                }));
+        }))->count();
+
         $fields = [
             'nif' => isset($_POST['f_nif']) ? $_POST['f_nif'] : "",
             'nom' => isset($_POST['f_nom']) ? $_POST['f_nom'] : "",
@@ -45,11 +55,18 @@ class InscripcioController extends Controller
             'cognoms' => isset($_POST['f_cognoms']) ? $_POST['f_cognoms'] : "",
             'federat' => isset($_POST['f_federat']) ? true : false,
             'codiFederat' => isset($_POST['f_num_federat']) ? $_POST['f_num_federat'] : "",
-            'naix' => isset($_POST['f_naix']) ? $_POST['f_naix'] : ""
+            'naix' => isset($_POST['f_naix']) ? $_POST['f_naix'] : "",
+            'inscrits' => $ins_cur
         ];
 
         $categories = Categoria::where('cat_esp_id',$c[0]->cur_esp_id)->get();
         if (isset($_POST['f_ins'])) {
+
+            if ($ins_cur >= $c[0]->cur_limit_inscr) {
+                $text = "No puedes inscribirte ya que el registro está lleno";
+                return $this->inscriureView($c[0], $categories, MSG_ERR, $text, $fields);
+            }
+
             if (!isset($_POST['f_nif']) || strlen($_POST['f_nif']) != 9 ||
                 !isset($_POST['f_nom']) || strlen($_POST['f_nom']) > 50 || strlen($_POST['f_nom']) < 2 ||
                 !isset($_POST['f_email']) || strlen($_POST['f_email']) > 200 || strlen($_POST['f_email']) < 10 ||

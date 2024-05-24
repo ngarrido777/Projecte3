@@ -256,20 +256,20 @@ class CreaciocursaController extends Controller
             $cursa->cur_est_id = ESTAT_TANCADA;
             $cursa->save();
 
-            $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) {
+            $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($cursa) {
                 $query->from('circuits_categories')
                     ->select('ccc_id')
-                    ->whereIn('ccc_cir_id',(function ($query) {
+                    ->whereIn('ccc_cir_id', (function ($query) use ($cursa) {
                         $query->from('circuits')
                             ->select('cir_id')
-                            ->where('cir_cur_id','=',4);
+                            ->where('cir_cur_id', $cursa->cur_id);
                     }));
             }))->get();
 
-            dd($ins_cur);
-
-            foreach ($ins_cur as $value) {
-                
+            foreach ($ins_cur as $key => $i) {
+                $i->ins_dorsal = 500 + $key;
+                $i->ins_bea_id = $i->ins_id;
+                $i->save();
             }
         }
         //En Curs
