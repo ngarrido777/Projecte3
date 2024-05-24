@@ -115,7 +115,7 @@
                         <td class="text-center align-middle">{{ $cursa->cur_lloc }}</td>
                         <td class="text-center align-middle">{{ $cursa->cur_limit_inscr }}</td>
                         <td class="text-center align-middle">{{ $cursa->estat->est_nom }}</td>
-                        {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
+                        {{ Form::open(['url' => '/veurecursesadmin/' . $cursa->cur_id, 'method' => 'post']) }}
                             @csrf
                             <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
                             <td class="text-center align-middle">{{ Form::submit('Veure', ['name' => 'f_veure']) }}</td>
