@@ -33,6 +33,40 @@
                     })
                     .catch(error => console.error('Error:', error));
             });
+
+            document.getElementById('afegirfila').addEventListener('click', function(event) {
+                event.preventDefault();
+                let table = document.getElementById('t_circuits').getElementsByTagName('tbody')[0];
+                let newRow = table.insertRow();
+                let noms = ['cc_dist','cc_nom','cc_preu','cc_temps','cc_categoria','cc_ckp'];
+
+                for (let i = 0; i < 6; i++) {
+                    let newCell = newRow.insertCell(i);
+                    newCell.classList.add('editable');
+                    let input = document.createElement('input');
+                    switch(i){
+                        case 0:
+                        case 2:
+                        case 5:
+                            input.type = 'number';
+                            break;
+                        case 1:
+                        case 3:
+                        case 4:
+                            input.type = 'text';
+                            break;
+                    }
+                    input.name = noms[i];
+                    newCell.appendChild(input);
+                }
+            });
+
+            document.getElementById('t_circuits').addEventListener('click', function(event) {
+                if (event.target.tagName === 'TD' && event.target.classList.contains('editable')) {
+                    let input = event.target.querySelector('input');
+                    input.focus();
+                }
+            });
         }
     </script>
     <style>
@@ -46,12 +80,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container">
+    <div class="ml-3">
         <h1 class="p-3 mt-4">Creació de les Curses</h1>
         {{ Form::open(['url' => 'creaciocurses', 'method' => 'post', 'files' => true]) }}
             @csrf
             <div class="row mt-5">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div>
                         {{ Form::label('l_nom', 'Nom:') }}
                         {{ Form::text('c_nom', $ultims_camps['l_nom']) }}
@@ -96,7 +130,7 @@
                     </div>
                     <div>
                         {{ Form::label('l_limit', 'Limit:') }}
-                        {{ Form::text('c_limit', $ultims_camps['l_limit']) }}
+                        {{ Form::number('c_limit', $ultims_camps['l_limit']) }}
                         {{ Form::label(null, $errors['e_limit'], ['class' => 'error']) }}
                     </div>
                     <div>
@@ -110,8 +144,8 @@
                         {{ Form::label(null, $errors['e_web'], ['class' => 'error']) }}
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <table class="table" id="t_circuits">
+                <div class="col-md-9">
+                    <table class="table table-responsive" id="t_circuits">
                         <thead>
                             <tr>
                                 <th>Distància</th>
@@ -134,15 +168,18 @@
                     {{ Form::submit('Crear', ['name' => 'c_crear', 'class' => 'btn btn-primary']) }}
                 </div>
                 <div>
-                    
-                </div>
-                <div>
                     @if($ok)
                         {{ Form::label('l_creada', 'Cursa creada correctament !') }}
                     @endif
                 </div>
             </div>
         {{ Form::close() }}
+        <div>
+            {{ Form::open( ['url' => 'filtrecurses/','method' => 'post']) }}
+                @csrf
+                {{ Form::submit('Tornar', ['name' => 'c_tornar', 'class' => 'btn btn-secondary']) }}
+            {{ Form::close() }}
+        </div>
     </div>
 </body>
 </html>

@@ -77,6 +77,11 @@ class CreaciocursaController extends Controller
             $errors['e_limit'] = 'El limit ha de ser numeric';
             $ok = false;
         }
+        if(!is_int($limit))
+        {
+            $errors['e_limit'] = 'El limit no pot ser decimal';
+            $ok = false;
+        }
         //Validar imatge
         $foto = null;
         if ($request->hasFile('c_foto') && $request->file('c_foto')->isValid()) {
@@ -116,6 +121,13 @@ class CreaciocursaController extends Controller
     public function creaciocurses(Request $request)
     {
         $ok = true;
+        $usu = Session::get('usu');
+        if($usu == null){
+            return redirect()->route('login');
+        }
+        if(!$usu->usr_admin){
+            return redirect()->route('login');
+        }  
         //Array de errors
         $errors = array(
             'e_nom' => '',
