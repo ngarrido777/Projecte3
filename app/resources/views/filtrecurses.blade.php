@@ -169,5 +169,9 @@
         </table>
         {{ Form::submit('Eliminar', ['name' => 'f_elimina']) }}
     {{ Form::close() }}
+    {{ Form::open( ['url' => 'creaciocurses/','method' => 'post']) }}
+        @csrf
+        {{ Form::submit('Nova Cursa', ['name' => 'f_crearcursa']) }}
+    {{ Form::close() }}
 </body>
 </html>

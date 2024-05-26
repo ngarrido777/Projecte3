@@ -25,3 +25,4 @@ Route::get('inscriure/{json?}', [WebServiceController::class, 'inscriure']);
 Route::get('getResultats/{json?}', [WebServiceController::class, 'getResultats']);
 Route::get('participantCheckpoint/{json?}',  [WebServiceController::class, 'participantCheckpoint']);
 Route::post('getCircuitsCursaCategoria',     [WebServiceController::class, 'getCircuitsCursaCategoria']);
+Route::get('/getesportcategories/{id}',      [WebServiceController::class, 'getesportcategories']);

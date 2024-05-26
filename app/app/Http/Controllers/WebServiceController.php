@@ -465,6 +465,10 @@ class WebServiceController extends Controller
             "description" => "bine"
         ];
         return $this->sendJsonResultats([],$status);
+    }
 
+    public function getesportcategories($id){
+        $categories = Categoria::where('cat_esp_id', $id)->get();
+        return response()->json($categories);
     }
 }

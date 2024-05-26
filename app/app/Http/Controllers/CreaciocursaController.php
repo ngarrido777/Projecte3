@@ -178,22 +178,20 @@ class CreaciocursaController extends Controller
                 $ultims_camps["l_limit"] = '';
                 $ultims_camps["l_web"] = '';
             }
+        }else{
+            $ok = false;
         }
         //Carregar els esports per la view
         $esports = Esport::all();
-        $esp_names = array();
-        foreach ($esports as $key => $e) {
-            $esp_names[$e->esp_id] = $e->esp_nom;
-        }
         //return a la view amb la variable esports, errors i ultims camps
         return view('creaciocurses', [
-            'esports' => $esp_names,
+            'esports' => $esports,
             'errors' => $errors,
             'ultims_camps' => $ultims_camps,
             'ok' => $ok
         ]);
     }
-
+    
     public function filtrecurses(Request $request)
     {
         $ok = true;
