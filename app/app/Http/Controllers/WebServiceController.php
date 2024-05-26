@@ -64,11 +64,21 @@ class WebServiceController extends Controller
     }
 
 
+    /***************
+     * 
+     * Internal functions
+     * 
+     ***************/
 
     public function getCircuitsCursaCategoria(Request $post) {
         $circuits = Circuit_Categoria::select('ccc_cir_id')->where('ccc_cat_id',$post['cat'])->get();
         $cirs = Circuit::whereIn('cir_id',$circuits)->where('cir_cur_id',$post['cur_id'])->get();
         return $cirs;
+    }
+    
+    public function getesportcategories($id){
+        $categories = Categoria::where('cat_esp_id', $id)->get();
+        return response()->json($categories);
     }
 
     /***************
@@ -436,7 +446,7 @@ class WebServiceController extends Controller
             return $this->sendJsonResultats([],$status);
         }
 
-        if ($cursa[0]->cur_est_id != ESTAT_CURS || $cursa[0]->cur_est_id != ESTAT_CURS) {
+        if ($cursa[0]->cur_est_id != ESTAT_CURS && $cursa[0]->cur_est_id != ESTAT_FINALITZADA) {
             $status = [
                 "code" => "555",
                 "description" => "La cursa no está en curs ni ha acabat"
@@ -454,21 +464,73 @@ class WebServiceController extends Controller
                 }));
         }))->get();
 
+        $resultados = array();
         foreach ($registres as $key => $registre) {
-            echo $registre->inscripcio->circuit_categoria->circuit->cir_nom . " - " . $registre->inscripcio->circuit_categoria->categoria->cat_nom . "\n";
-            echo $registre->inscripcio->participant->par_nom . " - " . $registre->checkpoint->chk_pk . "\n";
-            echo "\n";
-        }
+            $cir = $registre->inscripcio->circuit_categoria->circuit;
+            if (!isset($resultados[$cir->cir_id])) {
+                $resultados[$cir->cir_id] = array(
+                    'circuito' => [
+                        'cir_id' => $cir->cir_id,
+                        'cir_nom' => $cir->cir_nom
+                    ],
+                    'categorias' => []
+                );
+            }
 
+            $cat = $registre->inscripcio->circuit_categoria->categoria;
+            if (!isset($resultados[$cir->cir_id]['categorias'][$cat->cat_id])) {
+                $resultados[$cir->cir_id]['categorias'][$cat->cat_id] = [
+                    'categoria' => [
+                        'cat_id' => $cat->cat_id,
+                        'cat_nom' => $cat->cat_nom
+                    ],
+                    'participantes' => []
+                ];
+            }
+
+            $par = $registre->inscripcio->participant;
+            $chk = $registre->checkpoint;
+            $time = $registre->reg_temps;
+
+            if (!isset($resultados[$cir->cir_id]['categorias'][$cat->cat_id]['participantes'][$par->par_id])) {
+                $resultados[$cir->cir_id]['categorias'][$cat->cat_id]['participantes'][$par->par_id] = [
+                    'participante' => [
+                        'id' => $par->par_id,
+                        'nom' => $par->par_nom,
+                        'cognoms' => $par->par_cognoms,
+                        'dorsal' => $registre->inscripcio->ins_dorsal
+                    ],
+                    'checkpoints' => [
+                        [
+                            'checkpoint' => [
+                                'chk_id' => $chk->chk_id,
+                                'chk_pk' => $chk->chk_pk
+                            ],
+                            'tiempo' => 0,
+                            'timestamp' => $time
+                        ]
+                    ]
+                ];
+            } else {
+                $arr_par = $resultados[$cir->cir_id]['categorias'][$cat->cat_id]['participantes'][$par->par_id]['checkpoints'];
+                $qt = count($arr_par);
+                $prevTime = $arr_par[$qt-1]['timestamp'];
+
+                $resultados[$cir->cir_id]['categorias'][$cat->cat_id]['participantes'][$par->par_id]['checkpoints'][] = [
+                    'checkpoint' => [
+                        'chk_id' => $chk->chk_id,
+                        'chk_pk' => $chk->chk_pk
+                    ],
+                    'tiempo' => strtotime($time) - strtotime($prevTime),
+                    'timestamp' => $time
+                ];
+            }
+
+        }
         $status = [
             "code" => "222",
-            "description" => "bine"
+            "description" => "bien"
         ];
-        return $this->sendJsonResultats([],$status);
-    }
-
-    public function getesportcategories($id){
-        $categories = Categoria::where('cat_esp_id', $id)->get();
-        return response()->json($categories);
+        return $this->sendJsonResultats($resultados,$status);
     }
 }

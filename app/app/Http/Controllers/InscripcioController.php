@@ -34,7 +34,7 @@ class InscripcioController extends Controller
 
     public function inscriure($id = null)
     {
-        if (!is_numeric($id) || count($c = Cursa::where('cur_id',$id)->get()) == 0)
+        if (is_null($c = Cursa::where('cur_id',$id)->first()))
             return redirect('/');
 
         $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($id) {
@@ -59,12 +59,12 @@ class InscripcioController extends Controller
             'inscrits' => $ins_cur
         ];
 
-        $categories = Categoria::where('cat_esp_id',$c[0]->cur_esp_id)->get();
+        $categories = Categoria::where('cat_esp_id',$c->cur_esp_id)->get();
         if (isset($_POST['f_ins'])) {
 
-            if ($ins_cur >= $c[0]->cur_limit_inscr) {
+            if ($ins_cur >= $c->cur_limit_inscr) {
                 $text = "No puedes inscribirte ya que el registro está lleno";
-                return $this->inscriureView($c[0], $categories, MSG_ERR, $text, $fields);
+                return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
             if (!isset($_POST['f_nif']) || strlen($_POST['f_nif']) != 9 ||
@@ -81,7 +81,7 @@ class InscripcioController extends Controller
                 !isset($_POST['f_circuit']) || $_POST['f_circuit'] == -1
                 ) {
                     $text = "Has insertado mal algún dato, por favor revisalo. ";
-                    return $this->inscriureView($c[0], $categories, MSG_ERR, $text, $fields);
+                    return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
             $participant = new Participant;
@@ -97,35 +97,46 @@ class InscripcioController extends Controller
                 $participant->save();
             } catch (QueryException $ex) {
                 $text = "No se ha podido completar su registro.";
-                return $this->inscriureView($c[0], $categories, MSG_ERR, $text, $fields);
+                return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
             $cccId = Circuit_Categoria::select('ccc_id')
                 ->where('ccc_cat_id',$_POST['f_categoria'])
                 ->where('ccc_cir_id',$_POST['f_circuit'])
-                ->get()
+                ->first()
             ;
 
             $inscripcio = new Inscripcio;
             $inscripcio->ins_par_id = $participant->par_id;
             $inscripcio->ins_data = date('Y-m-d'); 
             $inscripcio->ins_retirat = 0;
-            $inscripcio->ins_ccc_id = $cccId[0]->ccc_id;
+            $inscripcio->ins_ccc_id = $cccId->ccc_id;
 
             try {
                 $inscripcio->save();
             } catch (QueryException $ex) {
                 $participant->delete();
                 $text = "No se ha podido completar su registro.";
-                return $this->inscriureView($c[0], $categories, MSG_ERR, $text, $fields);
+                return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
             $text = "Ya estás registrado!!";
-            return $this->inscriureView($c[0], $categories, MSG_INF, $text, $fields);
+            return $this->inscriureView($c, $categories, MSG_INF, $text, $fields);
 
         }
         
-        return $this->inscriureView($c[0], $categories, null, null, $fields);
+        return $this->inscriureView($c, $categories, null, null, $fields);
+    }
+
+    public function veureresultats($id) {
+        if (is_null($c = Cursa::where('cur_id',$id)->first())) {
+            return redirect('/');
+        }
+        return view('resultats',[
+            'data' => [
+                'cursa' => $c
+            ]
+        ]);
     }
 }
 

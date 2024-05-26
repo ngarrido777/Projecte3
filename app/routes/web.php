@@ -25,3 +25,4 @@ Route::match(['post', 'get'], '/login',                 [CreaciocursaController:
 Route::match(['post', 'get'], '/logeout',               [CreaciocursaController::class, 'logeout'])                 -> name('logeout');
 Route::match(['post', 'get'], '/filtrecursescorredors', [CreaciocursaController::class, 'filtrecursescorredors'])   -> name('filtrecursescorredors');
 Route::match(['post', 'get'], '/veurecursesadmin/{id}', [CreaciocursaController::class, 'veurecursesadmin'])        -> name('veurecursesadmin');
+Route::match(['post', 'get'], '/resultats/{id}',        [InscripcioController::class,   'veureresultats'])          -> name('veureresultats');

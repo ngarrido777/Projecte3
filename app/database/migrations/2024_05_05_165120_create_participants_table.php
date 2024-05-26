@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date    ('par_data_naixement');
             $table->string  ('par_telefon',20);
             $table->string  ('par_email',200);
-            $table->boolean ('par_es_federat');
+            $table->boolean ('par_es_federat')->default(0);
             $table->integer ('par_num_federat')->nullable();
         });
     }
