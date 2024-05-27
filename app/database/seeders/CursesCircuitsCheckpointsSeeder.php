@@ -141,7 +141,7 @@ class CursesCircuitsCheckpointsSeeder extends Seeder
                 'cir_num' => 1,
                 'cir_cur_id' => 5, 
                 'cir_distancia' => 7000, 
-                'cir_nom' => 'circuit 1 rut 4',
+                'cir_nom' => 'circuit 1 rut 5',
                 'cir_preu' => 15,
                 'cir_temps_estimat' => '60'
             ],
@@ -150,7 +150,7 @@ class CursesCircuitsCheckpointsSeeder extends Seeder
                 'cir_num' => 2,
                 'cir_cur_id' => 5, 
                 'cir_distancia' => 7000, 
-                'cir_nom' => 'circuit 1 rut 4',
+                'cir_nom' => 'circuit 2 rut 5',
                 'cir_preu' => 15,
                 'cir_temps_estimat' => '60'
             ],
