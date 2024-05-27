@@ -9,6 +9,10 @@
 
         function f_main()
         {
+            let change = document.getElementsByClassName('open');
+            change[0].addEventListener('click', f_close);
+            change[0].parentNode.parentNode.nextElementSibling.style.display = 'none';
+
             let l_eliminar = document.getElementsByClassName('Elimina');
             l_eliminar[0].addEventListener('click', f_eliminar);
             document.getElementById('afegirfila').addEventListener('click', f_crida);
@@ -20,18 +24,19 @@
                 let newRow = table.insertRow();
                 let noms = ['Elimina','cc_dist[]','cc_nom','cc_preu','cc_temps','f_categoria','n_ckp'];
 
-                for (let i = 0; i < 7; i++) {
+                for (let i = 0; i < 8; i++) {
                     let newCell = newRow.insertCell(i);
                     newCell.classList.add('editable');
                     let input = document.createElement('input');
                     let a = document.createElement('a');
                     let select = document.createElement('select');
                     let option = document.createElement('option');
+                    let div = document.createElement('div');
                     switch(i){
                         case 0:
                             a.href = "#";
                             a.text = noms[i];
-                            a.class = noms[i];
+                            a.classList.add(noms[i]);
                             a.addEventListener('click', f_eliminar);
                             newCell.appendChild(a);
                             break;
@@ -63,8 +68,40 @@
                             input.name = noms[i];
                             newCell.appendChild(input);
                             break;
+                        case 7:
+                            div.classList.add("open");
+                            newCell.appendChild(div);
+                            break;
                     }
                 }
+                /*
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Punt kilométric</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>*/
+                let rowsubtable = table.insertRow();
+                let subtable = document.createElement('table');
+                let thead = document.createElement('thead');
+                let tr_h = document.createElement('tr');
+                let th_h = document.createElement('th');
+                let tbody = document.createElement('thead');
+                
+                th_h.value = "Punt kilométric";
+
+                tr_h.appendChild(th_h);
+                thead.appendChild(tr_h);
+                subtable.appendChild(thead);
+                rowsubtable.appendChild(subtable);
             });
 
             document.getElementById('t_circuits').addEventListener('click', function(event) {
@@ -115,6 +152,26 @@
             
             this.parentNode.parentNode.remove();
         }
+
+        function f_close()
+        {
+            this.classList.add("close");
+            this.classList.remove("open");
+            this.removeEventListener('click', f_close);
+            this.addEventListener('click', f_open);
+
+            this.parentNode.parentNode.nextElementSibling.style.display = 'block';
+        }
+
+        function f_open()
+        {
+            this.classList.add("open");
+            this.classList.remove("close");
+            this.removeEventListener('click', f_open);
+            this.addEventListener('click', f_close);
+            
+            this.parentNode.parentNode.nextElementSibling.style.display = 'none';
+        }
     </script>
     <style>
         .open {
@@ -126,6 +183,12 @@
             width: 16px;
             height: 16px;
             background-image: url("/img/minus.png");
+        }
+        .hidden{
+            visibility: hidden;
+        }
+        .show{
+            visibility: visible;
         }
         .error {
             display: block;
@@ -141,8 +204,8 @@
         <h1 class="p-3 mt-4">Creació de les Curses</h1>
         {{ Form::open(['url' => 'creaciocurses', 'method' => 'post', 'files' => true]) }}
             @csrf
-            <div class="row mt-5">
-                <div class="col-md-3">
+            <div>
+                <div>
                     <div>
                         {{ Form::label('l_nom', 'Nom:') }}
                         {{ Form::text('c_nom', $ultims_camps['l_nom']) }}
@@ -194,7 +257,7 @@
                         {{ Form::label(null, $errors['e_web'], ['class' => 'error']) }}
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-12">
                     <table class="table table-responsive" id="t_circuits">
                         <thead>
                             <tr>
@@ -234,15 +297,15 @@
                                     <input type="submit" value="Checkpoint" name="n_ckp">
                                 </td>
                                 <td>
-                                    <div class="close"></div>
+                                    <div class="open"></div>
                                 </td>
                             </tr>
-                            <tr class="subtaula">
+                            <tr>
                                 <td>
-                                    <table colspan="8">
+                                    <table>
                                         <thead>
                                             <tr>
-                                                <th>Punt kilometric</th>
+                                                <th>Punt kilométric</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -258,8 +321,8 @@
                     <a href="#" class="mt-3" id="afegirfila">Afegir Circuit</a>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
+            <div>
+                <div>
                     {{ Form::submit('Crear', ['name' => 'c_crear', 'class' => 'btn btn-primary']) }}
                 </div>
                 <div>
