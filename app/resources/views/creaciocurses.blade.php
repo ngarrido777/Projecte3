@@ -70,25 +70,12 @@
                             break;
                         case 7:
                             div.classList.add("open");
+                            div.addEventListener('click', f_close);
                             newCell.appendChild(div);
                             break;
                     }
                 }
-                /*
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Punt kilométric</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th></th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>*/
+                
                 let rowsubtable = table.insertRow();
                 let subtable = document.createElement('table');
                 let thead = document.createElement('thead');
@@ -96,12 +83,13 @@
                 let th_h = document.createElement('th');
                 let tbody = document.createElement('thead');
                 
-                th_h.value = "Punt kilométric";
+                th_h.innerText  = "Punt kilométric";
 
                 tr_h.appendChild(th_h);
                 thead.appendChild(tr_h);
                 subtable.appendChild(thead);
                 rowsubtable.appendChild(subtable);
+                rowsubtable.style.display = 'none';
             });
 
             document.getElementById('t_circuits').addEventListener('click', function(event) {
@@ -257,6 +245,7 @@
                         {{ Form::label(null, $errors['e_web'], ['class' => 'error']) }}
                     </div>
                 </div>
+                <h2 class="p-3 mt-4">Circuits</h2>
                 <div class="col-12">
                     <table class="table table-responsive" id="t_circuits">
                         <thead>
