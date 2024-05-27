@@ -44,8 +44,9 @@ class WebServiceController extends Controller
         ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
     }
 
-    private function sendJsonResultats($resultats,$status) {
+    private function sendJsonResultats($estat,$resultats,$status) {
         return response()->json([
+            "estat" => $estat,
             "resultats" => $resultats,
             "status" => $status,
         ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
@@ -464,6 +465,7 @@ class WebServiceController extends Controller
                 }));
         }))->get();
 
+        $estat = $cursa[0]->cur_est_id;
         $resultados = array();
         foreach ($registres as $key => $registre) {
             $cir = $registre->inscripcio->circuit_categoria->circuit;
@@ -471,7 +473,8 @@ class WebServiceController extends Controller
                 $resultados[$cir->cir_id] = array(
                     'circuito' => [
                         'cir_id' => $cir->cir_id,
-                        'cir_nom' => $cir->cir_nom
+                        'cir_nom' => $cir->cir_nom,
+                        'total_chk' => Checkpoint::where('chk_cir_id',$cir->cir_id)->count()
                     ],
                     'categorias' => []
                 );
@@ -530,6 +533,6 @@ class WebServiceController extends Controller
             "code" => "222",
             "description" => "bien"
         ];
-        return $this->sendJsonResultats($resultados,$status);
+        return $this->sendJsonResultats($estat,$resultados,$status);
     }
 }

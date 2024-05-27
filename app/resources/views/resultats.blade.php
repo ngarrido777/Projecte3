@@ -55,9 +55,20 @@
 
             .chk_complete {
                 background-color: lime;
+            }
+
+            .chk_uncomplete {
+                background-color: red;
+                font-weight: bold;
+            }
+            
+            .chk_complete,
+            .chk_uncomplete {
                 padding: 10px;
                 border-radius: 50px;
                 margin: 0 10px;
+                width: 170px;
+                text-align: center;
             }
 
             .temps {
@@ -68,16 +79,34 @@
             .total {
                 font-weight: bold;
             }
+
+            #titol {
+                padding: 10px;
+            }
+
+            .circuit {
+                margin: 20px;
+                padding: 20px;
+                background-color: #ddeeff;
+                border-radius: 20px;
+            }
+
+            .left-40 {
+                margin-left: 40px;
+            }
         </style>
     </head>
     <body>
-        <h2> Resultats de: {{ $data['cursa']->cur_nom }} </h2>
-        <p id="error"></p>
+        <h2 id="titol"> Resultats de: {{ $data['cursa']->cur_nom }} </h2>
+        <p id="error" class=""></p>
+        Boton para volver
         <div id="res"></div>
     </body>
 </html>
 
 <script>
+    let x;
+
     function createDOM(div) {
         const url = "http://localhost:8000/api/getResultats/5"// + {!! $data['cursa']->cur_id !!}
         let xhr = new XMLHttpRequest()
@@ -87,29 +116,35 @@
         xhr.onload = function() {
             div.innerHTML = "";
             let arr = JSON.parse(xhr.response);
-            console.log(arr);
+            console.log('a');
+            if (arr['estat'] == 5) {
+                clearTimeout(x);
+            }
             let resultats = arr['resultats'];
             for (let cirs in resultats) {
                 let cir = document.createElement("div");
+                cir.classList.add('circuit');
                 cir.innerHTML = "<h3> Circuit: " + resultats[cirs]['circuito']['cir_nom'] + "</h3>";
 
                 let categorias = resultats[cirs]['categorias'];
                 for (let cats in categorias) {
                     let cat = document.createElement("div");
-                    cat.innerHTML = "<h5> --- Categoria: " + categorias[cats]['categoria']['cat_nom'] + "</h5>";
+                    cat.classList.add("left-40");
+                    cat.innerHTML = "<h5>Categoria: " + categorias[cats]['categoria']['cat_nom'] + "</h5>";
 
                     let participant = categorias[cats]['participantes'];
                     for (let pars in participant) {
                         let par = document.createElement("div");
-                        par.innerHTML = "------ Corredor: " + participant[pars]['participante']['nom'] + " " + participant[pars]['participante']['cognoms'] + " (" + participant[pars]['participante']['dorsal'] + ")";
+                        par.classList.add("left-40");
+                        par.innerHTML = "<b>Corredor:</b> " + participant[pars]['participante']['nom'] + " " + participant[pars]['participante']['cognoms'] + " (" + participant[pars]['participante']['dorsal'] + ")";
                         
                         let par_chks = document.createElement("div");
                         par_chks.classList.add("participante");
 
                         let checkpoint = participant[pars]['checkpoints']
                         let total = 0;
+                        let qt_chk = checkpoint.length;
                         for (let chks in checkpoint) {
-                            console.log("a");
                             let chk = document.createElement("div");
                             chk.classList.add("chk_complete");
                             temps = checkpoint[chks]['tiempo'];
@@ -128,7 +163,12 @@
                                 content +=  Math.trunc(temps%60) + "s)</span>";
                                 chk.innerHTML = content;
                             }
-
+                            par_chks.appendChild(chk);
+                        }
+                        for (let i = 0; i < resultats[cirs]['circuito']['total_chk'] - qt_chk; i++) {
+                            let chk = document.createElement("div");
+                            chk.classList.add("chk_uncomplete");
+                            chk.innerHTML = "<span>Falta</span> "
                             par_chks.appendChild(chk);
                         }
                         par.appendChild(par_chks);
@@ -140,18 +180,20 @@
             }
         }
     }
-
+    
     window.onload = function() {
-        if (/*{!! $data['cursa']->cur_est_id !!} != 5 && {!! $data['cursa']->cur_est_id !!} != 4*/ false) {
+        if ({!! $data['cursa']->cur_est_id !!} != 5 && {!! $data['cursa']->cur_est_id !!} != 4) {
             let err_span = document.getElementById('error');
             err_span.classList.add('msg_err');
             err_span.innerText = "No hay resultados debido a que la ruta no está ni terminada ni en curso";
         } else {
             let div = document.getElementById('res');
             createDOM(div);
-            var x = setInterval(function() {
-                createDOM(div);
-            },5000);
+            if ({!! $data['cursa']->cur_est_id !!} == 4) {
+                x = setInterval(function() {
+                    createDOM(div);
+                }, 5000);
+            }
         }
     };
 </script>

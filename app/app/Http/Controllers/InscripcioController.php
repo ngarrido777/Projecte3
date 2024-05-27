@@ -16,6 +16,13 @@ const MSG_INF = 'msg_inf';
 const MSG_ADV = 'msg_adv';
 const MSG_ERR = 'msg_err';
 
+// Estats
+const ESTAT_PREPARACIO = 1;
+const ESTAT_OBERTA = 2;
+const ESTAT_TANCADA = 3;
+const ESTAT_CURS = 4;
+const ESTAT_FINALITZADA = 5;
+const ESTAT_CANCELADA = 6;
 class InscripcioController extends Controller
 {
     private function inscriureView($cursa,$cats,$code = null,$mensaje = null,$fields = null) {
@@ -34,7 +41,7 @@ class InscripcioController extends Controller
 
     public function inscriure($id = null)
     {
-        if (is_null($c = Cursa::where('cur_id',$id)->first()))
+        if (is_null($c = Cursa::where('cur_id',$id)->first()) || $c->cur_est_id != ESTAT_OBERTA)
             return redirect('/');
 
         $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($id) {
