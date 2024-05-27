@@ -9,55 +9,61 @@
 
         function f_main()
         {
-            document.getElementById('id_esport').addEventListener('change', function() {
-                let id = document.getElementById('id_esport').value;
-                let select = document.getElementById('id_categoria');
-
-                fetch('/api/getesportcategories/' + id)
-                    .then(response => response.json())
-                    .then(data => {
-                        select.innerHTML = '';
-                        let defaultOption = document.createElement('option');
-                        defaultOption.value = '-1';
-                        defaultOption.textContent = 'Tria una categoria';
-                        defaultOption.disabled = true;
-                        defaultOption.selected = true;
-                        select.appendChild(defaultOption);
-                        data.forEach(function(item) {
-                            let option = document.createElement('option');
-                            option.value = item.cat_esp_id;
-                            option.textContent = item.cat_nom;
-                            select.appendChild(option);
-                        });
-                        select.disabled = false;
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+            let l_eliminar = document.getElementsByClassName('Elimina');
+            l_eliminar[0].addEventListener('click', f_eliminar);
+            document.getElementById('afegirfila').addEventListener('click', f_crida);
+            document.getElementById('id_esport').addEventListener('change', f_crida);
 
             document.getElementById('afegirfila').addEventListener('click', function(event) {
                 event.preventDefault();
                 let table = document.getElementById('t_circuits').getElementsByTagName('tbody')[0];
                 let newRow = table.insertRow();
-                let noms = ['cc_dist','cc_nom','cc_preu','cc_temps','cc_categoria','cc_ckp'];
+                let noms = ['Elimina','cc_dist[]','cc_nom','cc_preu','cc_temps','f_categoria','n_ckp'];
 
-                for (let i = 0; i < 6; i++) {
+                for (let i = 0; i < 7; i++) {
                     let newCell = newRow.insertCell(i);
                     newCell.classList.add('editable');
                     let input = document.createElement('input');
+                    let a = document.createElement('a');
+                    let select = document.createElement('select');
+                    let option = document.createElement('option');
                     switch(i){
                         case 0:
-                        case 2:
-                        case 5:
-                            input.type = 'number';
+                            a.href = "#";
+                            a.text = noms[i];
+                            a.class = noms[i];
+                            a.addEventListener('click', f_eliminar);
+                            newCell.appendChild(a);
                             break;
                         case 1:
                         case 3:
+                            input.type = 'number';
+                            input.name = noms[i];
+                            newCell.appendChild(input);
+                            break;
+                        case 2:
                         case 4:
                             input.type = 'text';
+                            input.name = noms[i];
+                            newCell.appendChild(input);
+                            break;
+                        case 5:
+                            select.disabled = true;
+                            select.name = "id_categoria";
+                            option.value = '-1';
+                            option.textContent = 'Tria un esport primer';
+                            option.disabled = true;
+                            option.selected = true;
+                            select.appendChild(option);
+                            newCell.appendChild(select);
+                            break;
+                        case 6:
+                            input.type = 'submit';
+                            input.value = 'Checkpoint'
+                            input.name = noms[i];
+                            newCell.appendChild(input);
                             break;
                     }
-                    input.name = noms[i];
-                    newCell.appendChild(input);
                 }
             });
 
@@ -68,8 +74,59 @@
                 }
             });
         }
+
+        function f_crida()
+        {
+            esport = document.getElementById('id_esport');
+            if(esport.value == -1)
+            {
+                return;
+            }
+
+            let id = document.getElementById('id_esport').value;
+            let select = document.getElementsByName('id_categoria');
+
+            fetch('/api/getesportcategories/' + id)
+                .then(response => response.json())
+                .then(data => {
+                    for(i=0;i<select.length;i++)
+                    {
+                        select[i].innerHTML = '';
+                        let defaultOption = document.createElement('option');
+                        defaultOption.value = '-1';
+                        defaultOption.textContent = 'Tria una categoria';
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        select[i].appendChild(defaultOption);
+                        data.forEach(function(item) {
+                            let option = document.createElement('option');
+                            option.value = item.cat_esp_id;
+                            option.textContent = item.cat_nom;
+                            select[i].appendChild(option);
+                        });
+                        select[i].disabled = false;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function f_eliminar()
+        {
+            
+            this.parentNode.parentNode.remove();
+        }
     </script>
     <style>
+        .open {
+            width: 16px;
+            height: 16px;
+            background-image: url("/img/add.png");
+        }
+        .close {
+            width: 16px;
+            height: 16px;
+            background-image: url("/img/minus.png");
+        }
         .error {
             display: block;
             margin-bottom: 20px;
@@ -117,13 +174,6 @@
                         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
                     </div>
                     <div>
-                        {{ Form::label('l_categoria', 'Categoria:') }}
-                        <select disabled id="id_categoria" name="f_categoria">
-                            <option selected disabled value="-1" id="default_cir_option">Tria un esport primer</option>
-                        </select>
-                        {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
-                    </div>
-                    <div>
                         {{ Form::label('l_descripccio', '*Descripccio:') }}
                         {{ Form::text('c_descripccio', $ultims_camps['l_descripccio']) }}
                         {{ Form::label(null, $errors['e_descripcio'], ['class' => 'error']) }}
@@ -148,16 +198,61 @@
                     <table class="table table-responsive" id="t_circuits">
                         <thead>
                             <tr>
+                                <th>Eliminar</th>
                                 <th>Distància</th>
                                 <th>Nom</th>
                                 <th>Preu</th>
                                 <th>*Temps</th>
                                 <th>Categories</th>
                                 <th>Checkpoints</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            <tr>
+                                <td>
+                                    <a href="#" class="Elimina">Elimina</a>
+                                </td>
+                                <td class="editable">
+                                    <input type="number" name="cc_dist[]">
+                                </td>
+                                <td class="editable">
+                                    <input type="text" name="cc_nom">
+                                </td>
+                                <td class="editable">
+                                    <input type="number" name="cc_preu">
+                                </td>
+                                <td class="editable">
+                                    <input type="text" name="cc_temps">
+                                </td>
+                                <td class="editable">
+                                    <select disabled name="id_categoria">
+                                        <option selected disabled value="-1" id="default_cir_option">Tria un esport primer</option>
+                                    </select>
+                                </td>
+                                <td class="editable">
+                                    <input type="submit" value="Checkpoint" name="n_ckp">
+                                </td>
+                                <td>
+                                    <div class="close"></div>
+                                </td>
+                            </tr>
+                            <tr class="subtaula">
+                                <td>
+                                    <table colspan="8">
+                                        <thead>
+                                            <tr>
+                                                <th>Punt kilometric</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>a</th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <a href="#" class="mt-3" id="afegirfila">Afegir Circuit</a>
