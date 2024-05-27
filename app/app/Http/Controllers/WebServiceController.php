@@ -428,8 +428,8 @@ class WebServiceController extends Controller
         return $this->sendJsonParticipantCheckpoint($status);
     }
 
-    public function getResultats($id = null) {
-
+    public function getResultats($id = null)
+    {
         if (!is_numeric($id)) {
             $status = [
                 "code" => "666",
@@ -525,7 +525,6 @@ class WebServiceController extends Controller
                     'timestamp' => $time
                 ];
             }
-
         }
         $status = [
             "code" => "222",

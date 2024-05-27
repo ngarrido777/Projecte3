@@ -20,7 +20,7 @@ class InscripcionsRegistresSeeder extends Seeder
                 'par_nom' => 'Carlos',
                 'par_cognoms' => 'Escudero',
                 'par_data_naixement' => '2001-10-10',
-                'par_telefon' => '600000000',
+                'par_telefon' => '610000000',
                 'par_email' => 'cescudero@gmail.com'
             ],
             [
@@ -29,7 +29,7 @@ class InscripcionsRegistresSeeder extends Seeder
                 'par_nom' => 'Artur',
                 'par_cognoms' => 'Udatsnoi',
                 'par_data_naixement' => '2009-01-05',
-                'par_telefon' => '611111111',
+                'par_telefon' => '691111111',
                 'par_email' => 'audatsnoi@gmail.com'
             ],
             [
@@ -38,7 +38,7 @@ class InscripcionsRegistresSeeder extends Seeder
                 'par_nom' => 'Marc',
                 'par_cognoms' => 'Serra',
                 'par_data_naixement' => '1999-03-12',
-                'par_telefon' => '619191222',
+                'par_telefon' => '699191222',
                 'par_email' => 'mserra@gmail.com'
             ],
             [
@@ -47,7 +47,7 @@ class InscripcionsRegistresSeeder extends Seeder
                 'par_nom' => 'Jawg',
                 'par_cognoms' => 'Nawgson',
                 'par_data_naixement' => '2006-05-01',
-                'par_telefon' => '655566123',
+                'par_telefon' => '655565923',
                 'par_email' => 'jnawgson@gmail.com'
             ],
         ]);
@@ -110,17 +110,17 @@ class InscripcionsRegistresSeeder extends Seeder
                 'reg_chk_id' => '1'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (7 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (7 * 59)),
                 'reg_ins_id' => '1',
                 'reg_chk_id' => '2'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (10 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (10 * 59)),
                 'reg_ins_id' => '1',
                 'reg_chk_id' => '3'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (13 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (13 * 59)),
                 'reg_ins_id' => '1',
                 'reg_chk_id' => '4'
             ],
@@ -131,12 +131,12 @@ class InscripcionsRegistresSeeder extends Seeder
                 'reg_chk_id' => '1'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (15 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (15 * 59)),
                 'reg_ins_id' => '2',
                 'reg_chk_id' => '2'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (18 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (18 * 59)),
                 'reg_ins_id' => '2',
                 'reg_chk_id' => '3'
             ],
@@ -146,17 +146,17 @@ class InscripcionsRegistresSeeder extends Seeder
                 'reg_chk_id' => '1'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (5 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (5 * 59)),
                 'reg_ins_id' => '6',
                 'reg_chk_id' => '2'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (6 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (6 * 59)),
                 'reg_ins_id' => '6',
                 'reg_chk_id' => '3'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (8 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (8 * 59)),
                 'reg_ins_id' => '6',
                 'reg_chk_id' => '4'
             ],
@@ -165,53 +165,53 @@ class InscripcionsRegistresSeeder extends Seeder
             [
                 'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))),
                 'reg_ins_id' => '3',
-                'reg_chk_id' => '1'
+                'reg_chk_id' => '5'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (26 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (26 * 59)),
                 'reg_ins_id' => '3',
-                'reg_chk_id' => '2'
+                'reg_chk_id' => '6'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (30 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (30 * 59)),
                 'reg_ins_id' => '3',
-                'reg_chk_id' => '3'
+                'reg_chk_id' => '7'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (39 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (39 * 59)),
                 'reg_ins_id' => '3',
-                'reg_chk_id' => '4'
+                'reg_chk_id' => '8'
             ],
 
             [
                 'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))),
                 'reg_ins_id' => '4',
-                'reg_chk_id' => '1'
+                'reg_chk_id' => '5'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (21 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (21 * 59)),
                 'reg_ins_id' => '4',
-                'reg_chk_id' => '2'
+                'reg_chk_id' => '6'
             ],
             [
                 'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))),
                 'reg_ins_id' => '5',
-                'reg_chk_id' => '1'
+                'reg_chk_id' => '5'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (15 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (15 * 59)),
                 'reg_ins_id' => '5',
-                'reg_chk_id' => '2'
+                'reg_chk_id' => '6'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (23 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (23 * 59)),
                 'reg_ins_id' => '5',
-                'reg_chk_id' => '3'
+                'reg_chk_id' => '7'
             ],
             [
-                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (28 * 60)),
+                'reg_temps' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + (28 * 59)),
                 'reg_ins_id' => '5',
-                'reg_chk_id' => '4'
+                'reg_chk_id' => '8'
             ],
         ]);
     }
