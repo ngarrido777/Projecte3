@@ -13,6 +13,9 @@
             change[0].addEventListener('click', f_close);
             change[0].parentNode.parentNode.nextElementSibling.style.display = 'none';
 
+            let n_ckp = document.getElementsByClassName('n_ckp');
+            n_ckp[0].addEventListener('click', f_nckp);
+
             let l_eliminar = document.getElementsByClassName('Elimina');
             l_eliminar[0].addEventListener('click', f_eliminar);
             document.getElementById('afegirfila').addEventListener('click', f_crida);
@@ -66,6 +69,7 @@
                             input.type = 'submit';
                             input.value = 'Checkpoint'
                             input.name = noms[i];
+                            input.addEventListener('click', f_nckp);
                             newCell.appendChild(input);
                             break;
                         case 7:
@@ -75,19 +79,29 @@
                             break;
                     }
                 }
-                
                 let rowsubtable = table.insertRow();
                 let subtable = document.createElement('table');
                 let thead = document.createElement('thead');
                 let tr_h = document.createElement('tr');
                 let th_h = document.createElement('th');
-                let tbody = document.createElement('thead');
+                let tbody = document.createElement('tbody');
+                let tr_h_2 = document.createElement('tr');
+                let td = document.createElement('td');
+                let input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'cc_punt_k[]';
                 
                 th_h.innerText  = "Punt kilométric";
 
                 tr_h.appendChild(th_h);
                 thead.appendChild(tr_h);
                 subtable.appendChild(thead);
+
+                td.appendChild(input);
+                tr_h_2.appendChild(td);
+                tbody.appendChild(tr_h_2);
+                subtable.appendChild(tbody);
+
                 rowsubtable.appendChild(subtable);
                 rowsubtable.style.display = 'none';
             });
@@ -137,8 +151,8 @@
 
         function f_eliminar()
         {
-            
             this.parentNode.parentNode.remove();
+            //this.parentNode.parentNode.nextElementSibling.remove();
         }
 
         function f_close()
@@ -149,6 +163,25 @@
             this.addEventListener('click', f_open);
 
             this.parentNode.parentNode.nextElementSibling.style.display = 'block';
+        }
+
+        function f_nckp(e)
+        {
+            e.preventDefault();
+            let tr = this.parentNode.parentNode.nextElementSibling;
+            let td = tr.children;
+            let table = td[0].children;
+            let tbody = table[0].children;
+            let sub_tr = tbody[1].children;
+            
+            let tr_add = document.createElement('tr');
+            let td_add = document.createElement('td');
+            let input_add = document.createElement('input');
+            input_add.type = 'text';
+            input_add.name = 'cc_punt_k[]';
+            td_add.appendChild(input_add);
+            tr_add.appendChild(td_add);
+            tbody[1].appendChild(tr_add);
         }
 
         function f_open()
@@ -283,7 +316,7 @@
                                     </select>
                                 </td>
                                 <td class="editable">
-                                    <input type="submit" value="Checkpoint" name="n_ckp">
+                                    <input type="submit" value="Checkpoint" class="n_ckp">
                                 </td>
                                 <td>
                                     <div class="open"></div>
@@ -299,7 +332,9 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <th>a</th>
+                                                <td>
+                                                    <input type="text" name="cc_punt_k[]">
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
