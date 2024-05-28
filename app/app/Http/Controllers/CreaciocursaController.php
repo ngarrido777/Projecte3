@@ -205,6 +205,43 @@ class CreaciocursaController extends Controller
         ]);
     }
     
+    private static function eliminaCurses($curses_id) {
+        foreach ($curses_id as $cur_id) {
+
+            $cur = Cursa::where('cur_id',$cur_id)->first();
+
+            if (is_null($cur) || $cur->cur_est_id != ESTAT_PREPARACIO)
+                break;
+
+            $incripcions = Inscripcio::
+                join('circuits_categories', 'inscripcions.ins_ccc_id', '=', 'circuits_categories.ccc_id')->
+                join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')->
+                where('circuits.cir_cur_id',$cur_id)->
+                get();
+        
+            $circiuts_categories = Circuit_categoria::
+                join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')->
+                where('circuits.cir_cur_id',$cur_id)->
+                get();
+        
+            $circuits = Circuit::
+                where('cir_cur_id',$cur_id)->
+                get();
+
+            foreach ($incripcions as $ins)
+                $ins->delete();
+
+            foreach ($circiuts_categories as $ccc)
+                $ccc->delete();
+
+            foreach ($circuits as $cir)
+                $cir->delete();
+
+            if (!is_null($cur))
+                $cur->delete();
+        }
+    }
+
     public function filtrecurses(Request $request)
     {
         $ok = true;
@@ -216,39 +253,11 @@ class CreaciocursaController extends Controller
             return redirect()->route('login');
         }       
         //Eliminar Curses seleccionades
-        if(isset($_POST["f_elimina"])){
-            $curses_id = $_POST['e_ck'];
-            foreach ($curses_id as $cur_id) {
-                $cur = Cursa::where('cur_id',$cur_id)->first();
-                if (is_null($cur) || $cur->cur_est_id != ESTAT_PREPARACIO) {
-                    break;
-                }
-                $incripcions = Inscripcio::join('circuits_categories', 'inscripcions.ins_ccc_id', '=', 'circuits_categories.ccc_id')
-                ->join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
-                ->where('circuits.cir_cur_id',$cur_id)->get();
-            
-                $circiuts_categories = Circuit_categoria::join('circuits', 'circuits_categories.ccc_cir_id', '=', 'circuits.cir_id')
-                    ->where('circuits.cir_cur_id',$cur_id)->get();
-            
-                $circuits = Circuit::where('cir_cur_id',$cur_id)->get();
-
-                foreach ($incripcions as $ins) {
-                    $ins->delete();
-                }
-
-                foreach ($circiuts_categories as $ccc) {
-                    $ccc->delete();
-                }
-
-                foreach ($circuits as $cir) {
-                    $cir->delete();
-                }
-
-                if (!is_null($cur))
-                    $cur->delete();
+        if(isset($request->f_elimina)){
+            if (isset($request->e_ck) && count($request->e_ck) >= 1) {
+                self::eliminaCurses($request->e_ck);
             }
         }
-
         //Obrir inscripció
         if(isset($_POST["f_oberta"])){
             $cursa = Cursa::where('cur_id', $_POST["up_cur_id"])->first();
