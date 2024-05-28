@@ -579,12 +579,10 @@ class CreaciocursaController extends Controller
     public function veurecursesadmin($id)
     {
         $usu = Session::get('usu');
-        if($usu == null){
-            return redirect()->route('login');
+        if ($usu == null || !$usu->usr_admin) {
+            return redirect()->route('/');
         }
-        if(!$usu->usr_admin){
-            return redirect()->route('login');
-        }
+        
         //Agafar la cursa per l'id
         $cursa = Cursa::where('cur_id', $id)->first();
         if($cursa == null){

@@ -99,7 +99,12 @@
     <body>
         <h2 id="titol"> Resultats de: {{ $data['cursa']->cur_nom }} </h2>
         <p id="error" class=""></p>
-        Boton para volver
+        
+        @if (!isset($usu) || $usu->usr_admin == 0)
+            <a href="/veurecurses/{{ $data['cursa']->cur_id }}" class="btn btn-primary mx-3">Torna</a>
+        @else
+            <a href="/veurecursesadmin/{{ $data['cursa']->cur_id }}" class="btn btn-primary mx-3">Torna</a>
+        @endif
         <div id="res"></div>
     </body>
 </html>
@@ -108,7 +113,7 @@
     let x;
 
     function createDOM(div) {
-        const url = "http://localhost:8000/api/getResultats/5"// + {!! $data['cursa']->cur_id !!}
+        const url = "http://localhost:8000/api/getResultats/" + {!! $data['cursa']->cur_id !!}
         let xhr = new XMLHttpRequest()
         xhr.open('GET', url, true)
         xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
@@ -116,7 +121,6 @@
         xhr.onload = function() {
             div.innerHTML = "";
             let arr = JSON.parse(xhr.response);
-            console.log('a');
             if (arr['estat'] == 5) {
                 clearTimeout(x);
             }
@@ -189,10 +193,14 @@
         } else {
             let div = document.getElementById('res');
             createDOM(div);
-            if ({!! $data['cursa']->cur_est_id !!} == 4) {
+            let en_curs = {!! $data['cursa']->cur_est_id !!} == 4;
+            if (en_curs) {
+                let i = 0;
+                console.log("refresh " + i);
                 x = setInterval(function() {
+                    console.log("refresh " + ++i);
                     createDOM(div);
-                }, 5000);
+                }, 15000);
             }
         }
     };

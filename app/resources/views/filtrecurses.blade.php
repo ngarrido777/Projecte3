@@ -63,17 +63,8 @@
 <body>
     <div>
         <h1 class="p-3">Totes les Curses</h1>
-        @if ($usu == null)
-            {{ Form::open(['url' => '/login', 'method' => 'post']) }}
-                @csrf
-                <td>{{ Form::submit('Login', ['name' => 'f_login']) }}</td>
-            {{ Form::close() }}
-        @else 
-            {{ Form::open(['url' => '/logeout', 'method' => 'post']) }}
-                @csrf
-                <td>{{ Form::submit('Logeout', ['name' => 'f_logeout']) }}</td>
-            {{ Form::close() }}
-        @endif
+        <a href="/logeout" class="mx-3 btn btn-danger">Log out</a>
+        <a href="/" class="mx-3 btn btn-info">Vista publica</a>
     </div>
     <h2 class="p-3">Cerca la cursa</h2>
     {{ Form::open( ['method' => 'post']) }}
@@ -92,7 +83,7 @@
                 {{ Form::select('f_estat', $estats, $last['l_estat']) }}
             </div>
 
-            {{ Form::submit('Cercar', ['name' => 'f_cercar']) }}
+            {{ Form::submit('Cercar', ['name' => 'f_cercar', 'class' => 'btn btn-info']) }}
         </div>
     {{ Form::close() }}
         
@@ -132,18 +123,16 @@
                         <td class="text-center align-middle">{{ $cursa->cur_limit_inscr }}</td>
                         <td class="text-center align-middle">{{ $cursa->estat->est_nom }}</td>
                         <td class="text-center align-middle">
-                        <a class="btn btn-info" href="/veurecursesadmin/{{ $cursa->cur_id }}">Veure</a>
+                            <a class="btn btn-primary" href="/veurecursesadmin/{{ $cursa->cur_id }}">Veure</a>
                         </td>
                         @if ($cursa->cur_est_id == 1)
-                            {{ Form::open(['url' => '/updatecurses/' . $cursa->cur_id, 'method' => 'post']) }}
-                                @csrf
-                                <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Modificar', ['name' => 'f_update']) }}</td>
-                            {{ Form::close() }}
+                            <td class="text-center align-middle">
+                                <a class="btn btn-secondary" href="/updatecurses/{{ $cursa->cur_id }}">Modificar</a>
+                            </td>
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Obrir', ['name' => 'f_oberta', 'class' => 'confirmar']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Obrir', ['name' => 'f_oberta', 'class' => 'confirmar btn btn-success']) }}</td>
                             {{ Form::close() }}
                         @else
                             <td class="text-center align-middle"></td>
@@ -153,7 +142,7 @@
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Tancar', ['name' => 'f_tancada', 'class' => 'confirmar']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Tancar', ['name' => 'f_tancada', 'class' => 'confirmar btn btn-warning']) }}</td>
                             {{ Form::close() }}
                         @else
                             <td class="text-center align-middle"></td>
@@ -162,7 +151,7 @@
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Iniciar', ['name' => 'f_iniciar', 'class' => 'confirmar']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Iniciar', ['name' => 'f_iniciar', 'class' => 'confirmar btn btn-primary']) }}</td>
                             {{ Form::close() }}
                         @else
                             <td class="text-center align-middle"></td>
@@ -171,7 +160,7 @@
                             {{ Form::open( ['method' => 'post'] ) }}
                                 @csrf
                                 <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                                <td class="text-center align-middle">{{ Form::submit('Cancelar', ['name' => 'f_cancelada', 'class' => 'confirmar']) }}</td>
+                                <td class="text-center align-middle">{{ Form::submit('Cancelar', ['name' => 'f_cancelada', 'class' => 'confirmar btn btn-danger']) }}</td>
                             {{ Form::close() }}
                         @else
                             <td class="text-center align-middle"></td>
@@ -181,11 +170,8 @@
                 @endforeach
             </tbody>
         </table>
-        {{ Form::submit('Eliminar', ['name' => 'f_elimina']) }}
+        {{ Form::submit('Eliminar', ['name' => 'f_elimina', 'class' => 'btn btn-danger m-3']) }}
     {{ Form::close() }}
-    {{ Form::open( ['url' => 'creaciocurses/','method' => 'post']) }}
-        @csrf
-        {{ Form::submit('Nova Cursa', ['name' => 'f_crearcursa']) }}
-    {{ Form::close() }}
+    <a href="/creaciocurses" class="btn btn-success m-3">Nova cursa</a>
 </body>
 </html>

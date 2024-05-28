@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Session;
 use App\Models\Cursa;
 use App\Models\Circuit;
 use App\Models\Categoria;
@@ -26,6 +27,7 @@ const ESTAT_CANCELADA = 6;
 class InscripcioController extends Controller
 {
     private function inscriureView($cursa,$cats,$code = null,$mensaje = null,$fields = null) {
+        $usu = Session::get('usu');
         return view('inscriure', [
             'data' => [
                 'cursa' => $cursa,
@@ -35,7 +37,8 @@ class InscripcioController extends Controller
             'message' => ((!is_null($code) && !is_null($code)) ? [
                 'type' => $code,
                 'text' => $mensaje
-            ] : null)
+            ] : null),
+            'usu' => $usu
         ]);
     }
 
@@ -151,13 +154,15 @@ class InscripcioController extends Controller
     }
 
     public function veureresultats($id) {
+        $usu = Session::get('usu');
         if (is_null($c = Cursa::where('cur_id',$id)->first())) {
             return redirect('/');
         }
         return view('resultats',[
             'data' => [
                 'cursa' => $c
-            ]
+            ],
+            'usu' => $usu
         ]);
     }
 }

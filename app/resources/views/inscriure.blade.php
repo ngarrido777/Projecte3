@@ -103,6 +103,7 @@
             @if (!is_null($message))
                 <p class="{{ $message['type'] }}">{{ $message['text'] }}</p>
             @endif
+
         </div>
         {{ Form::open(['method' => 'post']) }}
             @csrf
@@ -156,15 +157,22 @@
                         </select>
                     </div>
                     @if ($fields['inscrits'] >= $data['cursa']->cur_limit_inscr)
-                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins','disabled' => 'true']) }}
+                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins','disabled' => 'true', 'class' => 'btn btn-danger']) }}
                     @else
-                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins']) }}
+                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins', 'class' => 'btn btn-success']) }}
+                    @endif
+
+                    @if ($usu == null || !$usu->usr_admin)
+                        <a href="/veurecursesadmin/{{$data['cursa']->cur_id}}" class="btn btn-primary mx-3">Torna</a>
+                    @else
+                        <a href="/veurecurses/{{$data['cursa']->cur_id}}" class="btn btn-info mx-3">Torna</a>
                     @endif
                 </div>
                 <div>
                     <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" />
                 </div>
             </div>
+            
         {{ Form::close() }}
     </body>
 </html>

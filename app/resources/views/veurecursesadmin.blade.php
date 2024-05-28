@@ -73,10 +73,14 @@
                 <p class='salt'>{{$cursa->estat->est_nom}}</p>
             </div>
             <div>
-                {{ Form::open( ['url' => 'filtrecurses/','method' => 'post']) }}
-                    @csrf
-                    {{ Form::submit('Tornar', ['name' => 'f_tornar']) }}
-                {{ Form::close() }}
+                @if ($cursa->cur_est_id == 2)
+                    <a href="/inscriure/{{$cursa->cur_id}}" clasS="btn btn-success">Inscriute</a> 
+                @endif
+
+                @if ($cursa->cur_est_id == 4 || $cursa->cur_est_id == 5)
+                    <a href="/resultats/{{$cursa->cur_id}}" clasS="btn btn-success">Veure resultats</a> 
+                @endif
+                <a href="/filtrecurses" clasS="btn btn-primary">Torna</a>
             </div>
         </div>
         <div>

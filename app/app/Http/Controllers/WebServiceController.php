@@ -44,9 +44,9 @@ class WebServiceController extends Controller
         ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);
     }
 
-    private function sendJsonResultats($estat,$resultats,$status) {
+    private function sendJsonResultats($estado,$resultats,$status) {
         return response()->json([
-            "estat" => $estat,
+            "estat" => $estado,
             "resultats" => $resultats,
             "status" => $status,
         ], 200, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],JSON_UNESCAPED_UNICODE);

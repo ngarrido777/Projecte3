@@ -250,6 +250,11 @@
 
             color: red;
         }
+
+        .not-a {
+            color: white !important;
+            text-decoration: none;
+        }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -384,7 +389,7 @@
             </div>
             <div>
                 <div>
-                    {{ Form::submit('Crear', ['name' => 'c_crear', 'class' => 'btn btn-primary']) }}
+                    {{ Form::submit('Crear', ['name' => 'c_crear', 'class' => 'btn btn-primary m-3']) }}
                 </div>
                 <div>
                     @if($ok)
@@ -393,12 +398,7 @@
                 </div>
             </div>
         {{ Form::close() }}
-        <div>
-            {{ Form::open( ['url' => 'filtrecurses/','method' => 'post']) }}
-                @csrf
-                {{ Form::submit('Tornar', ['name' => 'c_tornar', 'class' => 'btn btn-secondary']) }}
-            {{ Form::close() }}
-        </div>
+        <a href="/filtrecurses" class="btn btn-secondary m-3 not-a">Tornar</a>
     </div>
 </body>
 </html>

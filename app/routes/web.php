@@ -15,7 +15,7 @@ use App\Http\Controllers\CreaciocursaController;
 |
 */
 
-Route::match(['post', 'get'], '/',                      [CreaciocursaController::class, 'filtrecursescorredors'])   -> name('filtrecurses');
+Route::match(['post', 'get'], '/',                      [CreaciocursaController::class, 'filtrecursescorredors'])   -> name('/');
 Route::match(['post', 'get'], '/filtrecurses',          [CreaciocursaController::class, 'filtrecurses'])            -> name('filtrecurses');
 Route::match(['post', 'get'], '/creaciocurses',         [CreaciocursaController::class, 'creaciocurses'])           -> name('creaciocurses');
 Route::match(['post', 'get'], '/updatecurses/{id}',     [CreaciocursaController::class, 'updatecurses'])            -> name('updatecurses');

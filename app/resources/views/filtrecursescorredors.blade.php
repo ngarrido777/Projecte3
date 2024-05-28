@@ -60,6 +60,10 @@
             transform: translateY(-10px) rotate(1deg);
         }
 
+        .estat {
+            border-radius: 6px;
+        }
+
         /* Oberta */
         .estat2 {
             background: linear-gradient(160deg, #afc, #cfc);
@@ -139,7 +143,7 @@
         <h1 class="p-3 text-center">Totes les Curses</h1>
 
         <div class="d-flex justify-content-between flex-row-reverse mb-4">
-            @if ($usu == null)
+             @if ($usu == null)
                 <a href="/login" class="btn btn-primary">Log in</a>
             @else
                 <a href="/logeout" class="btn btn-danger">Log out</a>
@@ -180,6 +184,11 @@
     </div>
 
     <div class="container">
+        <b class="estat estat2 px-2">Inscripció oberta</b><br>
+        <b class="estat estat3 px-2">Inscripció tancada</b><br>
+        <b class="estat estat4 px-2">En curs</b><br>
+        <b class="estat estat5 px-2">Finalitzada</b><br>
+        <b class="estat estat6 px-2">Cancelada</b>
         @foreach($curses_totals as $curses)
             <h3>{{ $curses['titol'] }}</h3>
             <div class="row">
@@ -197,11 +206,7 @@
                         </div>
                         <div class="cursa-veure">
                             <p class="card-text f_desc"><strong>Descripció: </strong>{{ $cursa->cur_desc }}</p>
-                            {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
-                                @csrf
-                                <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>
-                                <p class="text-center align-middle button-veure">{{ Form::submit('Veure més', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
-                            {{ Form::close() }}
+                            <p class="text-center align-middle button-veure"><a href="/veurecurses/{{$cursa->cur_id}}" class="btn btn-primary">Veure més</a></p>
                         </div>
                     </div>
                 </div>
