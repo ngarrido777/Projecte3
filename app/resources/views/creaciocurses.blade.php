@@ -269,16 +269,16 @@
                                     <input type="number" name="cc_dist[]">
                                 </td>
                                 <td class="editable">
-                                    <input type="text" name="cc_nom">
+                                    <input type="text" name="cc_nom[]">
                                 </td>
                                 <td class="editable">
-                                    <input type="number" name="cc_preu">
+                                    <input type="number" name="cc_preu[]">
                                 </td>
                                 <td class="editable">
-                                    <input type="text" name="cc_temps">
+                                    <input type="text" name="cc_temps[]">
                                 </td>
                                 <td class="editable">
-                                    <select disabled name="id_categoria">
+                                    <select disabled name="id_categoria[]">
                                         <option selected disabled value="-1" id="default_cir_option">Tria un esport primer</option>
                                     </select>
                                 </td>

@@ -156,6 +156,7 @@ class CreaciocursaController extends Controller
         if(isset($_POST["c_crear"]))
         {
             //Cridar funccio validar
+            return dd($_POST);
             $array = $this->validar($ok, $errors, $ultims_camps, $request);
             $ok = $array[0];
             $errors = $array[1];
