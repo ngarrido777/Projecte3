@@ -16,6 +16,9 @@
             let n_ckp = document.getElementsByClassName('n_ckp');
             n_ckp[0].addEventListener('click', f_nckp);
 
+            let sub_e = document.getElementsByClassName('el');
+            sub_e[0].addEventListener('click', f_eliminar_ck);
+
             let l_eliminar = document.getElementsByClassName('Elimina');
             l_eliminar[0].addEventListener('click', f_eliminar);
             document.getElementById('afegirfila').addEventListener('click', f_crida);
@@ -57,7 +60,7 @@
                             break;
                         case 5:
                             select.disabled = true;
-                            select.name = "id_categoria";
+                            select.name = "id_categoria[]";
                             option.value = '-1';
                             option.textContent = 'Tria un esport primer';
                             option.disabled = true;
@@ -80,29 +83,43 @@
                     }
                 }
                 let rowsubtable = table.insertRow();
+                let td_pare = document.createElement('td');
                 let subtable = document.createElement('table');
                 let thead = document.createElement('thead');
                 let tr_h = document.createElement('tr');
                 let th_h = document.createElement('th');
+                let th_h_2 = document.createElement('th');
                 let tbody = document.createElement('tbody');
                 let tr_h_2 = document.createElement('tr');
                 let td = document.createElement('td');
+                let td_2 = document.createElement('td');
                 let input = document.createElement('input');
+                let a = document.createElement('a');
+
+                a.href = '#';
+                a.class = 'el';
+                a.innerText = 'Elimina';
+                a.addEventListener('click', f_eliminar_ck);
+
                 input.type = 'text';
                 input.name = 'cc_punt_k[]';
                 
-                th_h.innerText  = "Punt kilométric";
-
+                th_h.innerText = "Punt kilométric";
+                th_h_2.innerText = "Eliminar";
+                tr_h.appendChild(th_h_2);
                 tr_h.appendChild(th_h);
                 thead.appendChild(tr_h);
                 subtable.appendChild(thead);
-
+                
+                td_2.appendChild(a);
                 td.appendChild(input);
+                tr_h_2.appendChild(td_2);
                 tr_h_2.appendChild(td);
                 tbody.appendChild(tr_h_2);
                 subtable.appendChild(tbody);
 
-                rowsubtable.appendChild(subtable);
+                td_pare.appendChild(subtable);
+                rowsubtable.appendChild(td_pare);
                 rowsubtable.style.display = 'none';
             });
 
@@ -123,7 +140,7 @@
             }
 
             let id = document.getElementById('id_esport').value;
-            let select = document.getElementsByName('id_categoria');
+            let select = document.getElementsByName('id_categoria[]');
 
             fetch('/api/getesportcategories/' + id)
                 .then(response => response.json())
@@ -151,8 +168,13 @@
 
         function f_eliminar()
         {
+            this.parentNode.parentNode.nextElementSibling.remove();
             this.parentNode.parentNode.remove();
-            //this.parentNode.parentNode.nextElementSibling.remove();
+        }
+
+        function f_eliminar_ck()
+        {
+            this.parentNode.parentNode.remove();
         }
 
         function f_close()
@@ -176,10 +198,18 @@
             
             let tr_add = document.createElement('tr');
             let td_add = document.createElement('td');
+            let td_add_2 = document.createElement('td');
+            let a = document.createElement('a');
+            a.href = '#';
+            a.class = 'el';
+            a.innerText = 'Elimina';
+            a.addEventListener('click', f_eliminar_ck);
             let input_add = document.createElement('input');
             input_add.type = 'text';
             input_add.name = 'cc_punt_k[]';
+            td_add_2.appendChild(a);
             td_add.appendChild(input_add);
+            tr_add.appendChild(td_add_2);
             tr_add.appendChild(td_add);
             tbody[1].appendChild(tr_add);
         }
@@ -327,11 +357,15 @@
                                     <table>
                                         <thead>
                                             <tr>
+                                                <th>Eliminar</th>
                                                 <th>Punt kilométric</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
+                                                <td>
+                                                    <a href="#" class="el">Elimina</a>
+                                                </td>
                                                 <td>
                                                     <input type="text" name="cc_punt_k[]">
                                                 </td>
