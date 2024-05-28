@@ -36,7 +36,7 @@
                     }
 
                     let postObj = { 
-                        cat: ddl_ca2ts.options[ddl_cats.selectedIndex].value,
+                        cat: ddl_cats.options[ddl_cats.selectedIndex].value,
                         cur_id: {!! $data['cursa']->cur_id !!}
                     }
                     let post = JSON.stringify(postObj)

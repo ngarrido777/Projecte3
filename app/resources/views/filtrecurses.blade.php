@@ -12,7 +12,7 @@
             color: red;
         }
 
-        .hidden{
+        .hidden {
             display: none;
         }
 
@@ -20,9 +20,25 @@
             width: 70px;
         }
 
-        .img_eliminar{
+        .img_eliminar {
             width: 25px;
             height: 25px;
+        }
+
+        .a-button {
+            border: 1px solid #767676;
+            border-radius: 3px;
+            padding: 3px 10px;
+            background-color: #efefef;
+        }
+
+        .not-a {
+            color: black;
+        }
+
+        .not-a:hover {
+            color: black;
+            text-decoration: none;
         }
     </style>
     <script>
@@ -115,11 +131,9 @@
                         <td class="text-center align-middle">{{ $cursa->cur_lloc }}</td>
                         <td class="text-center align-middle">{{ $cursa->cur_limit_inscr }}</td>
                         <td class="text-center align-middle">{{ $cursa->estat->est_nom }}</td>
-                        {{ Form::open(['url' => '/veurecursesadmin/' . $cursa->cur_id, 'method' => 'post']) }}
-                            @csrf
-                            <td class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</td>
-                            <td class="text-center align-middle">{{ Form::submit('Veure', ['name' => 'f_veure']) }}</td>
-                        {{ Form::close() }}
+                        <td class="text-center align-middle">
+                        <a class="not-a" href="/veurecursesadmin/{{ $cursa->cur_id }}"><span class="a-button">Veure</span></a>
+                        </td>
                         @if ($cursa->cur_est_id == 1)
                             {{ Form::open(['url' => '/updatecurses/' . $cursa->cur_id, 'method' => 'post']) }}
                                 @csrf

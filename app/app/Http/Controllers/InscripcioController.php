@@ -55,14 +55,14 @@ class InscripcioController extends Controller
         }))->count();
 
         $fields = [
-            'nif' => isset($_POST['f_nif']) ? $_POST['f_nif'] : "",
-            'nom' => isset($_POST['f_nom']) ? $_POST['f_nom'] : "",
-            'email' => isset($_POST['f_email']) ? $_POST['f_email'] : "",
-            'telefon' => isset($_POST['f_telefon']) ? $_POST['f_telefon'] : "",
-            'cognoms' => isset($_POST['f_cognoms']) ? $_POST['f_cognoms'] : "",
-            'federat' => isset($_POST['f_federat']) ? true : false,
-            'codiFederat' => isset($_POST['f_num_federat']) ? $_POST['f_num_federat'] : "",
-            'naix' => isset($_POST['f_naix']) ? $_POST['f_naix'] : "",
+            'nif' => $_POST['f_nif'] ?? "",
+            'nom' => $_POST['f_nom'] ?? "",
+            'email' => $_POST['f_email'] ?? "",
+            'telefon' => $_POST['f_telefon'] ?? "",
+            'cognoms' => $_POST['f_cognoms'] ?? "",
+            'federat' => isset($_POST['f_federat']) ?: false,
+            'codiFederat' => $_POST['f_num_federat'] ?? "",
+            'naix' => $_POST['f_naix'] ?? "",
             'inscrits' => $ins_cur
         ];
 
@@ -74,36 +74,51 @@ class InscripcioController extends Controller
                 return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
-            if (!isset($_POST['f_nif']) || strlen($_POST['f_nif']) != 9 ||
-                !isset($_POST['f_nom']) || strlen($_POST['f_nom']) > 50 || strlen($_POST['f_nom']) < 2 ||
-                !isset($_POST['f_email']) || strlen($_POST['f_email']) > 200 || strlen($_POST['f_email']) < 10 ||
-                !isset($_POST['f_telefon']) || !is_numeric($_POST['f_telefon']) || strlen($_POST['f_telefon']) != 9 ||
-                !isset($_POST['f_cognoms']) || strlen($_POST['f_cognoms']) > 50 || strlen($_POST['f_cognoms']) < 2 ||
-                !(isset($_POST['f_federat']) &&
-                    isset($_POST['f_num_federat']) &&
-                    is_numeric($_POST['f_num_federat']) &&
-                    strlen($_POST['f_num_federat']) == 5) ||
-                !isset($_POST['f_naix']) || !strtotime($_POST['f_naix']) || $_POST['f_naix'] >= date('Y-m-d') ||
-                !isset($_POST['f_categoria']) || $_POST['f_categoria'] == -1 ||
-                !isset($_POST['f_circuit']) || $_POST['f_circuit'] == -1
-                ) {
-                    $text = "Has insertado mal algún dato, por favor revisalo. ";
-                    return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
+            if (!isset($_POST['f_nif']) || strlen($_POST['f_nif']) != 9)
+                $err = "NIF incorrecto";
+            elseif (!isset($_POST['f_nom']) || strlen($_POST['f_nom']) > 50 || strlen($_POST['f_nom']) < 2) 
+                $err = "NOMBRE incorrecto";
+            elseif (!isset($_POST['f_email']) || strlen($_POST['f_email']) > 200 || strlen($_POST['f_email']) < 10)
+                $err = "EMAIL incorrecto";
+            elseif (!isset($_POST['f_telefon']) || !is_numeric($_POST['f_telefon']) || strlen($_POST['f_telefon']) != 9)
+                $err = "TELEFONO incorrecto";
+            elseif (!isset($_POST['f_cognoms']) || strlen($_POST['f_cognoms']) > 50 || strlen($_POST['f_cognoms']) < 2)
+                $err = "APELLIDOS incorrectos";
+            elseif (!((
+                    isset($_POST['f_federat']) &&
+                    isset($_POST['f_num_federat']) && 
+                    is_numeric($_POST['f_num_federat']) && 
+                    strlen($_POST['f_num_federat']) == 5)
+                    ||
+                    (!isset($_POST['f_federat']))
+            ))
+                $err = "NUMERO DE FEDERADO incorrecto";                    
+            elseif (!isset($_POST['f_naix']) || !strtotime($_POST['f_naix']) || $_POST['f_naix'] >= date('Y-m-d'))
+                $err = "FECHA incorrecta";
+            elseif (!isset($_POST['f_categoria']) || $_POST['f_categoria'] == -1)
+                $err = "CATEGORIA incorrecta";
+            elseif (!isset($_POST['f_circuit']) || $_POST['f_circuit'] == -1)
+                $err = "CIRCUITO incorrecto";
+
+            if (isset($err)) {
+                return $this->inscriureView($c, $categories, MSG_ERR, $err, $fields);
             }
 
             $participant = new Participant;
-            $participant->nif = $_POST['f_nif'];
-            $participant->nom = $_POST['f_nom'];
-            $participant->cognoms = $_POST['f_cognoms'];
-            $participant->data_naixement = date("Y-m-d", strtotime($_POST['f_naix']));  
-            $participant->telefon = $_POST['f_telefon'];
-            $participant->email = $_POST['f_email'];
-            $participant->es_federat = isset($_POST['f_federat']);
-
+            $participant->par_nif = $_POST['f_nif'];
+            $participant->par_nom = $_POST['f_nom'];
+            $participant->par_cognoms = $_POST['f_cognoms'];
+            $participant->par_data_naixement = date("Y-m-d", strtotime($_POST['f_naix']));  
+            $participant->par_telefon = $_POST['f_telefon'];
+            $participant->par_email = $_POST['f_email'];
+            if ($participant->par_es_federat = isset($_POST['f_federat'])) {
+                $participant->par_num_federat = isset($_POST['f_num_federat']);
+            }
             try {
                 $participant->save();
             } catch (QueryException $ex) {
-                $text = "No se ha podido completar su registro.";
+                dd($ex->getMessage());
+                $text = "No se ha podido completar su registro. [p]";
                 return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
@@ -123,7 +138,7 @@ class InscripcioController extends Controller
                 $inscripcio->save();
             } catch (QueryException $ex) {
                 $participant->delete();
-                $text = "No se ha podido completar su registro.";
+                $text = "No se ha podido completar su registro. [i]";
                 return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
 
