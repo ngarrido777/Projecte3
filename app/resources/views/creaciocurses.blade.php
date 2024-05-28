@@ -40,7 +40,6 @@
                     let div = document.createElement('div');
                     switch(i){
                         case 0:
-                            a.href = "#";
                             a.text = noms[i];
                             a.classList.add(noms[i]);
                             a.addEventListener('click', f_eliminar);
@@ -96,13 +95,13 @@
                 let input = document.createElement('input');
                 let a = document.createElement('a');
 
-                a.href = '#';
                 a.class = 'el';
                 a.innerText = 'Elimina';
                 a.addEventListener('click', f_eliminar_ck);
 
                 input.type = 'text';
                 input.name = 'cc_punt_k[]';
+                input.step = "0.01";
                 
                 th_h.innerText = "Punt kilométric";
                 th_h_2.innerText = "Eliminar";
@@ -200,13 +199,13 @@
             let td_add = document.createElement('td');
             let td_add_2 = document.createElement('td');
             let a = document.createElement('a');
-            a.href = '#';
             a.class = 'el';
             a.innerText = 'Elimina';
             a.addEventListener('click', f_eliminar_ck);
             let input_add = document.createElement('input');
             input_add.type = 'text';
             input_add.name = 'cc_punt_k[]';
+            input_add.step = "0.01";
             td_add_2.appendChild(a);
             td_add.appendChild(input_add);
             tr_add.appendChild(td_add_2);
@@ -225,6 +224,10 @@
         }
     </script>
     <style>
+        a {
+            cursor: pointer;
+            color: #007bff !important;
+        }
         .open {
             width: 16px;
             height: 16px;
@@ -326,7 +329,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a href="#" class="Elimina">Elimina</a>
+                                    <a class="Elimina">Elimina</a>
                                 </td>
                                 <td class="editable">
                                     <input type="number" name="cc_dist[]">
@@ -364,10 +367,10 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <a href="#" class="el">Elimina</a>
+                                                    <a class="el">Elimina</a>
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="cc_punt_k[]">
+                                                    <input type="text" step="0.01" name="cc_punt_k[]">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -376,7 +379,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <a href="#" class="mt-3" id="afegirfila">Afegir Circuit</a>
+                    <a class="mt-3" id="afegirfila">Afegir Circuit</a>
                 </div>
             </div>
             <div>
