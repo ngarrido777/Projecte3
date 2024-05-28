@@ -48,9 +48,9 @@
             padding-top: 10px;
             border: 1px solid black;
             border-radius: 10px;
-            background: linear-gradient(160deg, #eee, #aaa);
             overflow: hidden;
         }
+
         .cursa-card,
         .cursa-card:hover {
             transition: all 0.5s ease;
@@ -60,6 +60,30 @@
             transform: translateY(-10px) rotate(1deg);
         }
 
+        /* Oberta */
+        .estat2 {
+            background: linear-gradient(160deg, #afc, #cfc);
+        }
+
+        /* Tancada */
+        .estat3 {
+            background: linear-gradient(-160deg, #ffa, #efd);
+        }
+
+        /* En curs */
+        .estat4 {
+            background: linear-gradient(-160deg, #adf, #ddf);
+        }
+
+        /* Finalitzada */
+        .estat5 {
+            background: linear-gradient(160deg, #dcf, #dad);
+        }
+
+        /* Finalitzada */
+        .estat6 {
+            background: linear-gradient(160deg, #f98, #f8a);
+        }
 
         .f_desc {
             padding: 0 10px;
@@ -91,6 +115,21 @@
             background-color: #111;
         }
 
+        .a-button {
+            border: 1px solid #767676;
+            border-radius: 3px;
+            padding: 3px 10px;
+            background-color: #efefef;
+        }
+
+        .not-a {
+            color: black;
+        }
+
+        .not-a:hover {
+            color: black;
+            text-decoration: none;
+        }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -99,17 +138,14 @@
     <div class="container mt-4">
         <h1 class="p-3 text-center">Totes les Curses</h1>
 
-        <div class="d-flex justify-content-end mb-4">
+        <div class="d-flex justify-content-between flex-row-reverse mb-4">
             @if ($usu == null)
-                {{ Form::open(['url' => '/login', 'method' => 'post', 'class' => 'form-inline']) }}
-                    @csrf
-                    {{ Form::submit('Login', ['name' => 'f_login', 'class' => 'btn btn-primary']) }}
-                {{ Form::close() }}
-            @else 
-                {{ Form::open(['url' => '/logeout', 'method' => 'post', 'class' => 'form-inline']) }}
-                    @csrf
-                    {{ Form::submit('Logeout', ['name' => 'f_logeout', 'class' => 'btn btn-danger']) }}
-                {{ Form::close() }}
+                <a href="/login" class="btn btn-primary">Log in</a>
+            @else
+                <a href="/logeout" class="btn btn-danger">Log out</a>
+                @if ($usu->usr_admin == 1)
+                    <a href="/filtrecurses" class="btn btn-info">Vista admin</a>
+                @endif
             @endif
         </div>
 
@@ -144,31 +180,34 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            @foreach($curses as $cursa)
-            <div class="col-md-4 cursa-wrapper">
-                <div class="cursa-card">
-                    <div class="img-wrapper">
-                        <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' class="card-img-top" />                  
-                    </div>
-                    <div class="cursa-data">
-                        <h5 class="card-title">{{ $cursa->cur_nom }}</h5>
-                        <p class="card-text"><strong>Data inici: </strong>{{ $cursa->cur_data_inici }}</p>
-                        <p class="card-text"><strong>Lloc: </strong>{{ $cursa->cur_lloc }}</p>
-                        <p class="card-text"><strong><a href="{{ $cursa->cur_web }}">Lloc web de {{ $cursa->cur_nom }}</a></strong></p>
-                    </div>
-                    <div class="cursa-veure">
-                        <p class="card-text f_desc"><strong>Descripció: </strong>{{ $cursa->cur_desc }}</p>
-                        {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
-                            @csrf
-                            <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>
-                            <p class="text-center align-middle button-veure">{{ Form::submit('Veure més', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
-                        {{ Form::close() }}
+        @foreach($curses_totals as $curses)
+            <h3>{{ $curses['titol'] }}</h3>
+            <div class="row">
+                @foreach($curses['curses'] as $cursa)
+                <div class="col-md-4 cursa-wrapper">
+                    <div class="cursa-card estat{{ $cursa->cur_est_id }}">
+                        <div class="img-wrapper">
+                            <img src='data:image/jpeg;charset=utf-8;base64, {{ $cursa->cur_foto }}' class="card-img-top" />                  
+                        </div>
+                        <div class="cursa-data">
+                            <h5 class="card-title">{{ $cursa->cur_nom }}</h5>
+                            <p class="card-text"><strong>Data inici: </strong>{{ $cursa->cur_data_inici }}</p>
+                            <p class="card-text"><strong>Lloc: </strong>{{ $cursa->cur_lloc }}</p>
+                            <p class="card-text"><strong><a href="{{ $cursa->cur_web }}">Lloc web de {{ $cursa->cur_nom }}</a></strong></p>
+                        </div>
+                        <div class="cursa-veure">
+                            <p class="card-text f_desc"><strong>Descripció: </strong>{{ $cursa->cur_desc }}</p>
+                            {{ Form::open(['url' => '/veurecurses/' . $cursa->cur_id, 'method' => 'post']) }}
+                                @csrf
+                                <p class="hidden">{{ Form::text('up_cur_id', $cursa->cur_id) }}</p>
+                                <p class="text-center align-middle button-veure">{{ Form::submit('Veure més', ['name' => 'f_veure', 'class' => 'btn btn-primary']) }}</p>
+                            {{ Form::close() }}
+                        </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
-        </div>
+        @endforeach
     </div>
 </body>
 </html>

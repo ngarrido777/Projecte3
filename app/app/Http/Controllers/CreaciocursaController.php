@@ -247,10 +247,10 @@ class CreaciocursaController extends Controller
         $ok = true;
         $usu = Session::get('usu');
         if($usu == null){
-            return redirect()->route('login');
+            return redirect()->route('/');
         }
         if(!$usu->usr_admin){
-            return redirect()->route('login');
+            return redirect()->route('/');
         }       
         //Eliminar Curses seleccionades
         if(isset($request->f_elimina)){
@@ -475,10 +475,23 @@ class CreaciocursaController extends Controller
     public function filtrecursescorredors()
     {
         $ok = true;
+
         //Agafar la session
         $usu = Session::get('usu');
+
         //Mostrar curses obertes per defecte
-        $curses = Cursa::where('cur_est_id', ESTAT_OBERTA)->orderBy('cur_data_inici','DESC')->get();
+        $curses = Cursa::where('cur_est_id', '!=', ESTAT_PREPARACIO)->get();
+     
+        $curses_obertes = array();
+        $altres_curses = array();
+        foreach ($curses as $key => $c) {
+            if ($c->cur_est_id == ESTAT_OBERTA) {
+                $curses_obertes[] = $c;
+            } else {
+                $altres_curses[] = $c;
+            }
+        }
+
         //Array amb els ultims camps del filtre
         $last = array(
             'l_nom' => '',
@@ -486,58 +499,78 @@ class CreaciocursaController extends Controller
             'l_esport' => '',
             'l_estat' => ''
         );
+
         //Carregar els esports per la view
         $esports = Esport::all();
-        $esp_names = array(
-            '-1' => '',
-        );
-        foreach ($esports as $key => $e) {
+        $esp_names = array('-1' => '');
+        foreach ($esports as $key => $e)
             $esp_names[$e->esp_id] = $e->esp_nom;
-        }
+
         //Carregar els estats per la view
         $estats = Estat_cursa::all();
-        $est_names = array(
-            '-1' => '',
-        );
+        $est_names = array('-1' => '');
         foreach ($estats as $key => $e) {
-            $est_names[$e->est_id] = $e->est_nom;
+            if ($e->est_id != ESTAT_PREPARACIO) {
+                $est_names[$e->est_id] = $e->est_nom;
+            }
         }
-        $error = '';
+            
         //Post
-        if(isset($_POST["f_cercar"]))
-        {
+        $error = '';
+        $titol = "Curses obertes";
+        if (isset($_POST["f_cercar"])) {
             //Validar el nom
             $nom = $_POST["f_nom"];
             $last["l_nom"] = $nom;
-            if(strlen($nom) > 50 || strlen($nom) < 0)
-            {
+            if(strlen($nom) > 50 || strlen($nom) < 0) {
                 $error = 'La mida del nom no es correcte';
                 $ok = false;
             }
+            
             //Aplicar filtre
             $query = Cursa::query();
             $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%');
             $last["l_data_inici"] = $_POST['f_data_inici'];
-            if ($_POST['f_data_inici'] != '') {
+
+            if ($_POST['f_data_inici'] != '')
                 $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
-            }
+            
             $last["l_esport"] = $_POST['f_esport'];
-            if ($_POST['f_esport'] != '-1') {
+            if ($_POST['f_esport'] != '-1')
                 $query->where('cur_esp_id', $_POST['f_esport']);
-            }
+            
             $last["l_estat"] = $_POST['f_estat'];
-            if ($_POST['f_estat'] != '-1') {
+            if ($_POST['f_estat'] != '-1')
                 $query->where('cur_est_id', $_POST['f_estat']);
+            
+            if ($ok) {
+                $curses_obertes = $query->orderBy('cur_data_inici','DESC')->get();
+                $titol = "Curses filtrades";
             }
-            if($ok){
-                $curses = $query->orderBy('cur_data_inici','DESC')->get();
-            }
+        }
+
+        $curses_totals = array(
+            [
+                'titol' => $titol,
+                'curses' => $curses_obertes
+            ]
+        );
+
+        if (!isset($_POST["f_cercar"])) {
+            $altres_titol = "altres curses";
+            if (count($altres_curses) == 0) 
+                $altres_titol = "No s'han trobat més curses";
+            
+            $curses_totals[] = array(
+                'titol' => $altres_titol,
+                'curses' => $altres_curses
+            );
         }
 
         return view('filtrecursescorredors', [
             'esports' => $esp_names,
             'estats' => $est_names,
-            'curses' => $curses,
+            'curses_totals' => $curses_totals,
             'usu'   => $usu,
             'last'  => $last,
             'error' => $error

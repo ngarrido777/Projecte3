@@ -132,7 +132,7 @@
                         <td class="text-center align-middle">{{ $cursa->cur_limit_inscr }}</td>
                         <td class="text-center align-middle">{{ $cursa->estat->est_nom }}</td>
                         <td class="text-center align-middle">
-                        <a class="not-a" href="/veurecursesadmin/{{ $cursa->cur_id }}"><span class="a-button">Veure</span></a>
+                        <a class="btn btn-info" href="/veurecursesadmin/{{ $cursa->cur_id }}">Veure</a>
                         </td>
                         @if ($cursa->cur_est_id == 1)
                             {{ Form::open(['url' => '/updatecurses/' . $cursa->cur_id, 'method' => 'post']) }}
