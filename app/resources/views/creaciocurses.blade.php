@@ -290,7 +290,7 @@
                         <select id="id_esport" name="c_esport">
                             <option selected disabled value="-1">Tria l'esport</option>
                             @foreach ($esports as $esp)
-                            <option value="{{ $esp->esp_id  }}">{{ $esp->esp_nom }}</option>
+                                <option value="{{ $esp->esp_id  }}">{{ $esp->esp_nom }}</option>
                             @endforeach
                         </select>
                         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}

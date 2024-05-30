@@ -56,9 +56,15 @@ class CreaciocursaController extends Controller
             $ok = false;
         }
         //Validar esport
-        $id_esport = $_POST["c_esport"];
-        $ultims_camps["l_esport"] = $id_esport;
-        $esport = Esport::where('esp_id', $id_esport)->first();
+        $esport = '';
+        if(!isset($_POST["c_esport"])){
+            $errors['e_esport'] = 'Indica un esport';
+            $ok = false;
+        }else{
+            $id_esport = $_POST["c_esport"];
+            $ultims_camps["l_esport"] = $id_esport;
+            $esport = Esport::where('esp_id', $id_esport)->first();
+        }
         //Crear l'estat de la cursa
         $estat = Estat_cursa::where('est_id', 1)->first();
         //Validar descripccio
