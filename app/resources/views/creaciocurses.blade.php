@@ -28,7 +28,7 @@
                 event.preventDefault();
                 let table = document.getElementById('t_circuits').getElementsByTagName('tbody')[0];
                 let newRow = table.insertRow();
-                let noms = ['Elimina','cc_dist[]','cc_nom','cc_preu','cc_temps','f_categoria','n_ckp'];
+                let noms = ['Elimina','cc_dist[]','cc_nom[]','cc_preu[]','cc_temps[]','f_categoria[]','n_ckp[]'];
 
                 for (let i = 0; i < 8; i++) {
                     let newCell = newRow.insertCell(i);
@@ -290,7 +290,11 @@
                         <select id="id_esport" name="c_esport">
                             <option selected disabled value="-1">Tria l'esport</option>
                             @foreach ($esports as $esp)
-                                <option value="{{ $esp->esp_id  }}">{{ $esp->esp_nom }}</option>
+                                @if($ultims_camps["l_esport"] == $esp->esp_id)
+                                    <option value="{{ $esp->esp_id  }}" selected>{{ $esp->esp_nom }}</option>
+                                @else
+                                    <option value="{{ $esp->esp_id  }}">{{ $esp->esp_nom }}</option>
+                                @endif
                             @endforeach
                         </select>
                         {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}

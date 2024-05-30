@@ -126,6 +126,7 @@ class CreaciocursaController extends Controller
 
     public function creaciocurses(Request $request)
     {
+        dd($request);
         $ok = true;
         $usu = Session::get('usu');
         if($usu == null){
