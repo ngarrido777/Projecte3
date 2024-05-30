@@ -45,6 +45,7 @@
                     {{ Form::submit('Login', ['name' => 'e_login', 'class' => 'btn btn-primary btn-block']) }}
                 </div>
             {{ Form::close() }}
+            <a href="/" class="btn btn-secondary">Torna</a>
         </div>
     </div>
 </div>

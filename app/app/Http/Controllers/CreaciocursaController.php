@@ -30,8 +30,7 @@ class CreaciocursaController extends Controller
         //Validar nom
         $nom = $_POST["c_nom"];
         $ultims_camps["l_nom"] = $nom;
-        if(strlen($nom) > 50 || strlen($nom) <= 0)
-        {
+        if (strlen($nom) > 50 || strlen($nom) <= 0) {
             $errors['e_nom'] = 'La mida del nom no es correcte';
             $ok = false;
         }
@@ -42,25 +41,23 @@ class CreaciocursaController extends Controller
         $data_fi = $_POST["c_data_fi"];
         $ultims_camps["l_data_fi"] = $data_fi;
         //Validar data inici < data fi
-        if (!($data_inici < $data_fi))
-        {
+        if (!($data_inici < $data_fi)) {
             $errors['e_data_fi'] = 'La data de inici ha de ser anterior a la data de fi';
             $ok = false;
         }
         //Validar lloc
         $lloc = $_POST["c_lloc"];
         $ultims_camps["l_lloc"] = $lloc;
-        if(strlen($lloc) > 20 || strlen($lloc) <= 0)
-        {
+        if (strlen($lloc) > 20 || strlen($lloc) <= 0) {
             $errors['e_lloc'] = 'La mida del lloc no es correcte';
             $ok = false;
         }
         //Validar esport
         $esport = '';
-        if(!isset($_POST["c_esport"])){
+        if (!isset($_POST["c_esport"])) {
             $errors['e_esport'] = 'Indica un esport';
             $ok = false;
-        }else{
+        } else {
             $id_esport = $_POST["c_esport"];
             $ultims_camps["l_esport"] = $id_esport;
             $esport = Esport::where('esp_id', $id_esport)->first();
@@ -70,8 +67,7 @@ class CreaciocursaController extends Controller
         //Validar descripccio
         $descripccio = $_POST["c_descripccio"];
         $ultims_camps["l_descripccio"] = $descripccio;
-        if(strlen($descripccio) > 1000)
-        {
+        if (strlen($descripccio) > 1000) {
             $errors['e_descripccio'] = 'La mida de la descripccio no es correcte';
             $ok = false;
         }
@@ -83,8 +79,7 @@ class CreaciocursaController extends Controller
             $errors['e_limit'] = 'El limit ha de ser numeric';
             $ok = false;
         }
-        if(!is_int($limit))
-        {
+        if (!is_int($limit)) {
             $errors['e_limit'] = 'El limit no pot ser decimal';
             $ok = false;
         }
@@ -94,44 +89,61 @@ class CreaciocursaController extends Controller
             $file = $request->file('c_foto');
             $size = getimagesize($file);
             //Validar mida de la imatge sense codificar a base64
-            if($file->getSize() <= 5000000){
-                if($size)
-                {
+            if ($file->getSize() <= 5000000){
+                if ($size) {
                     $foto = base64_encode(file_get_contents($file->getRealPath()));
                     //$ultims_camps["l_foto"] = $file;
-                }else
-                {
+                } else {
                     $errors['e_foto'] = 'Error en el format de la imatge';
                     $ok = false;
                 }
-            }else{
+            } else {
                 $errors['e_foto'] = 'Error en la mida de la imatge maxim 5M';
                 $ok = false;
             }
-        }else{
+        } else {
             $errors['e_foto'] = 'Error en carregar la imatge';
             $ok = false;
         }
         //Validar web
         $web = $_POST["c_web"];
         $ultims_camps["l_web"] = $web;
-        if(strlen($web) > 200)
-        {
+        if (strlen($web) > 200) {
             $errors['e_web'] = 'La mida de la web no es correcte';
             $ok = false;
         }
-        $dades = array($nom, $data_inici, $data_fi, $lloc, $esport, $estat, $descripccio, $limit, $foto, $web);
+
+        $circuits = array();
+        $qt_chk = 0;
+        for ($i = 0; $i < count($request["cc_dist"]); $i++) {
+            $circuits[] = array(
+                "cc_dist" => $request["cc_dist"][$i],
+                "cc_nom" => $request["cc_nom"][$i],
+                "cc_preu" => $request["cc_preu"][$i],
+                "cc_temps" => $request["cc_temps"][$i],
+                "cc_punt_k" => array()
+            );
+            
+            for ($qt_chk; $qt_chk < $request["cc_qt_chk"][$i]; $qt_chk++) {
+                //$circuits[$i]['cc_punt_k'][] = $request["cc_punt_k"][$i][$qt_chk];
+            }
+        }
+
+        dd($request["cc_qt_chk"]);
+
+
+
+        $dades = array($nom, $data_inici, $data_fi, $lloc, $esport, $estat, $descripccio, $limit, $foto, $web, $circuits);
         return array($ok, $errors, $ultims_camps, $dades);
     }
 
-    public function creaciocurses(Request $request)
-    {
+    public function creaciocurses(Request $request) {
         $ok = true;
         $usu = Session::get('usu');
-        if($usu == null){
+        if ($usu == null) {
             return redirect()->route('login');
         }
-        if(!$usu->usr_admin){
+        if (!$usu->usr_admin) {
             return redirect()->route('login');
         }  
         //Array de errors
@@ -161,7 +173,6 @@ class CreaciocursaController extends Controller
         //Tractament del post
         if(isset($_POST["c_crear"]))
         {
-            dd($request);
             //Cridar funccio validar
             $array = $this->validar($ok, $errors, $ultims_camps, $request);
             $ok = $array[0];

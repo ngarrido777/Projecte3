@@ -24,6 +24,7 @@ const ESTAT_TANCADA = 3;
 const ESTAT_CURS = 4;
 const ESTAT_FINALITZADA = 5;
 const ESTAT_CANCELADA = 6;
+
 class InscripcioController extends Controller
 {
     private function inscriureView($cursa,$cats,$code = null,$mensaje = null,$fields = null) {

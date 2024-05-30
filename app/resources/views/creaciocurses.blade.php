@@ -28,6 +28,7 @@
                 event.preventDefault();
                 let table = document.getElementById('t_circuits').getElementsByTagName('tbody')[0];
                 let newRow = table.insertRow();
+                newRow.classList.add("circuit");
                 let noms = ['Elimina','cc_dist[]','cc_nom[]','cc_preu[]','cc_temps[]','f_categoria[]','n_ckp[]'];
 
                 for (let i = 0; i < 8; i++) {
@@ -81,6 +82,16 @@
                             break;
                     }
                 }
+
+                
+                let newCell = newRow.insertCell(8);
+                let input2 = document.createElement('input');
+                input2.type = 'number';
+                newCell.style = 'display: none;';
+                input2.value = 1;
+                input2.name = 'cc_qt_chk[]';
+                newCell.appendChild(input2);
+
                 let rowsubtable = table.insertRow();
                 let td_pare = document.createElement('td');
                 let subtable = document.createElement('table');
@@ -94,6 +105,8 @@
                 let td_2 = document.createElement('td');
                 let input = document.createElement('input');
                 let a = document.createElement('a');
+
+                td_pare.setAttribute("colspan","8");
 
                 a.class = 'el';
                 a.innerText = 'Elimina';
@@ -173,6 +186,8 @@
 
         function f_eliminar_ck()
         {
+            this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.previousElementSibling.children[8].children[0].value =
+                parseInt(this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.previousElementSibling.children[8].children[0].value) - 1;
             this.parentNode.parentNode.remove();
         }
 
@@ -183,7 +198,7 @@
             this.removeEventListener('click', f_close);
             this.addEventListener('click', f_open);
 
-            this.parentNode.parentNode.nextElementSibling.style.display = 'block';
+            this.parentNode.parentNode.nextElementSibling.style.display = '';
         }
 
         function f_nckp(e)
@@ -194,7 +209,8 @@
             let table = td[0].children;
             let tbody = table[0].children;
             let sub_tr = tbody[1].children;
-            
+            this.parentNode.parentNode.children[8].children[0].value =
+                parseInt(this.parentNode.parentNode.children[8].children[0].value) + 1;
             let tr_add = document.createElement('tr');
             let td_add = document.createElement('td');
             let td_add_2 = document.createElement('td');
@@ -241,7 +257,7 @@
         .hidden{
             visibility: hidden;
         }
-        .show{
+        .show {
             visibility: visible;
         }
         .error {
@@ -254,6 +270,13 @@
         .not-a {
             color: white !important;
             text-decoration: none;
+        }
+
+        th  {
+            border-bottom: 0px !important;
+        }
+        .circuit {
+            border-top: 2px solid black;
         }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -336,7 +359,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="circuit">
                                 <td>
                                     <a class="Elimina">Elimina</a>
                                 </td>
@@ -363,9 +386,12 @@
                                 <td>
                                     <div class="open"></div>
                                 </td>
+                                <td style="display: none">
+                                    <input type="number" name="cc_qt_chk[]" value="1">
+                                </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td colspan="8">
                                     <table>
                                         <thead>
                                             <tr>
