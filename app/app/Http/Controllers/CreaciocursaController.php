@@ -8,6 +8,7 @@ use App\Models\Estat_cursa;
 use App\Models\Cursa;
 use App\Models\Usuari;
 use App\Models\Inscripcio;
+use App\Models\Checkpoint;
 use App\Models\Circuit_categoria;
 use App\Models\Circuit;
 use Session;
@@ -79,8 +80,8 @@ class CreaciocursaController extends Controller
             $errors['e_limit'] = 'El limit ha de ser numeric';
             $ok = false;
         }
-        if (!is_int($limit)) {
-            $errors['e_limit'] = 'El limit no pot ser decimal';
+        if (!is_numeric($limit) || $limit < 10) {
+            $errors['e_limit'] = 'El limit ha de ser un enter i de minim 10 persones';
             $ok = false;
         }
         //Validar imatge
@@ -114,9 +115,18 @@ class CreaciocursaController extends Controller
         }
 
         $circuits = array();
-        $qt_chk = 0;
+        $total_chk = 0;
         for ($i = 0; $i < count($request["cc_dist"]); $i++) {
-            $circuits[] = array(
+
+            if (!isset($request["cc_dist"][$i]) ||
+                !isset($request["cc_nom"][$i]) ||
+                !isset($request["cc_preu"][$i]))
+            {
+                $ok = false;
+                $errors['e_circuit'] = 'Revisa els circuits';
+            }
+
+            $circuits[$i] = array(
                 "cc_dist" => $request["cc_dist"][$i],
                 "cc_nom" => $request["cc_nom"][$i],
                 "cc_preu" => $request["cc_preu"][$i],
@@ -124,14 +134,20 @@ class CreaciocursaController extends Controller
                 "cc_punt_k" => array()
             );
             
-            for ($qt_chk; $qt_chk < $request["cc_qt_chk"][$i]; $qt_chk++) {
-                //$circuits[$i]['cc_punt_k'][] = $request["cc_punt_k"][$i][$qt_chk];
+            $qt_chk_circuit = $request["cc_qt_chk"][$i]; // <- Cuantos checkpoints tiene el circuito iterado
+            $contador_chk = 0;
+            $tmp = $total_chk;
+            for ($total_chk; $total_chk < $tmp + $qt_chk_circuit; $total_chk++) {
+                if ($ok && !isset($request['cc_punt_k'][$total_chk])) {
+                    $ok = false;
+                    $errors['e_circuit'] = 'Revisa els checkpoints';
+                }
+
+                $circuits[$i]['cc_punt_k'][] = $request['cc_punt_k'][$total_chk];
             }
+            
+            $ultims_camps["circuits"] = $circuits;
         }
-
-        dd($request["cc_qt_chk"]);
-
-
 
         $dades = array($nom, $data_inici, $data_fi, $lloc, $esport, $estat, $descripccio, $limit, $foto, $web, $circuits);
         return array($ok, $errors, $ultims_camps, $dades);
@@ -156,7 +172,8 @@ class CreaciocursaController extends Controller
             'e_descripcio' => '',
             'e_limit' => '',
             'e_foto' => '',
-            'e_web' => ''
+            'e_web' => '',
+            'e_circuit' => ''
         );
         //Array ultims camps
         $ultims_camps = array(
@@ -168,11 +185,19 @@ class CreaciocursaController extends Controller
             'l_descripccio' => '',
             'l_limit' => '',
             'l_foto' => '',
-            'l_web' => ''
+            'l_web' => '',
+            'circuits' => array(
+                array(
+                    "cc_dist" => '',
+                    "cc_nom" => '',
+                    "cc_preu" => '',
+                    "cc_temps" => '',
+                    "cc_punt_k" => array('')
+                )
+            )
         );
         //Tractament del post
-        if(isset($_POST["c_crear"]))
-        {
+        if (isset($_POST["c_crear"])) {
             //Cridar funccio validar
             $array = $this->validar($ok, $errors, $ultims_camps, $request);
             $ok = $array[0];
@@ -180,8 +205,9 @@ class CreaciocursaController extends Controller
             $ultims_camps = $array[2];
             $dades = $array[3];
 
-            if($ok)
-            {
+            if ($ok) {
+
+                // Inserta cursa
                 $cursa = new Cursa();
                 $cursa->cur_nom = $dades[0];
                 $cursa->cur_data_inici = $dades[1];
@@ -193,10 +219,36 @@ class CreaciocursaController extends Controller
                 $cursa->cur_limit_inscr = $dades[7];
                 $cursa->cur_foto = $dades[8]; 
                 $cursa->cur_web = $dades[9];
-                try{
+                try {
                     $cursa->save();
-                }catch(QueryException $es){
+                } catch (QueryException $es) {
                     return $es->getMessage();
+                }
+
+                foreach ($dades[10] as $key => $cir) {
+                    $circuit = new Circuit();
+                    $circuit->cir_num = $key;
+                    $circuit->cir_cur_id = $cursa->cur_id;
+                    $circuit->cir_distancia = $cir['cc_dist'];
+                    $circuit->cir_nom = $cir['cc_nom'];
+                    $circuit->cir_preu = $cir['cc_preu'];
+                    $circuit->cir_temps_estimat = $cir['cc_temps'] ?? '';
+                    try {
+                        $circuit->save();
+                    } catch (QueryException $es) {
+                        return $es->getMessage();
+                    }
+
+                    foreach ($cir['cc_punt_k'] as $key => $chk) {
+                        $check = new Checkpoint();
+                        $check->chk_cir_id = $circuit->cir_id;
+                        $check->chk_pk = $chk;
+                        try {
+                            $check->save();
+                        } catch (QueryException $es) {
+                            return $es->getMessage();
+                        }
+                    } 
                 }
 
                 $ultims_camps["l_nom"] = '';
@@ -207,8 +259,17 @@ class CreaciocursaController extends Controller
                 $ultims_camps["l_descripccio"] = '';
                 $ultims_camps["l_limit"] = '';
                 $ultims_camps["l_web"] = '';
+                $ultims_camps["circuits"] = array(
+                    array(
+                        "cc_dist" => '',
+                        "cc_nom" => '',
+                        "cc_preu" => '',
+                        "cc_temps" => '',
+                        "cc_punt_k" => array('')
+                    )
+                );
             }
-        }else{
+        } else {
             $ok = false;
         }
         //Carregar els esports per la view
@@ -251,8 +312,13 @@ class CreaciocursaController extends Controller
             foreach ($circiuts_categories as $ccc)
                 $ccc->delete();
 
-            foreach ($circuits as $cir)
+            foreach ($circuits as $cir) {
+                $chks = Checkpoint::where('chk_cir_id',$cir->cir_id)->get();
+                foreach ($chks as $chk) {
+                    $chk->delete();
+                }
                 $cir->delete();
+            }
 
             if (!is_null($cur))
                 $cur->delete();
@@ -382,7 +448,8 @@ class CreaciocursaController extends Controller
             'e_descripcio' => '',
             'e_limit' => '',
             'e_foto' => '',
-            'e_web' => ''
+            'e_web' => '',
+            'e_circuit' => 'a'
         );
         //Array ultims camps
         $ultims_camps = array(

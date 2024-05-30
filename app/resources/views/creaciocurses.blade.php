@@ -135,6 +135,7 @@
                 rowsubtable.style.display = 'none';
             });
 
+            
             document.getElementById('t_circuits').addEventListener('click', function(event) {
                 if (event.target.tagName === 'TD' && event.target.classList.contains('editable')) {
                     let input = event.target.querySelector('input');
@@ -345,6 +346,7 @@
                 </div>
                 <h2 class="p-3 mt-4">Circuits</h2>
                 <div class="col-12">
+                    <span class="error">{{$errors['e_circuit']}}</span>
                     <table class="table table-responsive" id="t_circuits">
                         <thead>
                             <tr>
@@ -364,16 +366,16 @@
                                     <a class="Elimina">Elimina</a>
                                 </td>
                                 <td class="editable">
-                                    <input type="number" name="cc_dist[]">
+                                    <input type="number" name="cc_dist[]" value="{{$ultims_camps['circuits'][0]['cc_dist']}}">
                                 </td>
                                 <td class="editable">
-                                    <input type="text" name="cc_nom[]">
+                                    <input type="text" name="cc_nom[]" value="{{$ultims_camps['circuits'][0]['cc_nom']}}">
                                 </td>
                                 <td class="editable">
-                                    <input type="number" name="cc_preu[]">
+                                    <input type="number" name="cc_preu[]" value="{{$ultims_camps['circuits'][0]['cc_preu']}}">
                                 </td>
                                 <td class="editable">
-                                    <input type="text" name="cc_temps[]">
+                                    <input type="text" name="cc_temps[]" value="{{$ultims_camps['circuits'][0]['cc_temps']}}">
                                 </td>
                                 <td class="editable">
                                     <select disabled name="id_categoria[]">
@@ -405,7 +407,7 @@
                                                     <a class="el">Elimina</a>
                                                 </td>
                                                 <td>
-                                                    <input type="text" step="0.01" name="cc_punt_k[]">
+                                                    <input type="text" step="0.01" name="cc_punt_k[]" value="{{$ultims_camps['circuits'][0]['cc_punt_k'][0]}}">
                                                 </td>
                                             </tr>
                                         </tbody>
