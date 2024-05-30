@@ -411,7 +411,6 @@ class CreaciocursaController extends Controller
             }
             //Aplicar filtre
             $query = Cursa::query();
-            $query->where('cur_nom', 'like', '%'.$_POST['f_nom_lloc'].'%')->orWhere('cur_lloc', 'like', '%'.$_POST['f_nom_lloc'].'%');
             $last["l_data_inici"] = $_POST['f_data_inici'];
             if ($_POST['f_data_inici'] != '') {
                 $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
@@ -419,6 +418,9 @@ class CreaciocursaController extends Controller
             $last["l_estat"] = $_POST['f_estat'];
             if ($_POST['f_estat'] != '-1') {
                 $query->where('cur_est_id', $_POST['f_estat']);
+            }
+            if($_POST["f_nom_lloc"] != ''){
+                $query->where('cur_nom', 'like', '%'.$_POST['f_nom_lloc'].'%')->orWhere('cur_lloc', 'like', '%'.$_POST['f_nom_lloc'].'%');
             }
             if($ok){
                 $curses = $query->orderBy('cur_data_inici','ASC')->get();
