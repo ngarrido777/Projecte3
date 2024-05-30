@@ -1,0 +1,81 @@
+-- Get curses --
+
+ Todas las cursas:
+/api/getCurses
+
+Cursa con id opcional correcto:
+/api/getCurses/1
+
+Cursa con id opcional incorrecto:
+/api/getCurses/89
+
+-- Get circuits --
+
+Todos los circuitos:
+/api/getCircuits
+
+Circuit con id opcional:
+/api/getCircuits/2
+
+Circuit con id opcional:
+/api/getCircuits/
+
+-- Inscriure Participant --
+
+Participant federat:
+/api/inscriure/
+{
+	"participant": {
+		"nif": "44445555D",
+		"nom": "David",
+		"cognoms": "Cano",
+		"dataNaixement": "10-10-2010",
+		"telefon": "600655301",
+		"email": "dcano@milaifontanals.org",
+		"codiFederat": "55664"
+	},
+	"circuitId": 1,
+	"catId": 1
+}
+
+Participant no federat:
+/api/inscriure/
+{
+	"participant": {
+		"nif": "42345355D",
+		"nom": "Nestor",
+		"cognoms": "Garrido",
+		"dataNaixement": "10-10-2010",
+		"telefon": "600255301",
+		"email": "dcano@milaifontanals.org"
+	},
+	"circuitId": 1,
+	"catId": 1
+}
+
+Participant no válid:
+/api/inscriure/
+{
+	"participant": {
+		"nif": "44445555D",
+		"nom": "David",
+		"cognoms": "Cano",
+		"dataNaixement": "10-10-2010"
+		"email": "dcano@milaifontanals.org"
+	},
+	"circuitId": 1,
+	"catId": 1
+}
+
+-- Checkpoint Participant --
+//Va pocho
+Checkpoint participant:
+/api/participantCheckpoint/
+{
+    "parId": 1,
+    "catId": 1,
+    "cirId": 1,
+    "beaId": 1,
+    "chkId": 3,
+    "temps": "2011-02-03"
+}
