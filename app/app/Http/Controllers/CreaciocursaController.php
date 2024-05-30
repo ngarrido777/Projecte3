@@ -126,7 +126,6 @@ class CreaciocursaController extends Controller
 
     public function creaciocurses(Request $request)
     {
-        dd($request);
         $ok = true;
         $usu = Session::get('usu');
         if($usu == null){
@@ -162,6 +161,7 @@ class CreaciocursaController extends Controller
         //Tractament del post
         if(isset($_POST["c_crear"]))
         {
+            dd($request);
             //Cridar funccio validar
             $array = $this->validar($ok, $errors, $ultims_camps, $request);
             $ok = $array[0];
