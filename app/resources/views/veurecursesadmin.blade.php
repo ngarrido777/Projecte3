@@ -74,7 +74,11 @@
             </div>
             <div>
                 @if ($cursa->cur_est_id == 2)
-                    <a href="/inscriure/{{$cursa->cur_id}}" clasS="btn btn-success">Inscriute</a> 
+                    <a href="/inscriure/{{$cursa->cur_id}}" clasS="btn btn-success">Inscriute</a>
+                @endif
+
+                @if ($cursa->cur_est_id == 4)
+                    <a href="/asignarparticipant/{{$cursa->cur_id}}" clasS="btn btn-success">Recepció</a> 
                 @endif
 
                 @if ($cursa->cur_est_id == 4 || $cursa->cur_est_id == 5)

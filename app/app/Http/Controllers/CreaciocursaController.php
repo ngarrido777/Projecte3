@@ -153,6 +153,47 @@ class CreaciocursaController extends Controller
         return array($ok, $errors, $ultims_camps, $dades);
     }
 
+    public function asignarparticipant(Request $request){
+        $ok = true;
+        $usu = Session::get('usu');
+        if ($usu == null) {
+            return redirect()->route('login');
+        }
+        if (!$usu->usr_admin) {
+            return redirect()->route('login');
+        }
+        
+        if (is_null($c = Cursa::where('cur_id',$id)->first()) || $c->cur_est_id != ESTAT_OBERTA)
+            return redirect('/');
+
+        $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($id) {
+            $query->from('circuits_categories')
+                ->select('ccc_id')
+                ->whereIn('ccc_cir_id', (function ($query) use ($id) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $id);
+                }));
+        }))->count();
+        
+        //Array de errors
+        $errors = array(
+            'e_esport' => '',
+        );
+        //Array ultims camps
+        $ultims_camps = array(
+            'l_esport' => '',
+        );
+        //Carregar els esports per la view
+        $esports = Esport::all();
+
+        return view('asignarparticipant', [
+            'esports' => $esports,
+            'errors' => $errors,
+            'ultims_camps' => $ultims_camps,
+        ]);
+    }
+
     public function creaciocurses(Request $request) {
         $ok = true;
         $usu = Session::get('usu');
