@@ -247,24 +247,20 @@
             padding: 0;
             background-color: #f8f9fa;
         }
-
         h1, h2 {
             color: #333;
             padding: 10px;
         }
-
         h1 {
             font-size: 24px;
             border-bottom: 2px solid #ccc;
             margin-bottom: 20px;
         }
-
         h2 {
             font-size: 20px;
             margin-top: 30px;
             border-bottom: 1px solid #ccc;
         }
-
         form {
             background-color: #fff;
             padding: 20px;
@@ -272,17 +268,14 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 20px 0;
         }
-
         div > div {
             margin-bottom: 15px;
         }
-
         label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
         }
-
         input[type="text"],
         input[type="date"],
         input[type="number"],
@@ -294,7 +287,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
         input[type="submit"] {
             background-color: #007bff;
             color: white;
@@ -303,40 +295,32 @@
             cursor: pointer;
             border-radius: 4px;
         }
-
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
-
         table, th, td {
             border: 1px solid #ddd;
         }
-
         th, td {
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #f2f2f2;
         }
-
         a {
             color: #007bff;
             text-decoration: none;
             cursor: pointer;
         }
-
         a:hover {
             text-decoration: underline;
         }
-
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -346,39 +330,31 @@
             border-radius: 4px;
             margin: 5px 0;
         }
-
         .btn-primary {
             background-color: #007bff;
             color: white;
             border: none;
         }
-
         .btn-primary:hover {
             background-color: #0056b3;
         }
-
         .btn-secondary {
             background-color: #6c757d;
             color: white;
             border: none;
         }
-
         .btn-secondary:hover {
             background-color: #5a6268;
         }
-
         .mt-3 {
             margin-top: 1rem;
         }
-
         .p-3 {
             padding: 1rem;
         }
-
         .m-3 {
             margin: 1rem;
         }
-
         .open {
             width: 16px;
             height: 16px;
