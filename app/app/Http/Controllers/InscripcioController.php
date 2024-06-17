@@ -45,7 +45,7 @@ class InscripcioController extends Controller
 
     public function inscriure($id = null)
     {
-        if (is_null($c = Cursa::where('cur_id',$id)->first()) || $c->cur_est_id != ESTAT_OBERTA)
+        if (is_null($id) || is_null($c = Cursa::where('cur_id',$id)->first()) || $c->cur_est_id != ESTAT_OBERTA)
             return redirect('/');
 
         $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($id) {
@@ -70,7 +70,21 @@ class InscripcioController extends Controller
             'inscrits' => $ins_cur
         ];
 
-        $categories = Categoria::where('cat_esp_id',$c->cur_esp_id)->get();
+
+
+
+        $cur_id = $c->cur_esp_id;
+
+        $categories = Categoria::whereIn('cat_id', (function ($query) use ($cur_id) {
+            $query->from('circuits_categories')
+                ->select('ccc_cat_id')
+                ->whereIn('ccc_cir_id', (function ($query) use ($cur_id) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $cur_id);
+                }));
+        }))->get();
+
         if (isset($_POST['f_ins'])) {
 
             if ($ins_cur >= $c->cur_limit_inscr) {

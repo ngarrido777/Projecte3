@@ -30,7 +30,6 @@
                     ddl_cirs.disabled = false;
                     ddl_cirs.options[0].text = "Escoje el circuito!";   
 
-                    console.log(ddl_cirs.children.length);
                     for (let i=ddl_cirs.children.length-1; i > 0 ; i--) {
                         ddl_cirs.removeChild(ddl_cirs.children[i])
                     }
