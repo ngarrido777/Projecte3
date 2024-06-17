@@ -3,77 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asignar participant</title>
+    <title>Asignar participant a {{ $data['cursa']->cur_nom }}</title>
     <script>
-        document.addEventListener('DOMContentLoaded', f_main);
+            document.addEventListener("DOMContentLoaded", (event) => {
+                
+                const ddl_cats = document.getElementById('f_categoria')
+                let ddl_cirs = document.getElementById('f_circuit')
+                ddl_cirs.addEventListener('change', (event) => {
+                    document.getElementById('recep').disabled = false;
+                });
 
-        function f_main()
-        {
-            document.getElementById('id_esport').addEventListener('change', f_crida);
-        }
+                ddl_cats.addEventListener('change', (event) => {
+                    ddl_cirs.disabled = false;
+                    ddl_cirs.options[0].text = "Escoje el circuito!";   
 
-        function f_crida()
-        {
-            esport = document.getElementById('id_esport');
-            if(esport.value == -1)
-            {
-                return;
-            }
-
-            let id = document.getElementById('id_esport').value;
-            let select = document.getElementsByName('id_categoria');
-
-            fetch('/api/getCircuitsCursaCategoria' + id)
-                .then(response => response.json())
-                .then(data => {
-                    for(i=0;i<select.length;i++)
-                    {
-                        select[i].innerHTML = '';
-                        let defaultOption = document.createElement('option');
-                        defaultOption.value = '-1';
-                        defaultOption.textContent = 'Tria una categoria';
-                        defaultOption.disabled = true;
-                        defaultOption.selected = true;
-                        select[i].appendChild(defaultOption);
-                        data.forEach(function(item) {
-                            let option = document.createElement('option');
-                            option.value = item.cat_esp_id;
-                            option.textContent = item.cat_nom;
-                            select[i].appendChild(option);
-                        });
-                        select[i].disabled = false;
+                    for (let i=ddl_cirs.children.length-1; i > 0 ; i--) {
+                        ddl_cirs.removeChild(ddl_cirs.children[i])
                     }
-                })
-                .catch(error => console.error('Error:', error));
-        }
+
+                    let postObj = { 
+                        cat: ddl_cats.options[ddl_cats.selectedIndex].value,
+                        cur_id: {!! $data['cursa']->cur_id !!}
+                    }
+                    let post = JSON.stringify(postObj)
+                    const url = "http://localhost:8000/api/getCircuitsCursaCategoria"
+                    let xhr = new XMLHttpRequest()
+                    xhr.open('POST', url, true)
+                    xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+                    xhr.send(post);
+                    xhr.onload = function() {
+                        let arr = JSON.parse(xhr.response);
+                        arr.forEach(element => {
+                            var option = document.createElement("option");
+                            option.text = element['cir_nom'];
+                            option.value = element['cir_id'];
+                            ddl_cirs.appendChild(option);
+                        });
+                        ddl_cirs.value = -1;
+                    }
+                });
+            });
     </script>
+    <style>
+        .ins_row {
+            width: 100%;
+            background-color: #ddd;
+            padding: 10px 40px;
+            border-bottom: 1px solid #aaa;
+        }
+        
+        .ins_row:last-child {
+            border: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Assignació de participants</h1>
-    {{ Form::open(['url' => 'asignarparticipant', 'method' => 'post']) }}
+    {{ Form::open(['method' => 'post']) }}
         @csrf
         <div>
-            {{ Form::label('l_circuits', 'Circuits:') }}
-            <div>
-                <select id="id_esport" name="c_esport">
-                    <option selected disabled value="-1">Tria l'esport</option>
-                    @foreach ($esports as $esp)
-                        @if($ultims_camps["l_esport"] == $esp->esp_id)
-                            <option value="{{ $esp->esp_id  }}" selected>{{ $esp->esp_nom }}</option>
-                        @else
-                            <option value="{{ $esp->esp_id  }}">{{ $esp->esp_nom }}</option>
-                        @endif
-                    @endforeach
-                </select>
-                {{ Form::label(null, $errors['e_esport'], ['class' => 'error']) }}
-            </div>
-            {{ Form::label('l_categories', 'Categories:') }}
-            <div>
-                <select disabled name="id_categoria">
-                    <option selected disabled value="-1" id="default_cir_option">Tria un esport primer</option>
-                </select>
-            </div>
+            {{ Form::label('l_categoria', 'Categorias') }}
+            <select id="f_categoria" name="f_categoria">
+                <option selected disabled value="-1">Escoge tu categoría</option>
+                @foreach ($data['cats'] as $cat)
+                    <option value="{{ $cat->cat_id }}">{{ $cat->cat_nom }}</option>
+                @endforeach
+            </select>
         </div>
+        <div>
+            {{ Form::label('l_circuit', 'Circuits') }}
+            <select disabled id="f_circuit" name="f_circuit">
+                <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
+            </select>
+        </div>
+        {{ Form::submit('Recepcio!', ['name' => 'f_recep', 'id' => 'recep', 'class' => 'btn btn-success', 'disabled' => 'true']) }}
+        @foreach ($data['inscripcions'] as $ins)
+            <div class="ins_row">
+                <span>{{$ins->participant->par_nom}}</span>
+                {{ Form::text('ins_id', $ins->ins_id, ['class' => 'hidden']) }}
+            </div>
+        @endforeach
     {{ Form::close() }}
 </body>
 </html>

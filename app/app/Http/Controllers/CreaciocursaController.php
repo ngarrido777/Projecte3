@@ -7,6 +7,7 @@ use App\Models\Esport;
 use App\Models\Estat_cursa;
 use App\Models\Cursa;
 use App\Models\Usuari;
+use App\Models\Categoria;
 use App\Models\Inscripcio;
 use App\Models\Checkpoint;
 use App\Models\Circuit_categoria;
@@ -177,48 +178,56 @@ class CreaciocursaController extends Controller
         return array($ok, $errors, $ultims_camps, $dades);
     }
 
-    public function asignarparticipant(Request $request){
+    public function asignarparticipant($id = null)
+    {
         $ok = true;
         $usu = Session::get('usu');
-        if ($usu == null) {
-            return redirect()->route('login');
-        }
-        if (!$usu->usr_admin) {
-            return redirect()->route('login');
-        }
-        
-        if (is_null($c = Cursa::where('cur_id',$id)->first()) || $c->cur_est_id != ESTAT_OBERTA)
+        if ($usu == null || !$usu->usr_admin || is_null($id) || is_null($c = Cursa::where('cur_id',$id)->first()) || $c->cur_est_id != ESTAT_CURS)
             return redirect('/');
-
-        $ins_cur = Inscripcio::whereIn('ins_ccc_id', (function ($query) use ($id) {
-            $query->from('circuits_categories')
-                ->select('ccc_id')
-                ->whereIn('ccc_cir_id', (function ($query) use ($id) {
-                    $query->from('circuits')
-                        ->select('cir_id')
-                        ->where('cir_cur_id', $id);
-                }));
-        }))->count();
         
         //Array de errors
         $errors = array(
             'e_esport' => '',
         );
-        //Array ultims camps
-        $ultims_camps = array(
-            'l_esport' => '',
-        );
-        //Carregar els esports per la view
-        $esports = Esport::all();
+        
+        $cats = Categoria::whereIn('cat_id', (function ($query) use ($id) {
+            $query->from('circuits_categories')
+                ->select('ccc_cat_id')
+                ->whereIn('ccc_cir_id', (function ($query) use ($id) {
+                    $query->from('circuits')
+                        ->select('cir_id')
+                        ->where('cir_cur_id', $id);
+                }));
+        }))->get();
+
+
+        $inscripcions = array();
+        $cat_nom = '';
+        $cir_nom = '';
+
+        if (isset($_POST['f_recep'])) {
+            $ccc = Circuit_categoria::where('ccc_cir_id', $_POST['f_circuit'])->where('ccc_cat_id', $_POST['f_categoria'])->first();
+            $inscripcions = Inscripcio::where('ins_ccc_id', $ccc->ccc_id)->get();
+            $cat_nom = $ccc->categoria->cat_nom;
+            $cir_nom = $ccc->circuit->cir_nom;
+        }
 
         return view('asignarparticipant', [
-            'esports' => $esports,
-            'errors' => $errors,
-            'ultims_camps' => $ultims_camps,
+            'data' => [
+                'cursa' => $c,
+                'cats' => $cats,
+                'inscripcions' => $inscripcions,
+                'selected' => [
+                    'cat' => $cat_nom,
+                    'cir' => $cir_nom,
+                ],
+            ],
+            'errors' => $errors
         ]);
     }
 
-    public function creaciocurses(Request $request) {
+    public function creaciocurses(Request $request)
+    {
         $ok = true;
         $usu = Session::get('usu');
         if ($usu == null) {
@@ -348,7 +357,8 @@ class CreaciocursaController extends Controller
         ]);
     }
     
-    private static function eliminaCurses($curses_id) {
+    private static function eliminaCurses($curses_id)
+    {
         foreach ($curses_id as $cur_id) {
 
             $cur = Cursa::where('cur_id',$cur_id)->first();
