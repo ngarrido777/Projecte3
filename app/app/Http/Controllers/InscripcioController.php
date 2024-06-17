@@ -11,6 +11,8 @@ use App\Models\Inscripcio;
 use App\Models\Participant;
 use App\Models\Circuit_Categoria;
 use \Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mail_ins;
 
 // Errores
 const MSG_INF = 'msg_inf';
@@ -154,6 +156,7 @@ class InscripcioController extends Controller
 
             try {
                 $inscripcio->save();
+                Mail::send(new Mail_ins($_POST['f_email'], $inscripcio->ins_id));
             } catch (QueryException $ex) {
                 $participant->delete();
                 $text = "No se ha podido completar su registro. [i]";

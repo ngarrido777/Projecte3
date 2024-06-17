@@ -127,6 +127,21 @@ class CreaciocursaController extends Controller
                 $errors['e_circuit'] = 'Revisa els circuits';
             }
 
+            if($request["cc_dist"][$i] <= 0){
+                $ok = false;
+                $errors['e_circuit'] = 'La distancia del circuit no pot ser negativa o 0';
+            }
+
+            if($request["cc_preu"][$i] < 0){
+                $ok = false;
+                $errors['e_circuit'] = 'El preu del circuit no pot ser negatiu';
+            }
+
+            if($request["cc_temps"][$i] < 0){
+                $ok = false;
+                $errors['e_circuit'] = 'El temps del circuit no pot ser negatiu';
+            }
+
             $circuits[$i] = array(
                 "cc_dist" => $request["cc_dist"][$i],
                 "cc_nom" => $request["cc_nom"][$i],
@@ -142,6 +157,11 @@ class CreaciocursaController extends Controller
                 if ($ok && !isset($request['cc_punt_k'][$total_chk])) {
                     $ok = false;
                     $errors['e_circuit'] = 'Revisa els checkpoints';
+                }
+
+                if ($request['cc_punt_k'][$total_chk] < 0){
+                    $ok = false;
+                    $errors['e_circuit'] = 'El punt kilometric no pot ser negatiu';
                 }
 
                 $circuits[$i]['cc_punt_k'][] = $request['cc_punt_k'][$total_chk];
