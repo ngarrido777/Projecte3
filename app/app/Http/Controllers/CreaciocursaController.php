@@ -117,57 +117,61 @@ class CreaciocursaController extends Controller
 
         $circuits = array();
         $total_chk = 0;
-        for ($i = 0; $i < count($request["cc_dist"]); $i++) {
+        if(isset($request["cc_dist"])){
+            for ($i = 0; $i < count($request["cc_dist"]); $i++) {
 
-            if (!isset($request["cc_dist"][$i]) ||
-                !isset($request["cc_nom"][$i]) ||
-                !isset($request["cc_preu"][$i]))
-            {
-                $ok = false;
-                $errors['e_circuit'] = 'Revisa els circuits';
-            }
-
-            if($request["cc_dist"][$i] <= 0){
-                $ok = false;
-                $errors['e_circuit'] = 'La distancia del circuit no pot ser negativa o 0';
-            }
-
-            if($request["cc_preu"][$i] < 0){
-                $ok = false;
-                $errors['e_circuit'] = 'El preu del circuit no pot ser negatiu';
-            }
-
-            if($request["cc_temps"][$i] < 0){
-                $ok = false;
-                $errors['e_circuit'] = 'El temps del circuit no pot ser negatiu';
-            }
-
-            $circuits[$i] = array(
-                "cc_dist" => $request["cc_dist"][$i],
-                "cc_nom" => $request["cc_nom"][$i],
-                "cc_preu" => $request["cc_preu"][$i],
-                "cc_temps" => $request["cc_temps"][$i],
-                "cc_punt_k" => array()
-            );
-            
-            $qt_chk_circuit = $request["cc_qt_chk"][$i]; // <- Cuantos checkpoints tiene el circuito iterado
-            $contador_chk = 0;
-            $tmp = $total_chk;
-            for ($total_chk; $total_chk < $tmp + $qt_chk_circuit; $total_chk++) {
-                if ($ok && !isset($request['cc_punt_k'][$total_chk])) {
+                if (!isset($request["cc_dist"][$i]) ||
+                    !isset($request["cc_nom"][$i]) ||
+                    !isset($request["cc_preu"][$i]))
+                {
                     $ok = false;
-                    $errors['e_circuit'] = 'Revisa els checkpoints';
+                    $errors['e_circuit'] = 'Revisa els circuits';
                 }
 
-                if ($request['cc_punt_k'][$total_chk] < 0){
+                if($request["cc_dist"][$i] <= 0){
                     $ok = false;
-                    $errors['e_circuit'] = 'El punt kilometric no pot ser negatiu';
+                    $errors['e_circuit'] = 'La distancia del circuit no pot ser negativa o 0';
                 }
 
-                $circuits[$i]['cc_punt_k'][] = $request['cc_punt_k'][$total_chk];
+                if($request["cc_preu"][$i] < 0){
+                    $ok = false;
+                    $errors['e_circuit'] = 'El preu del circuit no pot ser negatiu';
+                }
+
+                if($request["cc_temps"][$i] < 0){
+                    $ok = false;
+                    $errors['e_circuit'] = 'El temps del circuit no pot ser negatiu';
+                }
+
+                $circuits[$i] = array(
+                    "cc_dist" => $request["cc_dist"][$i],
+                    "cc_nom" => $request["cc_nom"][$i],
+                    "cc_preu" => $request["cc_preu"][$i],
+                    "cc_temps" => $request["cc_temps"][$i],
+                    "cc_punt_k" => array()
+                );
+                
+                $qt_chk_circuit = $request["cc_qt_chk"][$i]; // <- Cuantos checkpoints tiene el circuito iterado
+                $contador_chk = 0;
+                $tmp = $total_chk;
+                for ($total_chk; $total_chk < $tmp + $qt_chk_circuit; $total_chk++) {
+                    if ($ok && !isset($request['cc_punt_k'][$total_chk])) {
+                        $ok = false;
+                        $errors['e_circuit'] = 'Revisa els checkpoints';
+                    }
+
+                    if ($request['cc_punt_k'][$total_chk] < 0){
+                        $ok = false;
+                        $errors['e_circuit'] = 'El punt kilometric no pot ser negatiu';
+                    }
+
+                    $circuits[$i]['cc_punt_k'][] = $request['cc_punt_k'][$total_chk];
+                }
+                
+                $ultims_camps["circuits"] = $circuits;
             }
-            
-            $ultims_camps["circuits"] = $circuits;
+        }else{
+            $errors['e_circuit'] = 'No hi han circuits';
         }
 
         $dades = array($nom, $data_inici, $data_fi, $lloc, $esport, $estat, $descripccio, $limit, $foto, $web, $circuits);
