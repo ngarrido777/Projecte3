@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger  ('ins_par_id');
             $table->date                ('ins_data');
             $table->integer             ('ins_dorsal')->nullable();
-            $table->boolean             ('ins_retirat')->default(0);
+            $table->boolean             ('ins_retirat')->nullable();
             $table->unsignedBigInteger  ('ins_bea_id')->nullable();
             $table->unsignedBigInteger  ('ins_ccc_id');
             /* FK */
