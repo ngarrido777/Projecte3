@@ -198,14 +198,32 @@ class CreaciocursaController extends Controller
 
 
         $inscripcions = array();
-        $cat_nom = '';
-        $cir_nom = '';
+        $cat = null;
+        $cir = null;
 
         if (isset($_POST['f_recep'])) {
             $ccc = Circuit_categoria::where('ccc_cir_id', $_POST['f_circuit'])->where('ccc_cat_id', $_POST['f_categoria'])->first();
             $inscripcions = Inscripcio::where('ins_ccc_id', $ccc->ccc_id)->get();
-            $cat_nom = $ccc->categoria->cat_nom;
-            $cir_nom = $ccc->circuit->cir_nom;
+            $cat = $ccc->categoria;
+            $cir = $ccc->circuit;
+        }
+
+        if (isset($_POST['f_recep_si'])) {
+            $ccc = Circuit_categoria::where('ccc_cir_id', $_POST['selected_cir'])->where('ccc_cat_id', $_POST['selected_cat'])->first();
+            $cat = $ccc->categoria;
+            $cir = $ccc->circuit;
+            $ins = Inscripcio::where('ins_id', $_POST['ins_id_selected'])->first();
+            $ins->ins_retirat = 0;
+            $ins->save();
+            $inscripcions = Inscripcio::where('ins_ccc_id', $ccc->ccc_id)->get();
+        } elseif (isset($_POST['f_recep_no'])) {
+            $ccc = Circuit_categoria::where('ccc_cir_id', $_POST['selected_cir'])->where('ccc_cat_id', $_POST['selected_cat'])->first();
+            $cat = $ccc->categoria;
+            $cir = $ccc->circuit;
+            $ins = Inscripcio::where('ins_id', $_POST['ins_id_selected'])->first();
+            $ins->ins_retirat = 1;
+            $ins->save();
+            $inscripcions = Inscripcio::where('ins_ccc_id', $ccc->ccc_id)->get();
         }
 
         return view('asignarparticipant', [
@@ -214,8 +232,8 @@ class CreaciocursaController extends Controller
                 'cats' => $cats,
                 'inscripcions' => $inscripcions,
                 'selected' => [
-                    'cat' => $cat_nom,
-                    'cir' => $cir_nom,
+                    'cat' => $cat,
+                    'cir' => $cir,
                 ],
             ],
             'errors' => $errors

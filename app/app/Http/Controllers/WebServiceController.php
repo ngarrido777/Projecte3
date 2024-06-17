@@ -77,7 +77,7 @@ class WebServiceController extends Controller
         return $cirs;
     }
     
-    public function getesportcategories($id){
+    public function getesportcategories($id) {
         $categories = Categoria::where('cat_esp_id', $id)->get();
         return response()->json($categories);
     }
@@ -436,7 +436,7 @@ class WebServiceController extends Controller
                 "code" => "666",
                 "description" => "Debes pasar un id de cursa"
             ];
-            return $this->sendJsonResultats([],$status);
+            return $this->sendJsonResultats(null,[],$status);
         }
 
         if (count($cursa = Cursa::where('cur_id',$id)->get()) <= 0) {
@@ -444,7 +444,7 @@ class WebServiceController extends Controller
                 "code" => "555",
                 "description" => "La cursa no existe"
             ];
-            return $this->sendJsonResultats([],$status);
+            return $this->sendJsonResultats(null,[],$status);
         }
 
         if ($cursa[0]->cur_est_id != ESTAT_CURS && $cursa[0]->cur_est_id != ESTAT_FINALITZADA) {
@@ -452,7 +452,7 @@ class WebServiceController extends Controller
                 "code" => "555",
                 "description" => "La cursa no está en curs ni ha acabat"
             ];
-            return $this->sendJsonResultats([],$status);
+            return $this->sendJsonResultats(null,[],$status);
         }
 
         $registres = Registre::whereIn('reg_chk_id', (function ($query) use ($cursa) {

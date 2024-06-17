@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asignar participant a {{ $data['cursa']->cur_nom }}</title>
+    <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
     <script>
             document.addEventListener("DOMContentLoaded", (event) => {
                 
@@ -43,15 +47,39 @@
                     }
                 });
             });
+
+            function retirar(e) {
+                console.log(e.id);
+                let id_input = document.getElementById(e.id).parentNode.childNodes[11];
+                id_input.name = 'ins_id_selected';
+                let button = document.getElementById(e.id).parentNode.childNodes[9];
+                button.click();
+            }
+
+            function participar(e) {
+                console.log(e.id);
+                let id_input = document.getElementById(e.id).parentNode.childNodes[11];
+                id_input.name = 'ins_id_selected';
+                let button = document.getElementById(e.id).parentNode.childNodes[7];
+                button.click();
+            }
     </script>
     <style>
         .ins_row {
             width: 100%;
             background-color: #ddd;
             padding: 10px 40px;
-            border-bottom: 1px solid #aaa;
+            border-bottom: 1px solid black;
         }
         
+        .ins_row:has(.retirat) {
+            background-color: tomato;
+        }
+        
+        .ins_row:has(.participa) {
+            background-color: mediumseagreen;
+        }
+
         .ins_row:last-child {
             border: none;
         }
@@ -80,13 +108,33 @@
                 <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
             </select>
         </div>
-        {{ Form::submit('Recepcio!', ['name' => 'f_recep', 'id' => 'recep', 'class' => 'btn btn-success', 'disabled' => 'true']) }}
+        @if (isset($data['selected']['cat']) && $data['selected']['cir'])
+            {{ Form::text('selected_cat', $data['selected']['cat']->cat_id, ['class' => 'hidden']) }}
+            {{ Form::text('selected_cir', $data['selected']['cir']->cir_id, ['class' => 'hidden']) }}
+        @endif
+        {{ Form::submit('Recepcio!', ['name' => 'f_recep', 'id' => 'recep', 'disabled' => 'true', 'style' => 'margin-left: 15px;']) }}
+        <br>
+        <br>
+        @php($i = 0)
         @foreach ($data['inscripcions'] as $ins)
             <div class="ins_row">
-                <span>{{$ins->participant->par_nom}}</span>
-                {{ Form::text('ins_id', $ins->ins_id, ['class' => 'hidden']) }}
+                @if (is_null($ins->ins_retirat))
+                    <span>{{$ins->participant->par_nom}}</span>
+                    <span id="p{{$i}}" class="btn btn-success" onclick="participar(this)">Participa</span>
+                    <span id="r{{$i++}}" class="btn btn-danger" onclick="retirar(this)">Es retira</span>
+                    {{ Form::submit('Paricipa', ['name' => 'f_recep_si', 'class' => 'btn btn-success hidden',]) }}
+                    {{ Form::submit('Es retira', ['name' => 'f_recep_no', 'class' => 'btn btn-danger hidden',]) }}
+                    {{ Form::text('ins_id', $ins->ins_id, ['class' => 'hidden']) }}
+                @elseif ($ins->ins_retirat == '1')
+                    <span class="retirat">{{$ins->participant->par_nom}}</span>
+                    <span>Retirat</span>
+                @else
+                    <span class="participa">{{$ins->participant->par_nom}}</span>
+                    <span>Participa</span>
+                @endif
             </div>
         @endforeach
     {{ Form::close() }}
+    <a href="/veurecursesadmin/{{$data['cursa']->cur_id}}" class="btn btn-secondary m-3 not-a">Tornar</a>
 </body>
 </html>
