@@ -361,10 +361,10 @@ class WebServiceController extends Controller
         }
 
         try {
-            $par =       Participant::where('par_id','=',$decode['parId'])->get();
-            $ccc = Circuit_categoria::where('cat_id','=',$decode['catId'])->where('cir_id','=',$decode['cirId'])->get();
-            $bea =            Beacon::where('bea_id','=',$decode['beaId'])->get();
-            $chk =        Checkpoint::where('chk_id','=',$decode['chkId'])->get();
+            $par =       Participant::where('par_id',$decode['parId'])->get();
+            $ccc = Circuit_categoria::where('ccc_cat_id',$decode['catId'])->where('ccc_cir_id',$decode['cirId'])->get();
+            $bea =            Beacon::where('bea_id',$decode['beaId'])->get();
+            $chk =        Checkpoint::where('chk_id',$decode['chkId'])->get();
         } catch (QueryException $ex) {
             $status = [
                 "code" => "403",
@@ -384,6 +384,7 @@ class WebServiceController extends Controller
             return $this->sendJsonParticipantCheckpoint($status);
         }
 
+        $ins = array();
         try {
             $ins = Inscripcio::where('ins_par_id',$par[0]->par_id)
                              ->where('ins_bea_id',$bea[0]->bea_id)  
