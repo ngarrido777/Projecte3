@@ -162,7 +162,17 @@ class InscripcioController extends Controller
                 $text = "No se ha podido completar su registro. [i]";
                 return $this->inscriureView($c, $categories, MSG_ERR, $text, $fields);
             }
-
+            $fields = [
+                'nif' => "",
+                'nom' => "",
+                'email' => "",
+                'telefon' => "",
+                'cognoms' => "",
+                'federat' => false,
+                'codiFederat' => "",
+                'naix' => "",
+                'inscrits' => $ins_cur
+            ];
             $text = "Ya estás registrado!!";
             return $this->inscriureView($c, $categories, MSG_INF, $text, $fields);
 
