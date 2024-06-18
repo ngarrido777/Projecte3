@@ -58,33 +58,9 @@
             });
         </script>
         <style>
-            .msg_inf,
-            .msg_adv,
-            .msg_err {
-                font-weight: bold;
-            }
-
-            .msg_inf {
-                color: green;
-            }
-
-            .msg_adv {
-                color: goldenrod;
-            }
-
-            .msg_err {
-                color: darkred;
-            }
-
             .hidden {
                 display: none;
             }
-
-            img {
-                width: 500px;
-                height: 500px;
-            }
-
             .content {
                 display: flex;
                 justify-content: space-around;
@@ -92,6 +68,72 @@
 
             .header {
                 margin: 10px 10px 30px;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            h1.text-center {
+                text-align: center;
+                padding: 20px;
+                color: black;
+                margin: 0;
+            }
+            .caixa {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                margin: 20px;
+                padding: 20px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            .caixa > div {
+                flex: 1;
+                margin: 10px;
+            }
+            div > div {
+                margin-bottom: 15px;
+            }
+            label {
+                font-weight: bold;
+                display: block;
+                margin-bottom: 5px;
+            }
+            p.salt, input.salt {
+                margin: 0;
+                padding: 5px;
+                background-color: #e9ecef;
+                border-radius: 5px;
+                width: 80%;
+            }
+            a.btn {
+                display: inline-block;
+                padding: 10px 15px;
+                margin: 5px 0;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                color: white;
+            }
+            a.btn-success {
+                background-color: #28a745;
+            }
+            a.btn-primary {
+                background-color: #007bff;
+            }
+            .caixa img {
+                max-width: 100%;
+                border-radius: 10px;
+            }
+
+            .formulari{
+                width: 50%;
             }
         </style>
     </head>
@@ -104,74 +146,77 @@
             @endif
 
         </div>
-        {{ Form::open(['method' => 'post']) }}
-            @csrf
-            <div class="content">
-                <div>
-                    <div>
-                        {{ Form::label('l_nom', 'Nom') }}
-                        {{ Form::text('f_nom', $fields['nom']) }}
-                    </div>
-                    <div>
-                        {{ Form::label('l_cognoms', 'Cognoms') }}
-                        {{ Form::text('f_cognoms', $fields['cognoms']) }}
-                    </div>
-                    <div>
-                        {{ Form::label('l_nif', 'DNI') }}
-                        {{ Form::text('f_nif', $fields['nif']) }}
-                    </div>
-                    <div>
-                        {{ Form::label('l_telefon', 'Teléfon') }}
-                        {{ Form::text('f_telefon', $fields['telefon']) }}
-                    </div>
-                    <div>
-                        {{ Form::label('l_email', 'Correu electrònic') }}
-                        {{ Form::text('f_email', $fields['email']) }}
-                    </div>
-                    <div>
-                        {{ Form::label('l_naix', 'Data de naixement') }}
-                        {{ Form::date('f_naix', $fields['naix']) }}
-                    </div>
-                    <div>
-                        {{ Form::label('l_federat', 'Ets federat?') }}
-                        {{ Form::checkbox('f_federat', null, $fields['federat'], array('id'=>'ckb_federat')) }}
-                        <span id="num_federat_block" class="hidden">
-                            {{ Form::label('l_num_federat', 'Num federat') }}
-                            {{ Form::text('f_num_federat', $fields['codiFederat']) }}
-                        </span>
-                    </div>
-                    <div>
-                        {{ Form::label('l_categoria', 'Categorias') }}
-                        <select id="f_categoria" name="f_categoria">
-                            <option selected disabled value="-1">Escoge tu categoría</option>
-                            @foreach ($data['cats'] as $cat)
-                                <option value="{{ $cat->cat_id }}">{{ $cat->cat_nom }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        {{ Form::label('l_circuit', 'Circuits') }}
-                        <select disabled id="f_circuit" name="f_circuit">
-                            <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
-                        </select>
-                    </div>
-                    @if ($fields['inscrits'] >= $data['cursa']->cur_limit_inscr)
-                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins','disabled' => 'true', 'class' => 'btn btn-danger']) }}
-                    @else
-                        {{ Form::submit('Inscribirm!', ['name' => 'f_ins', 'class' => 'btn btn-success']) }}
-                    @endif
+        <div class="caixa">
+            {{ Form::open(['method' => 'post']) }}
+                @csrf
+                <div class="content">
+                    <div class="formulari">
+                        <div>
+                            {{ Form::label('l_nom', 'Nom') }}
+                            {{ Form::text('f_nom', $fields['nom'], array('class'=>'salt')) }}
+                        </div>
+                        <div>
+                            {{ Form::label('l_cognoms', 'Cognoms') }}
+                            {{ Form::text('f_cognoms', $fields['cognoms'], array('class'=>'salt')) }}
+                        </div>
+                        <div>
+                            {{ Form::label('l_nif', 'DNI') }}
+                            {{ Form::text('f_nif', $fields['nif'], array('class'=>'salt')) }}
+                        </div>
+                        <div>
+                            {{ Form::label('l_telefon', 'Teléfon') }}
+                            {{ Form::text('f_telefon', $fields['telefon'], array('class'=>'salt')) }}
+                        </div>
+                        <div>
+                            {{ Form::label('l_email', 'Correu electrònic') }}
+                            {{ Form::text('f_email', $fields['email'], array('class'=>'salt')) }}
+                        </div>
+                        <div>
+                            {{ Form::label('l_naix', 'Data de naixement') }}
+                            {{ Form::date('f_naix', $fields['naix'], array('class'=>'salt')) }}
+                        </div>
+                        <div>
+                            {{ Form::label('l_federat', 'Ets federat?') }}
+                            {{ Form::checkbox('f_federat', null, $fields['federat'], array('id'=>'ckb_federat')) }}
+                            <span id="num_federat_block" class="hidden">
+                                {{ Form::label('l_num_federat', 'Num federat') }}
+                                {{ Form::text('f_num_federat', $fields['codiFederat'], array('class'=>'salt')) }}
+                            </span>
+                        </div>
+                        <div>
+                            {{ Form::label('l_categoria', 'Categorias') }}
+                            <select id="f_categoria" name="f_categoria">
+                                <option selected disabled value="-1">Escoge tu categoría</option>
+                                @foreach ($data['cats'] as $cat)
+                                    <option value="{{ $cat->cat_id }}">{{ $cat->cat_nom }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            {{ Form::label('l_circuit', 'Circuits') }}
+                            <select disabled id="f_circuit" name="f_circuit">
+                                <option selected disabled value="-1" id="default_cir_option">Escoge una categoria primero</option>
+                            </select>
+                        </div>
+                        <div>
+                            @if ($fields['inscrits'] >= $data['cursa']->cur_limit_inscr)
+                                {{ Form::submit('Inscribirm!', ['name' => 'f_ins','disabled' => 'true', 'class' => 'btn btn-danger']) }}
+                            @else
+                                {{ Form::submit('Inscribirm!', ['name' => 'f_ins', 'class' => 'btn btn-success']) }}
+                            @endif
 
-                    @if ($usu == null || !$usu->usr_admin)
-                        <a href="/veurecursesadmin/{{$data['cursa']->cur_id}}" class="btn btn-primary mx-3">Torna</a>
-                    @else
-                        <a href="/veurecurses/{{$data['cursa']->cur_id}}" class="btn btn-info mx-3">Torna</a>
-                    @endif
+                            @if ($usu == null || !$usu->usr_admin)
+                                <a href="/veurecursesadmin/{{$data['cursa']->cur_id}}" class="btn btn-primary mx-3">Torna</a>
+                            @else
+                                    <a href="/veurecurses/{{$data['cursa']->cur_id}}" class="btn btn-info mx-3">Torna</a>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" />
+                    </div>
                 </div>
-                <div>
-                    <img src="data:image/jpeg;charset=utf-8;base64, {{ $data['cursa']->cur_foto }}" />
-                </div>
-            </div>
-            
-        {{ Form::close() }}
+            {{ Form::close() }}
+        </div>
     </body>
 </html>
