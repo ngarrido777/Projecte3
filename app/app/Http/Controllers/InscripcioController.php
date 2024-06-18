@@ -71,10 +71,7 @@ class InscripcioController extends Controller
             'naix' => $_POST['f_naix'] ?? "",
             'inscrits' => $ins_cur
         ];
-
-
-
-
+        
         $cur_id = $c->cur_esp_id;
 
         $categories = Categoria::whereIn('cat_id', (function ($query) use ($cur_id) {
@@ -171,7 +168,7 @@ class InscripcioController extends Controller
                 'federat' => false,
                 'codiFederat' => "",
                 'naix' => "",
-                'inscrits' => $ins_cur
+                'inscrits' => $ins_cur+1
             ];
             $text = "Ya estás registrado!!";
             return $this->inscriureView($c, $categories, MSG_INF, $text, $fields);
