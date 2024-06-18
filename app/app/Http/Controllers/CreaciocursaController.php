@@ -506,7 +506,7 @@ class CreaciocursaController extends Controller
             $query = Cursa::query();
             $last["l_data_inici"] = $_POST['f_data_inici'];
             if ($_POST['f_data_inici'] != '') {
-                $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
+                $query->whereDate('cur_data_inici', '>=', $_POST['f_data_inici']);
             }
             $last["l_estat"] = $_POST['f_estat'];
             if ($_POST['f_estat'] != '-1') {
@@ -708,11 +708,11 @@ class CreaciocursaController extends Controller
             
             //Aplicar filtre
             $query = Cursa::query();
-            $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%');
+            $query->where('cur_nom', 'like', '%'.$_POST['f_nom'].'%')->where('cur_est_id','!=',1);
             $last["l_data_inici"] = $_POST['f_data_inici'];
 
             if ($_POST['f_data_inici'] != '')
-                $query->whereDate('cur_data_inici', '=', $_POST['f_data_inici']);
+                $query->whereDate('cur_data_inici', '>=', $_POST['f_data_inici']);
             
             $last["l_esport"] = $_POST['f_esport'];
             if ($_POST['f_esport'] != '-1')
